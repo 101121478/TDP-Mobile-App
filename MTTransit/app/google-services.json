@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "903025642227",
+    "project_id": "mt-transit-16ec5",
+    "storage_bucket": "mt-transit-16ec5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903025642227:android:8ec90de6fbf21265f84586",
+        "android_client_info": {
+          "package_name": "com.cos60011.group1.mttransit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "903025642227-rg927sis0vbc1e8jhnvnpt2g9lel8qfl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCV2FQMl_Aw1dtB36mbDw1xPFvHnXb_80g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "903025642227-rg927sis0vbc1e8jhnvnpt2g9lel8qfl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
