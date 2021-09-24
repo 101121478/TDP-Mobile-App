@@ -2,7 +2,6 @@ package com.cos60011.group1.mttransit
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.databinding.DataBindingUtil
 import com.cos60011.group1.mttransit.databinding.FragmentBusEntryBinding
 import android.view.LayoutInflater
 import android.view.View
