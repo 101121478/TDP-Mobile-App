@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MT Transit</string>
+
+
+    <!-- Bus Data Entry Fragment Strings -->
+    <string name="bus_id_input_placeholder">Bus ID</string>
+    <string name="bus_type_input_placeholder">Bus Type (Standard, etc)</string>
+    <string name="bus_route_input_placeholder">Route</string>
+    <string name="bus_capacity_input_placeholder">Passenger Capacity</string>
+    <string name="bus_passengers_onboard_input_placeholder">Passengers Onboard</string>
+    <string name="submit_button_text">Submit</string>
+    <string name="back_to_dashboard_button_text">Back to Dashboard</string>
 </resources>
