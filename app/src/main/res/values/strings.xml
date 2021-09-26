@@ -5,4 +5,16 @@
     <string name="login_password_hint">Password</string>
     <string name="login_email_hint">Email</string>
     <string name="login_btn_text">LOGIN</string>
+    <string name="bus_status_bus_id_hint">Bus ID</string>
+    <string name="bus_status_bus_id_text">923</string>
+    <string name="bus_status_bus_type_hint">Bus type</string>
+    <string name="bus_status_bus_type_text">Standard</string>
+    <string name="bus_status_route_hint">Route</string>
+    <string name="bus_status_route_text">912 Glenferrie to Flinders (Stopping All Stations)</string>
+    <string name="bus_status_passenger_capacity_hint">Passenger capacity</string>
+    <string name="bus_status_passenger_capacity_text">70</string>
+    <string name="bus_status_passenger_onboard_hint">Passenger onboard</string>
+    <string name="bus_status_passenger_onboard_text">32</string>
+    <string name="bus_status_btn_mark_as_arrived">MARK AS ARRIVED</string>
+    <string name="bus_status_btn_mark_as_departed">MARK AS DEPARTED</string>
 </resources>

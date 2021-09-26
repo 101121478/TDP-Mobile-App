@@ -9,5 +9,14 @@
         android:id="@+id/loginFragment"
         android:name="com.cos60011.group1.mttransit.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_busStatusFragment"
+            app:destination="@id/busStatusFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/busStatusFragment"
+        android:name="com.cos60011.group1.mttransit.BusStatusFragment"
+        android:label="fragment_bus_status"
+        tools:layout="@layout/fragment_bus_status" />
 </navigation>
