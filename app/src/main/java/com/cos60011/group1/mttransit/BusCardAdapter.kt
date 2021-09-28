@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import org.w3c.dom.Text
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
@@ -15,9 +16,9 @@ class BusCardAdapter(private val busList: List<Bus>) : RecyclerView.Adapter<BusC
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         // Your holder should contain and initialize a member variable
         // for any view that will be set as you render a row
-        val busIdView = itemView.findViewById<TextView>(R.id.bus_card_title)
-        val routeView = itemView.findViewById<TextView>(R.id.current_bus_route)
-        val busArrivalView = itemView.findViewById<TextView>(R.id.current_bus_arrival)
+        val busIdView: TextView = itemView.findViewById<TextView>(R.id.bus_card_title)
+        val routeView: TextView = itemView.findViewById<TextView>(R.id.current_bus_route)
+        val busArrivalView: TextView = itemView.findViewById<TextView>(R.id.current_bus_arrival)
 
     }
 
@@ -37,13 +38,9 @@ class BusCardAdapter(private val busList: List<Bus>) : RecyclerView.Adapter<BusC
         val bus: Bus = busList.get(position)
 
         // Set item views based on your views and data model
-        val busTitle = holder.busIdView
-        val busRoute = holder.routeView
-        val arrivalTime = holder.busArrivalView
-
-        busTitle.text = bus.id
-        busRoute.text = bus.route
-        arrivalTime.text = "Arrived at ${bus.arrival}"
+        holder.busIdView.text = bus.id
+        holder.routeView.text = bus.route
+        holder.busArrivalView.text = "Arrived at ${bus.arrival}"
     }
 
     override fun getItemCount(): Int {

@@ -15,8 +15,8 @@ class BusListAdapter(private val busList: List<Bus>) : RecyclerView.Adapter<BusL
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         // Your holder should contain and initialize a member variable
         // for any view that will be set as you render a row
-        val busIdView = itemView.findViewById<TextView>(R.id.bus_list_title)
-        val busInfoView = itemView.findViewById<TextView>(R.id.bus_list_info)
+        val busIdView: TextView = itemView.findViewById<TextView>(R.id.bus_list_title)
+        val busInfoView: TextView = itemView.findViewById<TextView>(R.id.bus_list_info)
 
     }
 
@@ -36,11 +36,8 @@ class BusListAdapter(private val busList: List<Bus>) : RecyclerView.Adapter<BusL
         val bus: Bus = busList.get(position)
 
         // Set item views based on your views and data model
-        val busTitle = holder.busIdView
-        val busInfo = holder.busInfoView
-
-        busTitle.text = bus.id
-        busInfo.text = "Departed ${bus.location} at ${bus.departure}"
+        holder.busIdView.text = bus.id
+        holder.busInfoView.text = "Departed ${bus.location} at ${bus.departure}"
 
     }
 
