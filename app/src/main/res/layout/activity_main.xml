@@ -8,34 +8,34 @@
 
     <fragment
         android:id="@+id/location_fragment"
+        android:name="com.cos60011.group1.mttransit.LocationFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:name="com.cos60011.group1.mttransit.LocationFragment"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <fragment
         android:id="@+id/current_buses_fragment"
         android:name="com.cos60011.group1.mttransit.BusCardsFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/location_fragment"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/location_fragment" />
 
     <fragment
         android:id="@+id/incoming_buses_fragment"
         android:name="com.cos60011.group1.mttransit.BusListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/current_buses_fragment"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/current_buses_fragment" />
 
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add a bus"
-        app:layout_constraintTop_toBottomOf="@id/incoming_buses_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/incoming_buses_fragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

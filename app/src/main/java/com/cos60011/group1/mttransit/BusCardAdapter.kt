@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import org.w3c.dom.Text
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
-class BusCardAdapter(private val busList: List<Bus>) : RecyclerView.Adapter<BusCardAdapter.ViewHolder>() {
+class BusCardAdapter(private val busList: List<Bus>) :
+    RecyclerView.Adapter<BusCardAdapter.ViewHolder>() {
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access

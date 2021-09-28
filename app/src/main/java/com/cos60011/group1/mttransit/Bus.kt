@@ -1,6 +1,6 @@
 package com.cos60011.group1.mttransit
 
-data class Bus (
+data class Bus(
     val id: String,
     val route: String,
     val location: String,
@@ -8,8 +8,9 @@ data class Bus (
     val passengers: Int,
     val arrival: String,
     val departure: String
-    ) {
+) {
 
+    //Generates test data for recycler view elements
     companion object {
         private var lastbusId = 100
         fun createTestBuses(numBuses: Int): ArrayList<Bus> {
