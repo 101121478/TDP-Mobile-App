@@ -1,5 +1,6 @@
 package com.cos60011.group1.mttransit
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
-class BusListAdapter(private val busList: List<Bus>) :
+class BusListAdapter(
+    private val context: Context,
+    private val busList: List<Bus>) :
     RecyclerView.Adapter<BusListAdapter.ViewHolder>() {
 
     // Provide a direct reference to each of the views within a data item
@@ -16,9 +19,8 @@ class BusListAdapter(private val busList: List<Bus>) :
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         // Your holder should contain and initialize a member variable
         // for any view that will be set as you render a row
-        val busIdView: TextView = itemView.findViewById<TextView>(R.id.bus_list_title)
-        val busInfoView: TextView = itemView.findViewById<TextView>(R.id.bus_list_info)
-
+        val busIdView: TextView = itemView.findViewById(R.id.bus_list_title)
+        val busInfoView: TextView = itemView.findViewById(R.id.bus_list_info)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,11 +36,11 @@ class BusListAdapter(private val busList: List<Bus>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // Get the data model based on position
-        val bus: Bus = busList.get(position)
+        val bus: Bus = busList[position]
 
         // Set item views based on your views and data model
         holder.busIdView.text = bus.id
-        holder.busInfoView.text = "Departed ${bus.location} at ${bus.departure}"
+        holder.busInfoView.text = context.resources.getString(R.string.departure_time_text, bus.location, bus.departure)
 
     }
 

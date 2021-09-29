@@ -4,6 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
+    <!-- Need to refactor ids to be format strings and update adapter -->
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bus_card"
         android:layout_width="wrap_content"

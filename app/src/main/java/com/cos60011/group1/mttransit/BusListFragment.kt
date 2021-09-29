@@ -27,8 +27,7 @@ class BusListFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentBusListBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,7 +40,7 @@ class BusListFragment : Fragment() {
         buses = Bus.createTestBuses(10)
 
         // Create adapter passing in the sample user data
-        val listAdapter = BusListAdapter(buses)
+        val listAdapter = BusListAdapter(requireContext(), buses)
 
         // Attach the adapter to the recyclerview to populate items
         rvList.adapter = listAdapter

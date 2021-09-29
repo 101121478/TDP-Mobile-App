@@ -1,5 +1,6 @@
 package com.cos60011.group1.mttransit
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 // Create the basic adapter extending from RecyclerView.Adapter
 // Note that we specify the custom ViewHolder which gives us access to our views
-class BusCardAdapter(private val busList: List<Bus>) :
+class BusCardAdapter(
+    private val context: Context,
+    private val busList: List<Bus>) :
     RecyclerView.Adapter<BusCardAdapter.ViewHolder>() {
 
     // Provide a direct reference to each of the views within a data item
@@ -16,9 +19,9 @@ class BusCardAdapter(private val busList: List<Bus>) :
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         // Your holder should contain and initialize a member variable
         // for any view that will be set as you render a row
-        val busIdView: TextView = itemView.findViewById<TextView>(R.id.bus_card_title)
-        val routeView: TextView = itemView.findViewById<TextView>(R.id.current_bus_route)
-        val busArrivalView: TextView = itemView.findViewById<TextView>(R.id.current_bus_arrival)
+        val busIdView: TextView = itemView.findViewById(R.id.bus_card_title)
+        val routeView: TextView = itemView.findViewById(R.id.current_bus_route)
+        val busArrivalView: TextView = itemView.findViewById(R.id.current_bus_arrival)
 
     }
 
@@ -35,12 +38,12 @@ class BusCardAdapter(private val busList: List<Bus>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // Get the data model based on position
-        val bus: Bus = busList.get(position)
+        val bus: Bus = busList[position]
 
         // Set item views based on your views and data model
         holder.busIdView.text = bus.id
         holder.routeView.text = bus.route
-        holder.busArrivalView.text = "Arrived at ${bus.arrival}"
+        holder.busArrivalView.text = context.resources.getString(R.string.arrival_time_text, bus.arrival)
     }
 
     override fun getItemCount(): Int {

@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MT Transit</string>
+    <string name="arrival_time_text">Arrived at %1$s</string>
+    <string name="departure_time_text">Departed %1$s at %2$s</string>
+    <string name="add_bus_button">Add a bus</string>
+    <string name="current_buses_header">Current Buses</string>
+    <string name="incoming_buses_header">Incoming Buses</string>
+    <string name="set_location_button_text">Set Location</string>
+
+    <!--Currently test string but will need to refactor into format string to account for individual user's location -->
+    <string name="current_user_location_header">Richmond Station</string>
+
 </resources>
