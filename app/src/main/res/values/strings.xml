@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">MT Transit</string>
+  
+  <!-- Dashboard Strings for multiple fragments -->
     <string name="arrival_time_text">Arrived at %1$s</string>
     <string name="departure_time_text">Departed %1$s at %2$s</string>
     <string name="add_bus_button">Add a bus</string>
@@ -7,7 +9,35 @@
     <string name="incoming_buses_header">Incoming Buses</string>
     <string name="set_location_button_text">Set Location</string>
 
-    <!--Currently test string but will need to refactor into format string to account for individual user's location -->
+    <!-- Location Fragment Test String -->
     <string name="current_user_location_header">Richmond Station</string>
+
+    <!-- Login Fragment Strings -->
+    <string name="login_password_hint">Password</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_btn_text">LOGIN</string>
+  
+    <!-- Bus Status Viewing Fragment Strings -->
+    <string name="bus_status_bus_id_hint">Bus ID</string>
+    <string name="bus_status_bus_id_text">923</string>
+    <string name="bus_status_bus_type_hint">Bus type</string>
+    <string name="bus_status_bus_type_text">Standard</string>
+    <string name="bus_status_route_hint">Route</string>
+    <string name="bus_status_route_text">912 Glenferrie to Flinders (Stopping All Stations)</string>
+    <string name="bus_status_passenger_capacity_hint">Passenger capacity</string>
+    <string name="bus_status_passenger_capacity_text">70</string>
+    <string name="bus_status_passenger_onboard_hint">Passenger onboard</string>
+    <string name="bus_status_passenger_onboard_text">32</string>
+    <string name="bus_status_btn_mark_as_arrived">MARK AS ARRIVED</string>
+    <string name="bus_status_btn_mark_as_departed">MARK AS DEPARTED</string>
+
+    <!-- Bus Data Entry Fragment Strings -->
+    <string name="bus_id_input_placeholder">Bus ID</string>
+    <string name="bus_type_input_placeholder">Bus Type (Standard, etc)</string>
+    <string name="bus_route_input_placeholder">Route</string>
+    <string name="bus_capacity_input_placeholder">Passenger Capacity</string>
+    <string name="bus_passengers_onboard_input_placeholder">Passengers Onboard</string>
+    <string name="submit_button_text">Submit</string>
+    <string name="back_to_dashboard_button_text">Back to Dashboard</string>
 
 </resources>
