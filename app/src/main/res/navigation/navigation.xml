@@ -11,12 +11,29 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_busStatusFragment"
-            app:destination="@id/busStatusFragment" />
+            android:id="@+id/action_loginFragment_to_busBoardFragment"
+            app:destination="@id/busBoardFragment" />
     </fragment>
     <fragment
         android:id="@+id/busStatusFragment"
         android:name="com.cos60011.group1.mttransit.BusStatusFragment"
         android:label="fragment_bus_status"
         tools:layout="@layout/fragment_bus_status" />
+    <fragment
+        android:id="@+id/busEntryFragment"
+        android:name="com.cos60011.group1.mttransit.BusEntryFragment"
+        android:label="fragment_bus_entry"
+        tools:layout="@layout/fragment_bus_entry" />
+    <fragment
+        android:id="@+id/busBoardFragment"
+        android:name="com.cos60011.group1.mttransit.BusBoardFragment"
+        android:label="BusBoardFragment" >
+        <action
+            android:id="@+id/action_busBoardFragment_to_busEntryFragment"
+            app:destination="@id/busEntryFragment" />
+        <action
+            android:id="@+id/action_busBoardFragment_to_busStatusFragment"
+            app:destination="@id/busStatusFragment" />
+    </fragment>
+
 </navigation>
