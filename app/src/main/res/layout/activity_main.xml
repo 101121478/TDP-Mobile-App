@@ -37,4 +37,4 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout="@layout/fragment_bus_entry" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout> -->
