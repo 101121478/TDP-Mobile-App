@@ -12,7 +12,8 @@
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_busBoardFragment"
-            app:destination="@id/busBoardFragment" />
+            app:destination="@id/busBoardFragment"
+            app:popUpTo="@id/busBoardFragment" />
     </fragment>
     <fragment
         android:id="@+id/busStatusFragment"
@@ -39,12 +40,6 @@
         android:id="@+id/accountFragment"
         android:name="com.cos60011.group1.mttransit.AccountFragment"
         android:label="fragment_account"
-        tools:layout="@layout/fragment_account" >
-        <action
-            android:id="@+id/action_accountFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_account" />
 
 </navigation>
