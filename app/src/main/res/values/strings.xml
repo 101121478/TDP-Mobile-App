@@ -39,7 +39,10 @@
     <string name="bus_passengers_onboard_input_placeholder">Passengers Onboard</string>
     <string name="submit_button_text">Submit</string>
     <string name="back_to_dashboard_button_text">Back to Dashboard</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Account Fragment Strings -->
+    <string name="logout_btn_text">LOGOUT</string>
+    <string name="account_name_text">Account</string>
+    <string name="account_email_text">example@email.com</string>
 
 </resources>
