@@ -3,12 +3,16 @@ package com.cos60011.group1.mttransit.firestore
 import android.util.Log
 import android.util.TimeUtils
 import com.google.firebase.firestore.FirebaseFirestore
+
 import java.lang.Exception
 
-abstract class FirestoreClass {
+
+
+class FirestoreClass {
 
     private val projectFirestore = FirebaseFirestore.getInstance()
     private lateinit var exception: Exception
+
 
 
 
