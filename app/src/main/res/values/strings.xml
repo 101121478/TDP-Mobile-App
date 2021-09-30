@@ -45,4 +45,11 @@
     <string name="account_name_text">Account</string>
     <string name="account_email_text">example@email.com</string>
 
+    <!-- Fragment Title Strings -->
+    <string name="login_fragment_title_label">Log In</string>
+    <string name="bus_board_fragment_title_label">Bus Dashboard</string>
+    <string name="bus_entry_fragment_title_label">Add new bus</string>
+    <string name="bus_status_fragment_title_label">Bus Status</string>
+    <string name="account_fragment_title_label">Account Detail</string>
+
 </resources>

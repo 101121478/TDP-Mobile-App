@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.cos60011.group1.mttransit.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
+        android:label="@string/login_fragment_title_label"
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_busBoardFragment"
             app:destination="@id/busBoardFragment"
@@ -19,17 +19,17 @@
     <fragment
         android:id="@+id/busStatusFragment"
         android:name="com.cos60011.group1.mttransit.BusStatusFragment"
-        android:label="fragment_bus_status"
+        android:label="@string/bus_status_fragment_title_label"
         tools:layout="@layout/fragment_bus_status" />
     <fragment
         android:id="@+id/busEntryFragment"
         android:name="com.cos60011.group1.mttransit.BusEntryFragment"
-        android:label="fragment_bus_entry"
+        android:label="@string/bus_entry_fragment_title_label"
         tools:layout="@layout/fragment_bus_entry" />
     <fragment
         android:id="@+id/busBoardFragment"
         android:name="com.cos60011.group1.mttransit.BusBoardFragment"
-        android:label="BusBoardFragment" >
+        android:label="@string/bus_board_fragment_title_label">
         <action
             android:id="@+id/action_busBoardFragment_to_busEntryFragment"
             app:destination="@id/busEntryFragment" />
@@ -40,8 +40,8 @@
     <fragment
         android:id="@+id/accountFragment"
         android:name="com.cos60011.group1.mttransit.AccountFragment"
-        android:label="fragment_account"
-        tools:layout="@layout/fragment_account" >
+        android:label="@string/account_fragment_title_label"
+        tools:layout="@layout/fragment_account">
         <action
             android:id="@+id/action_accountFragment_to_loginFragment3"
             app:destination="@id/loginFragment"

@@ -21,9 +21,9 @@ class LoginFragment : Fragment() {
         binding.buttonLogin.setOnClickListener { view: View ->
             view.findNavController().navigate(R.id.action_loginFragment_to_busBoardFragment)
         }
+
         return binding.root
     }
-
 }
 
 
