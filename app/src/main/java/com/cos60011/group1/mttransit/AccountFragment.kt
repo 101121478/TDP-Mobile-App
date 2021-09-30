@@ -7,24 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
-import com.cos60011.group1.mttransit.databinding.FragmentLoginBinding
+import com.cos60011.group1.mttransit.databinding.FragmentAccountBinding
 
-
-class LoginFragment : Fragment() {
+class AccountFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding: FragmentLoginBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
 
-        binding.buttonLogin.setOnClickListener { view: View ->
-            view.findNavController().navigate(R.id.action_loginFragment_to_busBoardFragment)
+        val binding: FragmentAccountBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_account, container, false)
+
+        binding.buttonLogout.setOnClickListener { view: View ->
+            view.findNavController().navigate(R.id.action_accountFragment_to_loginFragment3)
         }
-
+        
         return binding.root
     }
+
 }
-
-
-
