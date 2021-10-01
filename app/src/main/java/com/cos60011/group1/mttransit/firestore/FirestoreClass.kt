@@ -2,6 +2,7 @@ package com.cos60011.group1.mttransit.firestore
 
 import android.util.Log
 import android.util.TimeUtils
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 import java.lang.Exception
@@ -112,6 +113,37 @@ class FirestoreClass {
                 "count.numberOfPassenger" to passengerFinalCount,
                 "count.station" to stationID
             ))
+    }
+
+    fun createNewBus(busID: String, busType: String, route: String, capacity: Int, passengerCount: Int){
+        val busRoutes = hashMapOf(
+            "Sandringham To CBD" to "/routes/sandringhamToCBD",
+            "Frankston From CBD" to "/routes/frankstonFromCBD",
+            "Frankston To CBD" to "/routes/frankstonToCBD",
+            "Sandringham From CBD" to "/routes/sandringhamFromCBD"
+        )
+        val routeRef: DocumentReference = projectFirestore.document(busRoutes.get(route)!!)     //Create a document reference of the bus route
+        // Hashmap of bus info that will be stored in Firestore
+        val bus = hashMapOf(
+            "arrivalTime" to emptyMap<String, String>(),
+            "busLocation" to emptyMap<String, String>(),
+            "capacity" to capacity,
+            "departureTime" to emptyMap<String, String>(),
+            "passengerCount" to emptyMap<String, Int>(),
+            "routeID" to routeRef
+        )
+
+        println("BUS ID: " + busID)
+        println("BUS Type: " + busType)
+        println("BUS ROUTE: " + busRoutes.get(route))
+        println("BUS CAPACITY: " + capacity)
+        println("PASSENGERS ONBOARD: " + passengerCount)
+
+        //Store the new bus as a document in the buses collection in Firestore project
+        projectFirestore.collection("buses").document(busID)
+            .set(bus)
+            .addOnSuccessListener { println("DocumentSnapshot successfully written!") }
+            .addOnFailureListener { e -> Log.w("Error writing document", e) }
     }
 
 
