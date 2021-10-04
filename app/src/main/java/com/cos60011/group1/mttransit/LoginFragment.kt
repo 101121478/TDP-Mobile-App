@@ -1,10 +1,12 @@
 package com.cos60011.group1.mttransit
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
@@ -29,6 +31,7 @@ class LoginFragment : Fragment() {
 
         val emailInput = binding.textInputEmail
         val passwordInput = binding.textInputPassword
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         binding.buttonLogin.setOnClickListener { view: View ->
             emailInput.error = ""
@@ -43,10 +46,10 @@ class LoginFragment : Fragment() {
             } else if (passwordText.isEmpty()) {
                 passwordInput.error = "The password field is required."
             } else {
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
                 signIn(emailText.toString(), passwordText.toString())
             }
         }
-
         return binding.root
     }
 
@@ -58,12 +61,6 @@ class LoginFragment : Fragment() {
         // [START sign_in_with_email]
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity()) { task ->
             if (task.isSuccessful) {
-                // Sign in success, update UI with the signed-in user's information
-                val user = auth.currentUser
-                Toast.makeText(
-                    context, "Authentication succeed.",
-                    Toast.LENGTH_SHORT
-                ).show()
                 Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_busBoardFragment)
             } else {
                 // If sign in fails, display a message to the user.
