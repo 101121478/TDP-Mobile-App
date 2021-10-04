@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.cos60011.group1.mttransit.AccountFragment">
+    tools:context="com.cos60011.group1.mttransit.screens.account.AccountFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/login_Constraint"

@@ -1,4 +1,4 @@
-package com.cos60011.group1.mttransit
+package com.cos60011.group1.mttransit.screens.login
 
 import android.content.Context
 import android.os.Bundle
@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
+import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.databinding.FragmentLoginBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
@@ -24,7 +24,8 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding: FragmentLoginBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
+        val binding: FragmentLoginBinding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_login, container, false)
 
         // Initialize Firebase Auth
         auth = Firebase.auth
