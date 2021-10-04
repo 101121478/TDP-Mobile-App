@@ -9,47 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:id="@+id/text_input_email"-->
-<!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="32dp"-->
-<!--            android:layout_marginTop="64dp"-->
-<!--            android:layout_marginEnd="32dp"-->
-<!--            android:hint="@string/login_email_hint"-->
-<!--            app:endIconMode="clear_text"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
-
-<!--            <com.google.android.material.textfield.TextInputEditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content" />-->
-
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
-
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:id="@+id/text_input_password"-->
-<!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="32dp"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:layout_marginEnd="32dp"-->
-<!--            android:hint="@string/login_password_hint"-->
-<!--            app:endIconMode="password_toggle"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/text_input_email">-->
-
-<!--            <com.google.android.material.textfield.TextInputEditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:inputType="textPassword" />-->
-
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
-
         <TextView
             android:id="@+id/text_account_name"
             android:layout_width="0dp"
@@ -72,7 +31,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:text="@string/account_email_text"
+            android:text=""
             android:textColor="@color/purple_500"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,7 +48,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_account_email" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

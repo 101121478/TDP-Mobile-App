@@ -50,8 +50,7 @@
         <action
             android:id="@+id/action_accountFragment_to_busBoardFragment"
             app:destination="@id/busBoardFragment"
-            app:popUpTo="@id/accountFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="false" />
     </fragment>
 
 </navigation>

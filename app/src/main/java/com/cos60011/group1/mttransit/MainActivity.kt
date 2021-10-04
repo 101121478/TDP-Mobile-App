@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         // check if user has logged in and navigate to bus dashboard accordingly
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            navController.navigate(R.id.busBoardFragment)
+            navController.navigate(R.id.action_loginFragment_to_busBoardFragment)
         }
     }
 
