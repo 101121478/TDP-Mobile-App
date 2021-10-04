@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import com.cos60011.group1.mttransit.databinding.FragmentLoginBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -25,17 +26,32 @@ class LoginFragment : Fragment() {
 
         // Initialize Firebase Auth
         auth = Firebase.auth
-        val email = binding.textInputEmail.editText
-        val password = binding.textInputPassword.editText
+
+        val emailInput = binding.textInputEmail
+        val passwordInput = binding.textInputPassword
 
         binding.buttonLogin.setOnClickListener { view: View ->
-            // TODO Add input Validation
-            val emailInput = email?.text.toString()
-            val passwordInput = password?.text.toString()
-            signIn(emailInput, passwordInput)
+            emailInput.error = ""
+            passwordInput.error = ""
+            val emailText = emailInput.editText!!.text
+            val passwordText = passwordInput.editText!!.text
+
+            if (emailText.isEmpty()) {
+                emailInput.error = "The email field is required."
+            } else if (!isValidEmail(emailText.toString())) {
+                emailInput.error = "Please enter a valid email address."
+            } else if (passwordText.isEmpty()) {
+                passwordInput.error = "The password field is required."
+            } else {
+                signIn(emailText.toString(), passwordText.toString())
+            }
         }
 
         return binding.root
+    }
+
+    private fun isValidEmail(email: CharSequence): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     private fun signIn(email: String, password: String) {
@@ -51,10 +67,11 @@ class LoginFragment : Fragment() {
                 Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_busBoardFragment)
             } else {
                 // If sign in fails, display a message to the user.
-                Toast.makeText(
-                    context, "Authentication failed. $email",
-                    Toast.LENGTH_SHORT
-                ).show()
+                MaterialAlertDialogBuilder(requireContext()).setTitle("Invalid Account").
+                setMessage("Incorrect email or password").
+                setPositiveButton("OK") {
+                    dialog, which -> dialog.dismiss()
+                }.show()
             }
         }
     }
