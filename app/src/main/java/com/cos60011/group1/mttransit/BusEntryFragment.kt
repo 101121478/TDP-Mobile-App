@@ -32,7 +32,11 @@ class BusEntryFragment : Fragment() {
             val busCapacity = Integer.parseInt(binding.passengerCapacityInput.text.toString())
             val passengersOnboard = Integer.parseInt(binding.passengersOnboardInput.text.toString())
 
+            val testTextView = binding.testTextView
+
+
             firestore.createNewBus(busID, busType, route, busCapacity, passengersOnboard)
+            firestore.getBusDocument(busID)
         }
         return binding.root
     }
