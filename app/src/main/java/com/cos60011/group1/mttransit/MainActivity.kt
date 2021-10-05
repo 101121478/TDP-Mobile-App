@@ -2,7 +2,9 @@ package com.cos60011.group1.mttransit
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -38,10 +40,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        // check if user has logged in and navigate to bus dashboard accordingly
+        // check current fragment
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            navController.navigate(R.id.action_loginFragment_to_busBoardFragment)
+            try {
+                navController.navigate(R.id.action_loginFragment_to_busBoardFragment)
+            } catch (e: IllegalArgumentException) {
+            }
         }
     }
 

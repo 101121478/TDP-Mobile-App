@@ -38,6 +38,7 @@ class BusStatusFragment : Fragment() {
 
         binding.lifecycleOwner = this.viewLifecycleOwner
 
+        // show UI after get data from server
         viewModel.busID.observe(viewLifecycleOwner, { busID ->
             if (busID != null) {
                 hideProgressIndicator()
