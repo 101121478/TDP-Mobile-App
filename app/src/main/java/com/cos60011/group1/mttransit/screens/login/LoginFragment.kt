@@ -12,6 +12,7 @@ import androidx.navigation.Navigation
 import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.databinding.FragmentLoginBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -63,6 +64,7 @@ class LoginFragment : Fragment() {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity()) { task ->
             if (task.isSuccessful) {
                 Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_busBoardFragment)
+                Snackbar.make(requireView(), "Welcome to MT system", Snackbar.LENGTH_LONG).show()
             } else {
                 // If sign in fails, display a message to the user.
                 MaterialAlertDialogBuilder(requireContext()).setTitle("Invalid Account").

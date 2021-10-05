@@ -4,15 +4,21 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.databinding.FragmentBusStatusBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import java.lang.Exception
 
 class BusStatusFragment : Fragment() {
     private lateinit var binding: FragmentBusStatusBinding
@@ -45,6 +51,19 @@ class BusStatusFragment : Fragment() {
             }
         })
 
+        // handle swipe refresh
+        binding.busStatusSwipeRefresh.setOnRefreshListener {
+            viewModel.getBusDocument()
+            viewModel.isUpdate.observe(viewLifecycleOwner, {isUpdate ->
+                if (isUpdate) {
+                    binding.busStatusSwipeRefresh.isRefreshing = false
+                    Toast.makeText(requireContext(), "Success update", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(requireContext(), "Fail to update, please try again", Toast.LENGTH_LONG).show()
+                }
+            })
+        }
+
         // handle mark as arrive button
         binding.buttonBusStatusArrive.setOnClickListener {
             viewModel.markArrive()
@@ -69,11 +88,10 @@ class BusStatusFragment : Fragment() {
         // handle mark as arrive success and failure
         viewModel.isArrive.observe(viewLifecycleOwner, { isArrive ->
             run {
-                if (isArrive == true) {
+                if (isArrive) {
                     view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
-                    val title = "Success"
-                    val message = "The Bus ${viewModel.busID.value} was marked arrived."
-                    showDialog(title, message)
+                    val message = "The Bus ${viewModel.busID.value} was marked as arrived."
+                    Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
                 } else {
                     val title = "Error"
                     val message = "Failure to mark bus ${viewModel.busID.value} as arrived,\n" +
@@ -86,11 +104,10 @@ class BusStatusFragment : Fragment() {
         // handle mark as departure success and failure
         viewModel.isDeparture.observe(viewLifecycleOwner, { isDeparture ->
             run {
-                if (isDeparture == true) {
+                if (isDeparture) {
                     view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
-                    val title = "Success"
                     val message = "The Bus ${viewModel.busID.value} was marked as departure."
-                    showDialog(title, message)
+                    Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
                 } else {
                     val title = "Error"
                     val message = "Failure to mark bus ${viewModel.busID.value} as departure,\n" +

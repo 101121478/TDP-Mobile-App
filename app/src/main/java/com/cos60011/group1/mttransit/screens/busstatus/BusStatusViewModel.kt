@@ -32,6 +32,10 @@ class BusStatusViewModel(document: String) : ViewModel() {
     val passengerOnBoard: LiveData<String>
         get() = _passengerOnBoard
 
+    private val _isUpdate = MutableLiveData<Boolean>()
+    val isUpdate: LiveData<Boolean>
+        get() = _isUpdate
+
     private val _isArrive = MutableLiveData<Boolean>()
     val isArrive: LiveData<Boolean>
         get() = _isArrive
@@ -45,9 +49,8 @@ class BusStatusViewModel(document: String) : ViewModel() {
         getBusDocument()
     }
 
-    private fun getBusDocument() {
+    fun getBusDocument() {
         val source = Source.SERVER
-
         docRef.get(source).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val document = task.result
@@ -57,8 +60,9 @@ class BusStatusViewModel(document: String) : ViewModel() {
                 _passengerCapacity.value = document?.get("capacity").toString()
                 _passengerOnBoard.value = document?.get("passengerCount").toString()
                 _busType.value = document?.get("busType").toString()
+                _isUpdate.value = true
             } else {
-                // TODO Handel Failure
+                _isUpdate.value = false
             }
         }
     }
