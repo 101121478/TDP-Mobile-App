@@ -5,9 +5,11 @@ import android.util.TimeUtils
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.ktx.Firebase
 
 import java.lang.Exception
-
+import java.util.*
 
 
 class FirestoreClass {
@@ -82,21 +84,44 @@ class FirestoreClass {
         return routeDocument.toString()
     }
 
-   fun setArrivalTime(busID: String, stationID: String, arrivalTime: Int) {
+   fun setArrivalTime(busID: String, stationID: String) {
 
        val busID = busID
        val stationID = stationID
-       val arrivalTimeMillis = System.currentTimeMillis();
 
-       val timestamp = Timestamp(arrivalTimeMillis, 0);
-       println("TIMESTAMP: " + timestamp)
+       println("TIMESTAMP: " + Timestamp(Date()).toDate())
 
        projectFirestore.collection("buses").document(busID)
            .update(mapOf(
-               "arrivalTime.station" to stationID,
-               "arrivalTime.time" to arrivalTime
+               //"arrivalTime.station" to stationID,
+               "arrivalTime.time" to Timestamp(Date())
            ))
+
    }
+
+    fun testGetRange()
+    {
+
+        println("QUERY START")
+        projectFirestore.collection("buses")
+            //.whereEqualTo("capacity", 46)
+            .whereLessThan("arrivalTime.time", Timestamp(Date()))
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot != null) {
+                    querySnapshot.forEach() { doc ->
+                        println("DATA FOUND" + doc)
+                    }
+                } else {
+                    println("No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with, ", exception)
+
+            }
+        println("QUERY ENDED")
+    }
 
     fun setDepartureTime(busID: String, stationID: String, departureTime: TimeUtils) {
 
