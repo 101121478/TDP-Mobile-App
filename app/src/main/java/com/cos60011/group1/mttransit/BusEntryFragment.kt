@@ -16,8 +16,6 @@ import com.cos60011.group1.mttransit.firestore.FirestoreClass
 
 class BusEntryFragment : Fragment() {
 
-    private val projectFirestore = FirebaseFirestore.getInstance()
-    private lateinit var exception: Exception
     private val firestore = FirestoreClass()
 
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +34,6 @@ class BusEntryFragment : Fragment() {
 
 
             firestore.createNewBus(busID, busType, route, busCapacity, passengersOnboard)
-            firestore.getBusDocument(busID)
         }
         return binding.root
     }
