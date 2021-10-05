@@ -112,18 +112,18 @@ class BusStatusFragment : Fragment() {
     }
 
     private fun showProgressIndicator() {
-        binding.busStatusBusIdLabel.visibility = View.GONE
-        binding.busStatusBusIdText.visibility = View.GONE
-        binding.busStatusBusTypeLabel.visibility = View.GONE
-        binding.busStatusBusTypeText.visibility = View.GONE
-        binding.busStatusBusRouteLabel.visibility = View.GONE
-        binding.busStatusBusRouteText.visibility = View.GONE
-        binding.busStatusPassengerCapacityLabel.visibility = View.GONE
-        binding.busStatusPassengerCapacityText.visibility = View.GONE
-        binding.busStatusPassengerOnboardLabel.visibility = View.GONE
-        binding.textInputBusStatusPassengerOnboard.visibility = View.GONE
-        binding.buttonBusStatusArrive.visibility = View.GONE
-        binding.buttonBusStatusDepart.visibility = View.GONE
+        binding.busStatusBusIdLabel.visibility = View.INVISIBLE
+        binding.busStatusBusIdText.visibility = View.INVISIBLE
+        binding.busStatusBusTypeLabel.visibility = View.INVISIBLE
+        binding.busStatusBusTypeText.visibility = View.INVISIBLE
+        binding.busStatusBusRouteLabel.visibility = View.INVISIBLE
+        binding.busStatusBusRouteText.visibility = View.INVISIBLE
+        binding.busStatusPassengerCapacityLabel.visibility = View.INVISIBLE
+        binding.busStatusPassengerCapacityText.visibility = View.INVISIBLE
+        binding.busStatusPassengerOnboardLabel.visibility = View.INVISIBLE
+        binding.textInputBusStatusPassengerOnboard.visibility = View.INVISIBLE
+        binding.buttonBusStatusArrive.visibility = View.INVISIBLE
+        binding.buttonBusStatusDepart.visibility = View.INVISIBLE
     }
 
     private fun hideProgressIndicator() {
