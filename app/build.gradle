@@ -31,6 +31,9 @@ android {
     }
 
     compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled = true
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -83,4 +86,17 @@ dependencies {
     // For example, declare the dependencies for Firebase Authentication and Cloud Firestore
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    //Firebase UI dependency for FirestoreRecyclerAdapter
+    implementation 'com.firebaseui:firebase-ui-firestore:8.0.0'
+
+    //Need this for Fragment Result API but currently not used in project
+    implementation("androidx.fragment:fragment-ktx:1.3.6")
+
+    /*
+    Dependency for using various time-related Java libraries since Kotlin apparently does not
+    have implementations of its own. Only necessary because our minimumSDK is < 26; if it was 26
+    support would be provided by Gradle
+     */
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }

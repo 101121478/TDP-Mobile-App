@@ -8,24 +8,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cos60011.group1.mttransit.databinding.FragmentBusCardsBinding
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class BusCardsFragment : Fragment() {
     private var _binding: FragmentBusCardsBinding? = null
     private val binding get() = _binding!!
+    private val db = Firebase.firestore
 
-    //Declare static references to views here
     private lateinit var rvCards: RecyclerView
-    private lateinit var buses: ArrayList<Bus>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var cardAdapter: BusCardAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentBusCardsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -33,25 +31,42 @@ class BusCardsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //Query Firestore and get results
+        // TODO: Move this to FirestoreClass? Still need to figure out how to get location from LocationFragment
+        var testLocation = "Richmond Station"
+        var query = db.collection("testBuses").whereEqualTo("location", testLocation)
+        val options = FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()
+
         //bind views you want to change here
         rvCards = binding.busRecycler
 
-        // Initialize buses
-        buses = Bus.createTestBuses(10)
-
-        // Create adapter passing in the sample user data
-        val cardAdapter = BusCardAdapter(requireContext(), buses)
-
-        // Attach the adapter to the recyclerview to populate items
+        // Create adapter passing in the FirestoreRecyclerOptions object and attach it to recyclerview
+        cardAdapter = BusCardAdapter(requireContext(),options)
         rvCards.adapter = cardAdapter
 
         // Set layout manager to position the items
         rvCards.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    }
 
+    override fun onStart() {
+        super.onStart()
+        cardAdapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (cardAdapter != null) {
+            cardAdapter.stopListening()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val TAG = "BUS CARDS FRAGMENT"
     }
 }

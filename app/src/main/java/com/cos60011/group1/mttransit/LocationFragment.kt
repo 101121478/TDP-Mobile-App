@@ -1,8 +1,6 @@
 package com.cos60011.group1.mttransit
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,40 +34,38 @@ class LocationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         //bind views you want to change here
         currentStation = binding.userLocation
 
         binding.setLocationButton.setOnClickListener { view: View ->
             view.findNavController().navigate(R.id.action_busBoardFragment_to_chooseStationFragment)
         }
+
         //sets user location
-        //currentStation.text = context?.resources?.getString(R.string.current_user_location_header)
+        currentStation.text = context?.resources?.getString(R.string.current_user_location_header)
+        //TODO: Override default location with user selection. Figure out how to persist it throughout navigation since we do not have a User collection.
 
-        val docRef = db.collection("railwayStations").document("armadale")
-        docRef.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-                return@addSnapshotListener
-            }
+        /*
+        Testing retrieval of data from Firestore with addOnSuccessListener.
+        Doesn't need to be addSnapshotListener because we don't really need to get the location in real-time as it is set by the user
 
-            if (snapshot != null && snapshot.exists()) {
-                currentStation.text = snapshot.getString("name")
-                Log.d(TAG, "Current data: ${snapshot.data}")
-            } else {
-                Log.d(TAG, "Current data: null")
+        db.collection("railwayStations").document("armadale").get().addOnSuccessListener {
+                document ->
+            if (document != null){
+                currentStation.text = document.getString("name")
             }
         }
-//        db.collection("railwayStations").document("armadale").get().addOnSuccessListener {
-//                document ->
-//            if (document != null){
-//                currentStation.text = document.getString("name")
-//            }
-//        }
+         */
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
+    companion object {
+        private const val TAG = "LOCATION FRAGMENT"
+    }
 }

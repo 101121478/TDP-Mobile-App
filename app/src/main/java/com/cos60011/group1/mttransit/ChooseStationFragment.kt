@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import com.cos60011.group1.mttransit.databinding.FragmentChooseStationBinding
+import com.google.firebase.Timestamp
 
 class ChooseStationFragment : Fragment() {
     private var _binding: FragmentChooseStationBinding? = null
@@ -27,7 +29,7 @@ class ChooseStationFragment : Fragment() {
 
         val materialSpinner: AutoCompleteTextView = binding.stationOptions
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
+        // Create a test ArrayAdapter using the string array and a default spinner layout
         val materialSpinnerAdapter =  ArrayAdapter.createFromResource(
             requireContext(),
             R.array.test_stations_array,
@@ -35,6 +37,11 @@ class ChooseStationFragment : Fragment() {
         )
         materialSpinner.setAdapter(materialSpinnerAdapter)
 
+        //TODO: Create adapter to get list of stations for Set Station dropdown
+
+        //Experimenting with time here
+        val timeTest: TextView = binding.dateTimeTest
+        val testVar = Timestamp.now().toDate()
+        timeTest.text = testVar.toString()
     }
 }
-
