@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cos60011.group1.mttransit.databinding.FragmentBusCardsBinding
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -35,7 +36,8 @@ class BusCardsFragment : Fragment() {
         // TODO: Move this to FirestoreClass? Still need to figure out how to get location from LocationFragment
         var testLocation = "Richmond Station"
         var query = db.collection("testBuses").whereEqualTo("location", testLocation)
-        val options = FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()
+        var subQuery = query.whereLessThan("lastUpdated", Timestamp.now())
+        val options = FirestoreRecyclerOptions.Builder<Bus>().setQuery(subQuery, Bus::class.java).build()
 
         //bind views you want to change here
         rvCards = binding.busRecycler
