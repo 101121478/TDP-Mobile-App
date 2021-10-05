@@ -5,7 +5,7 @@
     tools:context="com.cos60011.group1.mttransit.screens.account.AccountFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/login_Constraint"
+        android:id="@+id/account_Constraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

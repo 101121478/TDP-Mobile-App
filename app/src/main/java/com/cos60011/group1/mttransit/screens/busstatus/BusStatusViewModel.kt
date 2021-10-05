@@ -3,11 +3,14 @@ package com.cos60011.group1.mttransit.screens.busstatus
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 
-class BusStatusViewModel(documentRef: String) : ViewModel() {
+class BusStatusViewModel(document: String) : ViewModel() {
     private val db = FirebaseFirestore.getInstance()
+    private val docRef: DocumentReference
 
     private val _busID = MutableLiveData<String>()
     val busID: LiveData<String>
@@ -29,14 +32,17 @@ class BusStatusViewModel(documentRef: String) : ViewModel() {
     val passengerOnBoard: LiveData<String>
         get() = _passengerOnBoard
 
+    private val _isUpdate = MutableLiveData<Boolean>()
+    val isUpdate: LiveData<Boolean>
+        get() = _isUpdate
+
     init {
-        getBusDocument(documentRef)
+        docRef = db.collection("test_bus_status_view").document(document)
+        getBusDocument()
     }
 
-    private fun getBusDocument(documentRef: String) {
-        val docRef = db.collection("test_bus_status_view").document(documentRef)
-
-        val source = Source.DEFAULT
+    private fun getBusDocument() {
+        val source = Source.SERVER
 
         docRef.get(source).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -51,5 +57,12 @@ class BusStatusViewModel(documentRef: String) : ViewModel() {
                 // TODO Handel Failure
             }
         }
+    }
+
+    fun updateDocument() {
+        docRef
+            .update("arriveTime", Timestamp.now())
+            .addOnSuccessListener { _isUpdate.value = true }
+            .addOnFailureListener { _isUpdate.value = false }
     }
 }

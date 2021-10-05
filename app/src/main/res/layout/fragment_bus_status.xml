@@ -11,9 +11,19 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/login_Constraint"
+        android:id="@+id/bus_status_Constraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_circular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/bus_status_bus_id_label"
@@ -165,6 +175,7 @@
             app:layout_constraintTop_toBottomOf="@+id/bus_status_passenger_onboard_label">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{String.valueOf(busStatusViewModel.passengerOnBoard)}"
