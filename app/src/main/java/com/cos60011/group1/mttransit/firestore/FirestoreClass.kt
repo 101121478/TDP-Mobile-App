@@ -2,6 +2,7 @@ package com.cos60011.group1.mttransit.firestore
 
 import android.util.Log
 import android.util.TimeUtils
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -25,6 +26,8 @@ class FirestoreClass {
             .addOnSuccessListener { busDocument ->
                 if (busDocument != null) {
                     Log.d(Companion.TAG, "DocumentSnapshot data: ${busDocument.data}")
+                    println(busDocument.get("capacity").toString())
+
                 } else {
                     Log.d(Companion.TAG, "No such document")
                 }
@@ -33,6 +36,8 @@ class FirestoreClass {
                 Log.d(TAG, "get failed with, ", exception)
 
             }
+
+
 
         return busDocument.toString()
     }
@@ -77,11 +82,14 @@ class FirestoreClass {
         return routeDocument.toString()
     }
 
-   fun setArrivalTime(busID: String, stationID: String, arrivalTime: TimeUtils) {
+   fun setArrivalTime(busID: String, stationID: String, arrivalTime: Int) {
 
        val busID = busID
        val stationID = stationID
-       val arrivalTime = arrivalTime
+       val arrivalTimeMillis = System.currentTimeMillis();
+
+       val timestamp = Timestamp(arrivalTimeMillis, 0);
+       println("TIMESTAMP: " + timestamp)
 
        projectFirestore.collection("buses").document(busID)
            .update(mapOf(
