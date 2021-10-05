@@ -1,14 +1,14 @@
 package com.cos60011.group1.mttransit.screens.busstatus
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.databinding.FragmentBusStatusBinding
@@ -30,6 +30,7 @@ class BusStatusFragment : Fragment() {
         showProgressIndicator()
 
         // Initialize viewModel
+        // TODO GET bus document reference of selected bus from previous screen
         viewModelFactory = BusStatusViewModelFactory("sample_bus")
         viewModel = ViewModelProvider(this, viewModelFactory).get(BusStatusViewModel::class.java)
 
@@ -44,31 +45,69 @@ class BusStatusFragment : Fragment() {
         })
 
         // handle mark as arrive button
-        binding.buttonBusStatusArrive.setOnClickListener { view: View ->
-            viewModel.updateDocument()
+        binding.buttonBusStatusArrive.setOnClickListener {
+            viewModel.markArrive()
         }
 
-        // handle update success and failure
-        viewModel.isUpdate.observe(viewLifecycleOwner, { isUpdate ->
+        val passengerOnboard = binding.textInputBusStatusPassengerOnboard
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        // handle mark as departure button
+        binding.buttonBusStatusDepart.setOnClickListener {
+            passengerOnboard.error = ""
+            val onboard = passengerOnboard.editText!!.text
+
+            if (onboard.isEmpty()) {
+                passengerOnboard.error = "The passenger onboard field is required."
+            } else {
+                imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+                viewModel.markDeparture(onboard.toString())
+            }
+        }
+
+        // handle mark as arrive success and failure
+        viewModel.isArrive.observe(viewLifecycleOwner, { isArrive ->
             run {
-                if (isUpdate == true) {
+                if (isArrive == true) {
                     view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
-                    MaterialAlertDialogBuilder(requireContext()).setTitle("Success update")
-                        .setMessage("The Bus ${viewModel.busID.value} was marked arrived.")
-                        .setPositiveButton("OK",) { dialog, which ->
-                            dialog.dismiss()
-                        }.show()
+                    val title = "Success"
+                    val message = "The Bus ${viewModel.busID.value} was marked arrived."
+                    showDialog(title, message)
                 } else {
-                    MaterialAlertDialogBuilder(requireContext()).setTitle("Update error")
-                        .setMessage("Failure to update bus ${viewModel.busID.value} as arrived,\nplease try again.")
-                        .setPositiveButton("OK",) { dialog, which ->
-                            dialog.dismiss()
-                        }.show()
+                    val title = "Error"
+                    val message = "Failure to mark bus ${viewModel.busID.value} as arrived,\n" +
+                            "please try again."
+                    showDialog(title, message)
+                }
+            }
+        })
+
+        // handle mark as departure success and failure
+        viewModel.isDeparture.observe(viewLifecycleOwner, { isDeparture ->
+            run {
+                if (isDeparture == true) {
+                    view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
+                    val title = "Success"
+                    val message = "The Bus ${viewModel.busID.value} was marked as departure."
+                    showDialog(title, message)
+                } else {
+                    val title = "Error"
+                    val message = "Failure to mark bus ${viewModel.busID.value} as departure,\n" +
+                            "please try again."
+                    showDialog(title, message)
                 }
             }
         })
 
         return binding.root
+    }
+
+    private fun showDialog(title: String, message: String) {
+        MaterialAlertDialogBuilder(requireContext()).setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("OK",) { dialog, which ->
+                dialog.dismiss()
+            }.show()
     }
 
     private fun showProgressIndicator() {

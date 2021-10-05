@@ -32,9 +32,13 @@ class BusStatusViewModel(document: String) : ViewModel() {
     val passengerOnBoard: LiveData<String>
         get() = _passengerOnBoard
 
-    private val _isUpdate = MutableLiveData<Boolean>()
-    val isUpdate: LiveData<Boolean>
-        get() = _isUpdate
+    private val _isArrive = MutableLiveData<Boolean>()
+    val isArrive: LiveData<Boolean>
+        get() = _isArrive
+
+    private val _isDeparture = MutableLiveData<Boolean>()
+    val isDeparture: LiveData<Boolean>
+        get() = _isDeparture
 
     init {
         docRef = db.collection("test_bus_status_view").document(document)
@@ -59,10 +63,17 @@ class BusStatusViewModel(document: String) : ViewModel() {
         }
     }
 
-    fun updateDocument() {
+    fun markArrive() {
         docRef
             .update("arriveTime", Timestamp.now())
-            .addOnSuccessListener { _isUpdate.value = true }
-            .addOnFailureListener { _isUpdate.value = false }
+            .addOnSuccessListener { _isArrive.value = true }
+            .addOnFailureListener { _isArrive.value = false }
+    }
+
+    fun markDeparture(onboard: String) {
+        docRef
+            .update("departureTime", Timestamp.now(), "passengerCount", onboard)
+            .addOnSuccessListener { _isDeparture.value = true }
+            .addOnFailureListener { _isDeparture.value = false }
     }
 }
