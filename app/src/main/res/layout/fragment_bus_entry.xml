@@ -34,21 +34,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/bus_type_input_placeholder" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/bus_route_input_layout"
+    <Spinner
+        android:id="@+id/route_selection_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/bus_route_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/bus_route_input_placeholder"
-            tools:ignore="TextContrastCheck,TextContrastCheck" />
-    </com.google.android.material.textfield.TextInputLayout>
+        android:background="@android:drawable/btn_dropdown"
+        android:minHeight="48dp"
+        android:layout_marginTop="25dp"
+        android:entries="@array/busRoutes"
+        android:textColor="@color/black"
+        android:spinnerMode="dropdown" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passenger_capacity_input_layout"
@@ -57,8 +55,10 @@
         android:layout_marginTop="25dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passenger_capacity_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:hint="@string/bus_capacity_input_placeholder"
             tools:ignore="TextContrastCheck,TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -70,9 +70,11 @@
         android:layout_marginTop="25dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passengers_onboard_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/bus_passengers_onboard_input_placeholder"
+            android:inputType="number"
             tools:ignore="TextContrastCheck,TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,11 +88,18 @@
         android:paddingRight="20dp"
         android:text="@string/submit_button_text" />
 
-<!--    <Button-->
+    <TextView
+        android:id="@+id/test_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="7"
+        android:text="TextView" />
+
+    <!--    <Button-->
 <!--        android:id="@+id/back_to_dashboard_button"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
 <!--        android:layout_gravity="center"-->
 <!--        android:text="@string/back_to_dashboard_button_text" />-->
-
 </LinearLayout>
+

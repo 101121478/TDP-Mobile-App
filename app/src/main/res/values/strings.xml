@@ -40,6 +40,14 @@
     <string name="submit_button_text">Submit</string>
     <string name="back_to_dashboard_button_text">Back to Dashboard</string>
 
+    <!-- bus routes array for bus routes spinner in bus data entry screen -->
+    <string-array name="busRoutes">
+        <item>Sandringham To CBD</item>
+        <item>Frankston From CBD</item>
+        <item>Frankston To CBD</item>
+        <item>Sandringham From CBD</item>
+    </string-array>
+
     <!-- Account Fragment Strings -->
     <string name="logout_btn_text">LOGOUT</string>
     <string name="account_name_text">Account</string>
