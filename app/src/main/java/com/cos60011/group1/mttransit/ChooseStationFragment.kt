@@ -39,9 +39,7 @@ class ChooseStationFragment : Fragment() {
 
         //TODO: Create adapter to get list of stations for Set Station dropdown
 
-        //Experimenting with time here
-        val timeTest: TextView = binding.dateTimeTest
-        val testVar = Timestamp.now().toDate()
-        timeTest.text = testVar.toString()
+        //Test textView here
+        //val timeTest: TextView = binding.dateTimeTest
     }
 }

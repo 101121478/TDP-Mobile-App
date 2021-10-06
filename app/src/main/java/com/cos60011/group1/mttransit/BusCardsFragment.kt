@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cos60011.group1.mttransit.databinding.FragmentBusCardsBinding
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.time.*
 
 class BusCardsFragment : Fragment() {
     private var _binding: FragmentBusCardsBinding? = null
@@ -32,12 +34,22 @@ class BusCardsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Query Firestore and get results
-        // TODO: Move this to FirestoreClass? Still need to figure out how to get location from LocationFragment
+        // TODO: Get location from LocationFragment
         var testLocation = "Richmond Station"
+
+        //Creates a Timestamp for midnight of today which will act as lower range of time query
+        var startOfToday = LocalDate.now().atStartOfDay(ZoneId.of("Australia/Melbourne")).toOffsetDateTime().toEpochSecond()
+        val startTimestamp = Timestamp(startOfToday, 0)
+
+        //Creates a Timestamp for midnight of next day not-inclusive which will act as upper range of time query
+        val endOfToday = LocalDate.now().plusDays(1).atStartOfDay(ZoneId.of("Australia/Melbourne")).toOffsetDateTime().toEpochSecond()
+        val endTimestamp = Timestamp(endOfToday, 0)
+
+        //Query Firestore and get results
         var query = db.collection("testBuses").whereEqualTo("location", testLocation)
-        var subQuery = query.whereLessThan("lastUpdated", Timestamp.now())
-        val options = FirestoreRecyclerOptions.Builder<Bus>().setQuery(subQuery, Bus::class.java).build()
+            .whereGreaterThanOrEqualTo("lastUpdated", startTimestamp)
+            .whereLessThan("lastUpdated", endTimestamp).orderBy("lastUpdated", Query.Direction.DESCENDING)
+        val options = FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()
 
         //bind views you want to change here
         rvCards = binding.busRecycler
