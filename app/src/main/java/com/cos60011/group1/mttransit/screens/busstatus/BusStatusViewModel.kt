@@ -47,6 +47,7 @@ class BusStatusViewModel(document: String) : ViewModel() {
     init {
         docRef = db.collection("test_bus_status_view").document(document)
         getBusDocument()
+        listenToDocument()
     }
 
     fun getBusDocument() {
@@ -63,6 +64,24 @@ class BusStatusViewModel(document: String) : ViewModel() {
                 _isUpdate.value = true
             } else {
                 _isUpdate.value = false
+            }
+        }
+    }
+
+    private fun listenToDocument() {
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                return@addSnapshotListener
+            }
+            if (snapshot != null && snapshot.exists()) {
+                _busID.value = snapshot.get("busID").toString()
+                _busType.value = snapshot.get("busType").toString()
+                _busRoute.value = snapshot.get("busRoute").toString()
+                _passengerCapacity.value = snapshot.get("capacity").toString()
+                _passengerOnBoard.value = snapshot.get("passengerCount").toString()
+                _busType.value = snapshot.get("busType").toString()
+                _isUpdate.value = true
+            } else {
             }
         }
     }
