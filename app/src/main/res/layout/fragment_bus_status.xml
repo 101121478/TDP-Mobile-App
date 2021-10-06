@@ -189,7 +189,9 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:text="@{String.valueOf(busStatusViewModel.passengerOnBoard)}"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/black"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
