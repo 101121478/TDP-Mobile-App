@@ -23,27 +23,39 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/bus_type_input_layout"
+    <TextView
+        android:id="@+id/busType_spinner_label"
+        style="@style/spinnerLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/bus_type_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/bus_type_input_placeholder" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
+        android:text="Bus Type"
+        android:layout_marginTop="25dp"/>
     <Spinner
-        android:id="@+id/route_selection_spinner"
+
+        android:id="@+id/bus_type_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:drawable/btn_dropdown"
         android:minHeight="48dp"
-        android:layout_marginTop="25dp"
+
+        android:entries="@array/busTypes"
+        android:textColor="@color/black"
+        android:spinnerMode="dropdown" />
+
+    <TextView
+        android:id="@+id/route_spinner_label"
+        style="@style/spinnerLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Route"
+        android:layout_marginTop="25dp"/>
+    <Spinner
+        android:id="@+id/route_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:minHeight="48dp"
+
         android:entries="@array/busRoutes"
         android:textColor="@color/black"
         android:spinnerMode="dropdown" />
