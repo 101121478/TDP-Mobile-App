@@ -48,6 +48,12 @@
         <item>Sandringham From CBD</item>
     </string-array>
 
+    <!-- bus types array for bus type spinner in bus data entry screen-->
+    <string-array name="busTypes">
+        <item>Standard</item>
+        <item>Express</item>
+    </string-array>
+
     <!-- Account Fragment Strings -->
     <string name="logout_btn_text">LOGOUT</string>
     <string name="account_name_text">Account</string>
