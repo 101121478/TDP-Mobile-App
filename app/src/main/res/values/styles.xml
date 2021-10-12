@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="spinnerLabel" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:paddingBottom">@dimen/spinner_label_vertical_spacing</item>
+        <item name="android:paddingLeft">@dimen/spinner_label_horizontal_spacing</item>
+        <item name="android:paddingRight">@dimen/spinner_label_horizontal_spacing</item>
+    </style>
+</resources>
