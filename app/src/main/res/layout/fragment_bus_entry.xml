@@ -28,7 +28,7 @@
         style="@style/spinnerLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bus Type"
+        android:text="@string/bus_type_spinner_label_text"
         android:layout_marginTop="25dp"/>
     <Spinner
 
@@ -47,7 +47,7 @@
         style="@style/spinnerLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Route"
+        android:text="@string/bus_route_spinner_label_text"
         android:layout_marginTop="25dp"/>
     <Spinner
         android:id="@+id/route_spinner"
