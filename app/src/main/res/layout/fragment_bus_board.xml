@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.cos60011.group1.mttransit.BusBoardFragment">
+    tools:context="com.cos60011.group1.mttransit.screens.dashboard.BusBoardFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bus_Constraint"
@@ -11,7 +11,7 @@
 
         <fragment
             android:id="@+id/locationFragment2"
-            android:name="com.cos60011.group1.mttransit.LocationFragment"
+            android:name="com.cos60011.group1.mttransit.screens.dashboard.LocationFragment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -25,7 +25,7 @@
 
         <fragment
             android:id="@+id/busCardsFragment2"
-            android:name="com.cos60011.group1.mttransit.BusCardsFragment"
+            android:name="com.cos60011.group1.mttransit.screens.dashboard.BusCardsFragment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -38,7 +38,7 @@
 
         <fragment
             android:id="@+id/busListFragment2"
-            android:name="com.cos60011.group1.mttransit.BusListFragment"
+            android:name="com.cos60011.group1.mttransit.screens.dashboard.BusListFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"

@@ -1,4 +1,4 @@
-package com.cos60011.group1.mttransit
+package com.cos60011.group1.mttransit.screens.dashboard
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.navigation.findNavController
+import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.databinding.FragmentLocationBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase

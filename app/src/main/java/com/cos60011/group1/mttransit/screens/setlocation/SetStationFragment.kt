@@ -1,4 +1,4 @@
-package com.cos60011.group1.mttransit
+package com.cos60011.group1.mttransit.screens.setlocation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,19 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.TextView
-import com.cos60011.group1.mttransit.databinding.FragmentChooseStationBinding
-import com.google.firebase.Timestamp
+import com.cos60011.group1.mttransit.R
+import com.cos60011.group1.mttransit.databinding.FragmentSetStationBinding
 
-class ChooseStationFragment : Fragment() {
-    private var _binding: FragmentChooseStationBinding? = null
+class SetStationFragment : Fragment() {
+    private var _binding: FragmentSetStationBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentChooseStationBinding.inflate(inflater, container, false)
+        _binding = FragmentSetStationBinding.inflate(inflater, container, false)
 
         return binding.root
     }

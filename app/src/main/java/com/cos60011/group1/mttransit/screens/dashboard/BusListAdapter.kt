@@ -1,4 +1,4 @@
-package com.cos60011.group1.mttransit
+package com.cos60011.group1.mttransit.screens.dashboard
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.cos60011.group1.mttransit.Bus
+import com.cos60011.group1.mttransit.R
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.card.MaterialCardView

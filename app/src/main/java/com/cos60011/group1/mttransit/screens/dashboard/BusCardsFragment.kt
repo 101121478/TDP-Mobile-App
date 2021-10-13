@@ -1,4 +1,4 @@
-package com.cos60011.group1.mttransit
+package com.cos60011.group1.mttransit.screens.dashboard
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cos60011.group1.mttransit.Bus
 import com.cos60011.group1.mttransit.databinding.FragmentBusCardsBinding
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp

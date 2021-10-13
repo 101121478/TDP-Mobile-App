@@ -34,7 +34,7 @@
         tools:layout="@layout/fragment_bus_entry" />
     <fragment
         android:id="@+id/busBoardFragment"
-        android:name="com.cos60011.group1.mttransit.BusBoardFragment"
+        android:name="com.cos60011.group1.mttransit.screens.dashboard.BusBoardFragment"
         android:label="@string/bus_board_fragment_title_label">
         <action
             android:id="@+id/action_busBoardFragment_to_busEntryFragment"
@@ -63,9 +63,9 @@
     </fragment>
     <fragment
         android:id="@+id/chooseStationFragment"
-        android:name="com.cos60011.group1.mttransit.ChooseStationFragment"
+        android:name="com.cos60011.group1.mttransit.screens.setlocation.SetStationFragment"
         android:label="@string/choose_station_fragment_title_label"
-        tools:layout="@layout/fragment_choose_station" />
+        tools:layout="@layout/fragment_set_station" />
 
 
 </navigation>
