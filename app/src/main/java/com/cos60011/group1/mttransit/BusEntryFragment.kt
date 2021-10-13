@@ -43,6 +43,9 @@ class BusEntryFragment : Fragment() {
             val busCapacity = binding.passengerCapacityInput.text.toString()
             val passengersOnboard = binding.passengersOnboardInput.text.toString()
 
+            //Get date as string in format yyyy-mm-dd for use in creating date document in BusOperation
+            val dateCollection = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
 
             // Data Validation
             if(busID.isNotEmpty()){
@@ -53,7 +56,10 @@ class BusEntryFragment : Fragment() {
                             val passengers = Integer.parseInt(passengersOnboard)
                             if(passengers <= capacity){
                                 println("ALL INPUTS VALID")
-                                storeBusData(busID, busType, route, capacity, passengers, view)
+                                // TODO: Check TODOs in function
+                                // TODO: Create directories and store required data in StationOperation
+                                createFirestoreBusOperationDirectoriesAndStoreBus(busID, busType, route, capacity, passengers, dateCollection)
+                                //storeBusData(busID, busType, route, capacity, passengers, view)
                             } else {
                                 passengersOnboardInput.error = "The number of passengers cannot exceed the bus capacity"
                             }
@@ -73,10 +79,171 @@ class BusEntryFragment : Fragment() {
         return binding.root
     }
 
-    private fun storeBusData(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, view: View) {
+    private fun createFirestoreBusOperationDirectoriesAndStoreBus(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String) {
+        // TODO: Update stationID and stationName?
+        // TODO: Re-implement confirmation message for bus being added to database
+        // TODO: Get the user selected station and store in the hashmap as initial bus location under ArrivalTime
+        val placeholderStation = "Malvern"
+
+        val busRoutes = hashMapOf(
+            "Sandringham To CBD" to "sandringhamToCBD",
+            "Frankston From CBD" to "frankstonFromCBD",
+            "Frankston To CBD" to "frankstonToCBD",
+            "Sandringham From CBD" to "sandringhamFromCBD"
+        )
+
+        // Maps of data for the documents that have multiple fields. To be stored in appropriate documents
+        val arrivalTimeMap = hashMapOf(
+            "stationName" to placeholderStation,
+            "stopNum" to 1,
+            "arrivalTime" to Timestamp(Date())
+        )
+
+        val passengerCountMap = hashMapOf(
+            "stationID" to "$placeholderStation Station",
+            "stationName" to placeholderStation,
+            "stopNum" to 1,
+            "count" to passengersOnboard
+        )
+
+
+        projectFirestore.collection("BusOperation").document(dateCollection)
+            .set(HashMap<String, Any>())
+            .addOnSuccessListener {
+                println("DocumentSnapshot successfully written!")
+                // CREATE BusType DOCUMENT
+                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusType")
+                    .set(hashMapOf(
+                        "busType" to busType
+                    ))
+                    .addOnSuccessListener {
+                        println("DocumentSnapshot successfully written!")
+
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing document", exception)
+                    }
+                // CREATE BusID DOCUMENT
+                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusID")
+                    .set(hashMapOf(
+                        "busID" to busID
+                    ))
+                    .addOnSuccessListener {
+                        println("DocumentSnapshot successfully written!")
+
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing document", exception)
+                    }
+                // CREATE ArrivalTime DOCUMENT
+                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
+                    .set(arrivalTimeMap)
+                    .addOnSuccessListener {
+                        println("DocumentSnapshot successfully written!")
+                        // CREATE initial station arrival under station collection under ArrivalTime Document
+                        projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
+                            .collection(busRoutes[route]!!).document("$placeholderStation Station")
+                            .set(arrivalTimeMap)
+                            .addOnSuccessListener {
+                                println("DocumentSnapshot successfully written!")
+
+
+                            }
+                            .addOnFailureListener {
+                                    exception -> Log.w("Error writing document", exception)
+                            }
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing document", exception)
+                    }
+                // CREATE DepartureTime DOCUMENT
+                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("DepartureTime")
+                    .set(HashMap<String, Any>())
+                    .addOnSuccessListener {
+                        println("DocumentSnapshot successfully written!")
+
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing document", exception)
+                    }
+                // CREATE PassengerCount DOCUMENT
+                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
+                    .set(passengerCountMap)
+                    .addOnSuccessListener {
+                        println("DocumentSnapshot successfully written!")
+                        // CREATE initial passenger count collection
+                        projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
+                            .collection("PassengerCountAtStations").document("$placeholderStation Station")
+                            .set(passengerCountMap)
+                            .addOnSuccessListener {
+                                println("DocumentSnapshot successfully written!")
+
+
+                            }
+                            .addOnFailureListener {
+                                    exception -> Log.w("Error writing document", exception)
+                            }
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing document", exception)
+                    }
+                // CREATE Capacity DOCUMENT
+                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("Capacity")
+                    .set(hashMapOf(
+                        "capacity" to busCapacity
+                    ))
+                    .addOnSuccessListener {
+                        println("DocumentSnapshot successfully written!")
+
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing document", exception)
+                    }
+                // CREATE OperatedRoute DOCUMENT
+                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("OperatedRoutes")
+                    .set(hashMapOf(
+                        "routeID" to busRoutes[route]
+                    ))
+                    .addOnSuccessListener {
+                        println("DocumentSnapshot successfully written!")
+
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing document", exception)
+                    }
+            }
+            .addOnFailureListener {
+                    exception -> Log.w("Error writing document", exception)
+            }
+    }
+
+    // Function to check if the device has an internet connection either over wifi or mobile data
+    private fun checkInternetConnection(): Boolean {
+        val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if(capabilities != null) {
+            if(capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)){
+                return true
+            }
+            if(capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)){
+                return true
+            }
+        }
+        return false
+    }
+
+    // Old Data Store Function
+    private fun storeBusData(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String, view: View) {
 
         val initArrivalTime = Timestamp(Date())
-        val dateCollection = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
         val busRoutes = hashMapOf(
             "Sandringham To CBD" to "sandringhamToCBD",
@@ -175,22 +342,6 @@ class BusEntryFragment : Fragment() {
                 builder.setPositiveButton("OK"){_,_ -> }
                 builder.show()
             }
-    }
-
-    // Function to check if the device has an internet connection either over wifi or mobile data
-    private fun checkInternetConnection(): Boolean {
-        val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val capabilities =
-            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-        if(capabilities != null) {
-            if(capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)){
-                return true
-            }
-            if(capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)){
-                return true
-            }
-        }
-        return false
     }
 
 }
