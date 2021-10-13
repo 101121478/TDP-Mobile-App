@@ -13,13 +13,18 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-196" />
-                            <option name="y" value="319" />
+                            <option name="x" value="-235" />
+                            <option name="y" value="266" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_accountFragment_to_loginFragment">
+                            <entry key="action_accountFragment_to_busBoardFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_accountFragment_to_loginFragment3">
                               <value>
                                 <LayoutPositions />
                               </value>
