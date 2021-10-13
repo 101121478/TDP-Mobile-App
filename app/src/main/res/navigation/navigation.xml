@@ -31,7 +31,11 @@
         android:id="@+id/busEntryFragment"
         android:name="com.cos60011.group1.mttransit.BusEntryFragment"
         android:label="@string/bus_entry_fragment_title_label"
-        tools:layout="@layout/fragment_bus_entry" />
+        tools:layout="@layout/fragment_bus_entry" >
+        <action
+            android:id="@+id/action_busEntryFragment_to_busBoardFragment"
+            app:destination="@id/busBoardFragment" />
+    </fragment>
     <fragment
         android:id="@+id/busBoardFragment"
         android:name="com.cos60011.group1.mttransit.BusBoardFragment"

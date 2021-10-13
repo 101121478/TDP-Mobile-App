@@ -33,12 +33,26 @@
 
     <!-- Bus Data Entry Fragment Strings -->
     <string name="bus_id_input_placeholder">Bus ID</string>
-    <string name="bus_type_input_placeholder">Bus Type (Standard, etc)</string>
-    <string name="bus_route_input_placeholder">Route</string>
+    <string name="bus_type_spinner_label_text">Bus Type</string>
+    <string name="bus_route_spinner_label_text">Route</string>
     <string name="bus_capacity_input_placeholder">Passenger Capacity</string>
     <string name="bus_passengers_onboard_input_placeholder">Passengers Onboard</string>
     <string name="submit_button_text">Submit</string>
     <string name="back_to_dashboard_button_text">Back to Dashboard</string>
+
+    <!-- bus routes array for bus routes spinner in bus data entry screen -->
+    <string-array name="busRoutes">
+        <item>Sandringham To CBD</item>
+        <item>Frankston From CBD</item>
+        <item>Frankston To CBD</item>
+        <item>Sandringham From CBD</item>
+    </string-array>
+
+    <!-- bus types array for bus type spinner in bus data entry screen-->
+    <string-array name="busTypes">
+        <item>Standard</item>
+        <item>Express</item>
+    </string-array>
 
     <!-- Account Fragment Strings -->
     <string name="logout_btn_text">LOGOUT</string>
@@ -51,5 +65,4 @@
     <string name="bus_entry_fragment_title_label">Add new bus</string>
     <string name="bus_status_fragment_title_label">Bus Status</string>
     <string name="account_fragment_title_label">Account Detail</string>
-
 </resources>

@@ -23,32 +23,42 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/bus_type_input_layout"
+    <TextView
+        android:id="@+id/busType_spinner_label"
+        style="@style/spinnerLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp">
+        android:text="@string/bus_type_spinner_label_text"
+        android:layout_marginTop="25dp"/>
+    <Spinner
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/bus_type_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/bus_type_input_placeholder" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/bus_route_input_layout"
+        android:id="@+id/bus_type_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp">
+        android:background="@android:drawable/btn_dropdown"
+        android:minHeight="48dp"
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/bus_route_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/bus_route_input_placeholder"
-            tools:ignore="TextContrastCheck,TextContrastCheck" />
-    </com.google.android.material.textfield.TextInputLayout>
+        android:entries="@array/busTypes"
+        android:textColor="@color/black"
+        android:spinnerMode="dropdown" />
+
+    <TextView
+        android:id="@+id/route_spinner_label"
+        style="@style/spinnerLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bus_route_spinner_label_text"
+        android:layout_marginTop="25dp"/>
+    <Spinner
+        android:id="@+id/route_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:minHeight="48dp"
+
+        android:entries="@array/busRoutes"
+        android:textColor="@color/black"
+        android:spinnerMode="dropdown" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passenger_capacity_input_layout"
@@ -57,8 +67,10 @@
         android:layout_marginTop="25dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passenger_capacity_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:hint="@string/bus_capacity_input_placeholder"
             tools:ignore="TextContrastCheck,TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -70,9 +82,11 @@
         android:layout_marginTop="25dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passengers_onboard_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/bus_passengers_onboard_input_placeholder"
+            android:inputType="number"
             tools:ignore="TextContrastCheck,TextContrastCheck" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,11 +100,11 @@
         android:paddingRight="20dp"
         android:text="@string/submit_button_text" />
 
-<!--    <Button-->
+    <!--    <Button-->
 <!--        android:id="@+id/back_to_dashboard_button"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
 <!--        android:layout_gravity="center"-->
 <!--        android:text="@string/back_to_dashboard_button_text" />-->
-
 </LinearLayout>
+
