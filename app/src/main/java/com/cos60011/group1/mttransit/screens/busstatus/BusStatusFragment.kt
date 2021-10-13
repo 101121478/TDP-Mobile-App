@@ -57,9 +57,9 @@ class BusStatusFragment : Fragment() {
             viewModel.isUpdate.observe(viewLifecycleOwner, {isUpdate ->
                 if (isUpdate) {
                     binding.busStatusSwipeRefresh.isRefreshing = false
-                    Toast.makeText(requireContext(), "Success update", Toast.LENGTH_LONG).show()
+                    Snackbar.make(requireView(), "Success update", Snackbar.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(requireContext(), "Fail to update, please try again", Toast.LENGTH_LONG).show()
+                    Snackbar.make(requireView(), "Fail to update, please try again", Snackbar.LENGTH_LONG).show()
                 }
             })
         }

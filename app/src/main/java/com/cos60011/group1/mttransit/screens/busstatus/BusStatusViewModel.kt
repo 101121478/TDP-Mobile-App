@@ -7,6 +7,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
+import com.google.firebase.firestore.ktx.toObject
 
 class BusStatusViewModel(document: String) : ViewModel() {
     private val db = FirebaseFirestore.getInstance()
@@ -60,7 +61,6 @@ class BusStatusViewModel(document: String) : ViewModel() {
                 _busRoute.value = document?.get("busRoute").toString()
                 _passengerCapacity.value = document?.get("capacity").toString()
                 _passengerOnBoard.value = document?.get("passengerCount").toString()
-                _busType.value = document?.get("busType").toString()
                 _isUpdate.value = true
             } else {
                 _isUpdate.value = false
@@ -79,7 +79,6 @@ class BusStatusViewModel(document: String) : ViewModel() {
                 _busRoute.value = snapshot.get("busRoute").toString()
                 _passengerCapacity.value = snapshot.get("capacity").toString()
                 _passengerOnBoard.value = snapshot.get("passengerCount").toString()
-                _busType.value = snapshot.get("busType").toString()
                 _isUpdate.value = true
             } else {
             }
