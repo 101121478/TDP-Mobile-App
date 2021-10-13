@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cos60011.group1.mttransit.Bus
+import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentBusCardsBinding
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
@@ -23,40 +25,47 @@ class BusCardsFragment : Fragment() {
 
     private lateinit var rvCards: RecyclerView
     private lateinit var cardAdapter: BusCardAdapter
+    private lateinit var viewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentBusCardsBinding.inflate(inflater, container, false)
+
+        viewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO: Get location from LocationFragment
-        var testLocation = "Richmond Station"
+        var currentLocation = viewModel.userLocation.value //add observer here?
 
         //Creates a Timestamp for midnight of today which will act as lower range of time query
-        var startOfToday = LocalDate.now().atStartOfDay(ZoneId.of("Australia/Melbourne")).toOffsetDateTime().toEpochSecond()
+        var startOfToday =
+            LocalDate.now().atStartOfDay(ZoneId.of("Australia/Melbourne")).toOffsetDateTime()
+                .toEpochSecond()
         val startTimestamp = Timestamp(startOfToday, 0)
 
         //Creates a Timestamp for midnight of next day not-inclusive which will act as upper range of time query
-        val endOfToday = LocalDate.now().plusDays(1).atStartOfDay(ZoneId.of("Australia/Melbourne")).toOffsetDateTime().toEpochSecond()
+        val endOfToday = LocalDate.now().plusDays(1).atStartOfDay(ZoneId.of("Australia/Melbourne"))
+            .toOffsetDateTime().toEpochSecond()
         val endTimestamp = Timestamp(endOfToday, 0)
 
         //Query Firestore and get results
-        var query = db.collection("testBuses").whereEqualTo("location", testLocation)
+        var query = db.collection("testBuses").whereEqualTo("location", currentLocation)
             .whereGreaterThanOrEqualTo("lastUpdated", startTimestamp)
-            .whereLessThan("lastUpdated", endTimestamp).orderBy("lastUpdated", Query.Direction.DESCENDING)
-        val options = FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()
+            .whereLessThan("lastUpdated", endTimestamp)
+            .orderBy("lastUpdated", Query.Direction.DESCENDING)
+        val options =
+            FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()
 
         //bind views you want to change here
         rvCards = binding.busRecycler
 
         // Create adapter passing in the FirestoreRecyclerOptions object and attach it to recyclerview
-        cardAdapter = BusCardAdapter(requireContext(),options)
+        cardAdapter = BusCardAdapter(requireContext(), options)
         rvCards.adapter = cardAdapter
 
         // Set layout manager to position the items
@@ -79,9 +88,5 @@ class BusCardsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val TAG = "BUS CARDS FRAGMENT"
     }
 }
