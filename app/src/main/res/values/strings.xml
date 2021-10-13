@@ -63,13 +63,13 @@
 
     <!-- Spinner Fragment Test String Array -->
     <string-array name="test_stations_array">
-        <item>Armadale</item>
-        <item>Balaclava</item>
-        <item>Clayton</item>
-        <item>Dallas</item>
-        <item>Richmond</item>
-        <item>Flinders</item>
-        <item>St Kilda East</item>
-        <item>Hawthorn</item>
+        <item>Armadale Station</item>
+        <item>Balaclava Station</item>
+        <item>Clayton Station</item>
+        <item>Dallas Station</item>
+        <item>Richmond Station</item>
+        <item>Flinders Station</item>
+        <item>St Kilda East Station</item>
+        <item>Hawthorn Station</item>
     </string-array>
 </resources>

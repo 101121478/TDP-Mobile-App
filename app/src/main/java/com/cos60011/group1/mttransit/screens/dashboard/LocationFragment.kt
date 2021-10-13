@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.cos60011.group1.mttransit.R
+import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentLocationBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -15,9 +17,10 @@ import com.google.firebase.ktx.Firebase
 class LocationFragment : Fragment() {
     private var _binding: FragmentLocationBinding? = null
     private val binding get() = _binding!!
-    private val db = Firebase.firestore
 
-    //Declare static references to views here
+    private val db = Firebase.firestore
+    private lateinit var viewModel: SharedViewModel
+
     private lateinit var currentStation: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,8 +31,10 @@ class LocationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         _binding = FragmentLocationBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
         return binding.root
     }
 
@@ -40,11 +45,11 @@ class LocationFragment : Fragment() {
         currentStation = binding.userLocation
 
         binding.setLocationButton.setOnClickListener { view: View ->
-            view.findNavController().navigate(R.id.action_busBoardFragment_to_chooseStationFragment)
+            view.findNavController().navigate(R.id.action_busBoardFragment_to_setStationFragment)
         }
 
         //sets user location
-        currentStation.text = context?.resources?.getString(R.string.current_user_location_header)
+        currentStation.text = viewModel.userLocation.value
         //TODO: Override default location with user selection. Figure out how to persist it throughout navigation since we do not have a User collection.
 
         /*
@@ -64,9 +69,5 @@ class LocationFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val TAG = "LOCATION FRAGMENT"
     }
 }
