@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentSetStationBinding
+import com.google.android.material.snackbar.Snackbar
 
 class SetStationFragment : Fragment() {
     private var _binding: FragmentSetStationBinding? = null
@@ -24,10 +25,9 @@ class SetStationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         _binding = FragmentSetStationBinding.inflate(inflater, container, false)
-
         viewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-
         return binding.root
     }
 
@@ -36,28 +36,30 @@ class SetStationFragment : Fragment() {
 
         val updateLocationButton: Button = binding.spinnerButton
         val materialSpinner: AutoCompleteTextView = binding.stationOptions //rename this!
-        val feedbackMessage: TextView = binding.setStationFeedback
+        //val feedbackMessage: TextView = binding.setStationFeedback
 
         // Create a test ArrayAdapter using the string array and a default spinner layout
-        val materialSpinnerAdapter =  ArrayAdapter.createFromResource(
+        val materialSpinnerAdapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.test_stations_array,
-            android.R.layout.simple_spinner_item //might want to change this
-        )
-        materialSpinner.setAdapter(materialSpinnerAdapter)
+            android.R.layout.simple_spinner_item)
 
+        materialSpinner.setAdapter(materialSpinnerAdapter)
         updateLocationButton.setOnClickListener {
             val selectedLocation = materialSpinner.text.toString()
 
             if (selectedLocation.isBlank()) {
-                feedbackMessage.text = "Please select a station." //probably should be a snackbar or toast
+                //feedbackMessage.text = "Please select a station."
+                Snackbar.make(requireView(), "Please select a station.", Snackbar.LENGTH_SHORT)
+                    .show()
             } else {
                 viewModel.setLocation(selectedLocation)
-                view.findNavController().navigate(R.id.action_setStationFragment_to_busBoardFragment)
+                view.findNavController()
+                    .navigate(R.id.action_setStationFragment_to_busBoardFragment)
             }
         }
 
-        //TODO: Create adapter to get list of stations for Set Station dropdown
+        //TODO: Create adapter to get list of stations for Set Station dropdown from Firestore
 
     }
 }
