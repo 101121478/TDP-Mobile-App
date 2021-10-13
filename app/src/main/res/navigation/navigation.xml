@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.cos60011.group1.mttransit.LoginFragment"
+        android:name="com.cos60011.group1.mttransit.screens.login.LoginFragment"
         android:label="@string/login_fragment_title_label"
         tools:layout="@layout/fragment_login">
         <action
@@ -18,9 +18,15 @@
     </fragment>
     <fragment
         android:id="@+id/busStatusFragment"
-        android:name="com.cos60011.group1.mttransit.BusStatusFragment"
+        android:name="com.cos60011.group1.mttransit.screens.busstatus.BusStatusFragment"
         android:label="@string/bus_status_fragment_title_label"
-        tools:layout="@layout/fragment_bus_status" />
+        tools:layout="@layout/fragment_bus_status" >
+        <action
+            android:id="@+id/action_busStatusFragment_to_busBoardFragment"
+            app:destination="@id/busBoardFragment"
+            app:popUpTo="@id/busBoardFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/busEntryFragment"
         android:name="com.cos60011.group1.mttransit.BusEntryFragment"
@@ -39,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/accountFragment"
-        android:name="com.cos60011.group1.mttransit.AccountFragment"
+        android:name="com.cos60011.group1.mttransit.screens.account.AccountFragment"
         android:label="@string/account_fragment_title_label"
         tools:layout="@layout/fragment_account">
         <action
@@ -50,8 +56,7 @@
         <action
             android:id="@+id/action_accountFragment_to_busBoardFragment"
             app:destination="@id/busBoardFragment"
-            app:popUpTo="@id/accountFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="false" />
     </fragment>
 
 </navigation>
