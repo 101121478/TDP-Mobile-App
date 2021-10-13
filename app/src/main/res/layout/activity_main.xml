@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/location_fragment"
-        android:name="com.cos60011.group1.mttransit.LocationFragment"
+        android:name="com.cos60011.group1.mttransit.screens.dashboard.LocationFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/current_buses_fragment"
-        android:name="com.cos60011.group1.mttransit.BusCardsFragment"
+        android:name="com.cos60011.group1.mttransit.screens.dashboard.BusCardsFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/incoming_buses_fragment"
-        android:name="com.cos60011.group1.mttransit.BusListFragment"
+        android:name="com.cos60011.group1.mttransit.screens.dashboard.BusListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"

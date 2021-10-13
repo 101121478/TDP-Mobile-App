@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="3dp">
 
     <!-- Need to refactor ids to be format strings and update adapter -->
 
@@ -12,33 +13,33 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:clickable="true"
-        android:elevation="1dp"
+        android:elevation="8dp"
         android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@color/black"
-        app:strokeWidth="1dp">
+        app:strokeWidth="0.5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="24dp">
 
             <!-- Title, secondary and supporting text -->
             <TextView
                 android:id="@+id/bus_card_title"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bus 923"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:text="Bus 923" />
 
             <TextView
                 android:id="@+id/current_bus_route"
+                style="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="12dp"
                 android:text="Belgrave - Flinders Line"
                 android:textSize="12sp"
 
@@ -46,6 +47,7 @@
 
             <TextView
                 android:id="@+id/current_bus_arrival"
+                style="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
@@ -54,13 +56,30 @@
 
                 />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/update_btn"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Update" />
+                android:layout_marginTop="12dp">
+
+                <ImageView
+                    android:id="@+id/passenger_icon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="start"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_passengers" />
+
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="32/70"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@id/passenger_icon"
+                    app:layout_constraintStart_toEndOf="@id/passenger_icon" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </LinearLayout>

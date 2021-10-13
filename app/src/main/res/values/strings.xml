@@ -65,4 +65,17 @@
     <string name="bus_entry_fragment_title_label">Add new bus</string>
     <string name="bus_status_fragment_title_label">Bus Status</string>
     <string name="account_fragment_title_label">Account Detail</string>
+    <string name="choose_station_fragment_title_label">Set Station</string>
+
+    <!-- Spinner Fragment Test String Array -->
+    <string-array name="test_stations_array">
+        <item>Armadale Station</item>
+        <item>Balaclava Station</item>
+        <item>Clayton Station</item>
+        <item>Dallas Station</item>
+        <item>Richmond Station</item>
+        <item>Flinders Station</item>
+        <item>St Kilda East Station</item>
+        <item>Hawthorn Station</item>
+    </string-array>
 </resources>

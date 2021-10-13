@@ -1,4 +1,4 @@
-package com.cos60011.group1.mttransit
+package com.cos60011.group1.mttransit.screens.dashboard
 
 import android.os.Bundle
 import android.view.*
@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.databinding.FragmentBusBoardBinding
 
 class BusBoardFragment : Fragment() {
@@ -15,7 +16,8 @@ class BusBoardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val binding: FragmentBusBoardBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_bus_board, container, false)
+        val binding: FragmentBusBoardBinding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_bus_board, container, false)
 
         binding.addBusBtn.setOnClickListener{ view: View ->
             view.findNavController().navigate(R.id.action_busBoardFragment_to_busEntryFragment)

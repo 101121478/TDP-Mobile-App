@@ -84,6 +84,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="chooseStationFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="455" />
+                            <option name="y" value="-474" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="loginFragment">
                     <value>
                       <LayoutPositions>
