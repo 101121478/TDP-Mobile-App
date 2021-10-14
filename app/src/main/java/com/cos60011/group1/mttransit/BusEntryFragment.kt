@@ -58,7 +58,7 @@ class BusEntryFragment : Fragment() {
                                 println("ALL INPUTS VALID")
                                 // TODO: Check TODOs in function
                                 // TODO: Create directories and store required data in StationOperation
-                                createFirestoreBusOperationDirectoriesAndStoreBus(busID, busType, route, capacity, passengers, dateCollection)
+                                createBusOperationDirectoriesAndStoreBus(busID, busType, route, capacity, passengers, dateCollection)
                                 //storeBusData(busID, busType, route, capacity, passengers, view)
                             } else {
                                 passengersOnboardInput.error = "The number of passengers cannot exceed the bus capacity"
@@ -79,7 +79,7 @@ class BusEntryFragment : Fragment() {
         return binding.root
     }
 
-    private fun createFirestoreBusOperationDirectoriesAndStoreBus(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String) {
+    private fun createBusOperationDirectoriesAndStoreBus(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String) {
         // TODO: Update stationID and stationName?
         // TODO: Re-implement confirmation message for bus being added to database
         // TODO: Get the user selected station and store in the hashmap as initial bus location under ArrivalTime
@@ -212,6 +212,32 @@ class BusEntryFragment : Fragment() {
                     ))
                     .addOnSuccessListener {
                         println("DocumentSnapshot successfully written!")
+
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing document", exception)
+                    }
+            }
+            .addOnFailureListener {
+                    exception -> Log.w("Error writing document", exception)
+            }
+    }
+
+    private fun createBusArchiveDirectoriesAndStoreBus(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String) {
+        val placeholderStation = "Malvern"
+        // CREATE initial date document in StationOperation if not created
+        projectFirestore.collection("StationOperation").document(dateCollection)
+            .set(HashMap<String, Any>())
+            .addOnSuccessListener {
+                println("DocumentSnapshot successfully written!")
+                // CREATE initial date document in StationOperation if not created
+                projectFirestore.collection("StationOperation").document(dateCollection)
+                    .collection("$placeholderStation Station").document()
+                    .set(HashMap<String, Any>())
+                    .addOnSuccessListener {
+                        println("DocumentSnapshot successfully written!")
+
 
 
                     }
