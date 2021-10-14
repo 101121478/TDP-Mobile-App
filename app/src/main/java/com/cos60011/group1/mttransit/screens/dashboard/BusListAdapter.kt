@@ -12,6 +12,7 @@ import com.cos60011.group1.mttransit.R
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.card.MaterialCardView
+import java.text.SimpleDateFormat
 
 // Creates an adapter extending from FirestoreRecyclerAdapter
 class BusListAdapter(
@@ -21,13 +22,16 @@ class BusListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, bus: Bus) {
         holder.busListView.setOnClickListener { view: View ->
+            //can add data to shared viewmodel here
             view.findNavController().navigate(R.id.action_busBoardFragment_to_busStatusFragment)
         }
 
+        val readableDepartureTime = SimpleDateFormat("HH:mm").format(bus.departureTime.toDate())
+
         // Set item views based on your views and data model
-        // TODO: Update departure string once data structure finalised
-        holder.busIdView.text = bus.name
-        holder.busInfoView.text = context.resources.getString(R.string.departure_time_text, bus.location, bus.departure)
+        holder.busIdView.text = bus.busId
+        holder.busInfoView.text = context.resources.getString(R.string.departure_time_text, bus.previousStop, readableDepartureTime)
+        holder.passengers.text = "${bus.passengers}/${bus.capacity}"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,14 +45,11 @@ class BusListAdapter(
         return ViewHolder(busView)
     }
 
-    // Provide a direct reference to each of the views within a data item
-    // Used to cache the views within the item layout for fast access
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // Your holder should contain and initialize a member variable
-        // for any view that will be set as you render a row
         val busIdView: TextView = itemView.findViewById(R.id.bus_list_title)
         val busInfoView: TextView = itemView.findViewById(R.id.bus_list_info)
         val busListView: MaterialCardView = itemView.findViewById(R.id.bus_list_item)
+        val passengers: TextView = itemView.findViewById((R.id.passenger_count))
     }
 
 }
