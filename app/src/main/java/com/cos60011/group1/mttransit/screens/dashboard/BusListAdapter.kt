@@ -32,6 +32,7 @@ class BusListAdapter(
         holder.busIdView.text = bus.busId
         holder.busInfoView.text = context.resources.getString(R.string.departure_time_text, bus.previousStop, readableDepartureTime)
         holder.passengers.text = "${bus.passengers}/${bus.capacity}"
+        holder.busroute.text = bus.routeName
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -50,6 +51,7 @@ class BusListAdapter(
         val busInfoView: TextView = itemView.findViewById(R.id.bus_list_info)
         val busListView: MaterialCardView = itemView.findViewById(R.id.bus_list_item)
         val passengers: TextView = itemView.findViewById((R.id.passenger_count))
+        val busroute: TextView = itemView.findViewById(R.id.bus_list_route)
     }
 
 }
