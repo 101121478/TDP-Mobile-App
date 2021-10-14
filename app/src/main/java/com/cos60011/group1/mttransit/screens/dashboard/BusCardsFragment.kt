@@ -12,6 +12,7 @@ import com.cos60011.group1.mttransit.Bus
 import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentBusCardsBinding
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
@@ -47,6 +48,7 @@ class BusCardsFragment : Fragment() {
             .document("busArchive")
             .collection("busesAtStop")
             .whereEqualTo("active", true)
+            .orderBy("arrivalTime", Query.Direction.DESCENDING)
 
         val options =
             FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()

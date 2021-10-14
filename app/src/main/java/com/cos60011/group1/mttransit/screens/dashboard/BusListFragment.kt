@@ -12,6 +12,7 @@ import com.cos60011.group1.mttransit.Bus
 import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentBusListBinding
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -41,7 +42,10 @@ class BusListFragment : Fragment() {
         var currentLocation = viewModel.userLocation.value //add observer here?
 
         // Get all the buses whose next stop is equal to the user's current location
-        var query = db.collectionGroup("busesAtStop").whereEqualTo("nextStop", "$currentLocation")
+        var query = db.collectionGroup("busesAtStop")
+            .whereEqualTo("nextStop", "$currentLocation")
+            .whereEqualTo("active", true)
+            .orderBy("departureTime", Query.Direction.DESCENDING)
 
         val options =
             FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()
