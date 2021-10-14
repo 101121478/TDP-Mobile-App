@@ -35,7 +35,6 @@ class BusEntryFragment : Fragment() {
         println("USER LOCATION: " + viewModel.userLocation.value)
 
         binding.submitButton.setOnClickListener { view: View ->
-            // TODO: Data Validation
             val busIDInput = binding.busIdInput
             val busCapacityInput = binding.passengerCapacityInput
             val passengersOnboardInput = binding.passengersOnboardInput
@@ -52,6 +51,7 @@ class BusEntryFragment : Fragment() {
             val dateCollection = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
 
+            // TODO: More Data Validation?
             // Data Validation
             if(busID.isNotEmpty()){
                 if(busCapacity.isNotEmpty()){
@@ -74,7 +74,7 @@ class BusEntryFragment : Fragment() {
                                 }
 
                                 // TODO: Check TODOs in function
-                                // TODO: Create directories and store required data in StationOperation
+                                // TODO: Double check that all directories are made correctly and that data stored is also in correct structure
                                 storeBusData(busID, busType, route, capacity, passengers, dateCollection, view)
 
                                 //storeBusData(busID, busType, route, capacity, passengers, view)
@@ -98,24 +98,26 @@ class BusEntryFragment : Fragment() {
     }
 
     private fun storeBusData(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String, view: View) {
+        // TODO: Improve logic of confirmation message for bus being added to database
 
-        // TODO: Update stationID and stationName?
-        // TODO: Get actual data and replace placeholders
-        // TODO: Re-implement confirmation message for bus being added to database
-        // TODO: Get the user selected station and store in the hashmap as initial bus location under ArrivalTime
         val selectedStation = viewModel.userLocation.value  // Get the station that was selected by the user in the SetStationFragment through SharedViewModel
-        val placeholderNextStop = "Hawthorn Station"
-        val placeholderPreviousStop = ""
+
+        // TODO: Get actual data and replace placeholders on database structure is finished
+        //val placeholderNextStop = "Hawthorn Station"
+        //val placeholderPreviousStop = ""
 
         // Create data class of initial bus data to store in busArchive
         val bus = Bus(busId = busID, capacity = busCapacity, currentStop = "$selectedStation", passengers = passengersOnboard, routeName = route)
 
+        // TODO: Update routeID, stationID and stationName?
+        // Hash map of bus routes to bus route IDs
         val busRoutes = hashMapOf(
             "Sandringham To CBD" to "sandringhamToCBD",
             "Frankston From CBD" to "frankstonFromCBD",
             "Frankston To CBD" to "frankstonToCBD",
             "Sandringham From CBD" to "sandringhamFromCBD"
         )
+
 
         // Maps of data for the documents that have multiple fields. To be stored in appropriate documents
         val arrivalTimeMap = hashMapOf(
