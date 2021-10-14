@@ -9,7 +9,7 @@ data class Bus(
     val capacity: Int = 1,
     val currentStop: String = "STOP_UNKNOWN_CS",
     val departureTime: Timestamp = Timestamp.now(), // For display in dashboard cards
-    val isActive: Boolean = true,
+    val active: Boolean = true,
     val lastUpdated: Timestamp = Timestamp.now(), //Not sure if this is necessary anymore
     val nextStop: String = "STOP_UNKNOWN_NS", // Need this for incoming buses query
     val passengers: Int = 1,
