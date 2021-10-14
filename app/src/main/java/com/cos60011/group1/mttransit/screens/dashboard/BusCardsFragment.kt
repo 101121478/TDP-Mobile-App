@@ -25,14 +25,13 @@ class BusCardsFragment : Fragment() {
 
     private lateinit var rvCards: RecyclerView
     private lateinit var cardAdapter: BusCardAdapter
-    private lateinit var viewModel: SharedViewModel
+    lateinit var viewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentBusCardsBinding.inflate(inflater, container, false)
-
         viewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         return binding.root
     }
@@ -42,6 +41,7 @@ class BusCardsFragment : Fragment() {
 
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val currentLocation = viewModel.userLocation.value //add observer here?
+
         val query = db.collection("StationOperation")
             .document("$today")
             .collection("$currentLocation")
@@ -57,7 +57,7 @@ class BusCardsFragment : Fragment() {
         rvCards = binding.busRecycler
 
         // Create adapter passing in the FirestoreRecyclerOptions object and attach it to recyclerview
-        cardAdapter = BusCardAdapter(requireContext(), options)
+        cardAdapter = BusCardAdapter(requireContext(), options, this)
         rvCards.adapter = cardAdapter
 
         // Set layout manager to position the items

@@ -23,7 +23,7 @@ class BusListFragment : Fragment() {
 
     private lateinit var rvList: RecyclerView
     private lateinit var listAdapter: BusListAdapter
-    private lateinit var viewModel: SharedViewModel
+    lateinit var viewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +41,8 @@ class BusListFragment : Fragment() {
 
         var currentLocation = viewModel.userLocation.value //add observer here?
 
+
+
         // Get all the buses whose next stop is equal to the user's current location
         var query = db.collectionGroup("busesAtStop")
             .whereEqualTo("nextStop", "$currentLocation")
@@ -54,7 +56,7 @@ class BusListFragment : Fragment() {
         rvList = binding.busListRecycler
 
         // Create adapter passing in the FirestoreyRecyclerOptions object and attaching it to recyclerview
-        listAdapter = BusListAdapter(requireContext(), options)
+        listAdapter = BusListAdapter(requireContext(), options, this)
         rvList.adapter = listAdapter
 
         // Set layout manager to position the items

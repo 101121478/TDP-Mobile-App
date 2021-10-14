@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.cos60011.group1.mttransit.Bus
 import com.cos60011.group1.mttransit.R
+import com.cos60011.group1.mttransit.SharedViewModel
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.card.MaterialCardView
@@ -17,12 +19,17 @@ import java.text.SimpleDateFormat
 // Creates an adapter extending from FirestoreRecyclerAdapter
 class BusListAdapter(
     private val context: Context,
-    private val options: FirestoreRecyclerOptions<Bus>) :
+    private val options: FirestoreRecyclerOptions<Bus>,
+    private val fragment: BusListFragment) :
     FirestoreRecyclerAdapter<Bus, BusListAdapter.ViewHolder>(options) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, bus: Bus) {
+
         holder.busListView.setOnClickListener { view: View ->
+
             //can add data to shared viewmodel here
+            fragment.viewModel.setCurrentBus(holder.busIdView.text.toString())
+
             view.findNavController().navigate(R.id.action_busBoardFragment_to_busStatusFragment)
         }
 
