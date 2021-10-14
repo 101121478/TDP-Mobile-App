@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
@@ -23,11 +24,15 @@ import kotlin.collections.HashMap
 class BusEntryFragment : Fragment() {
 
     private val projectFirestore = FirebaseFirestore.getInstance()
+    private lateinit var viewModel: SharedViewModel
 
 
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?,
                                 savedInstanceState: Bundle?): View {
         val binding = FragmentBusEntryBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
+        println("USER LOCATION: " + viewModel.userLocation.value)
 
         binding.submitButton.setOnClickListener { view: View ->
             // TODO: Data Validation
@@ -98,12 +103,12 @@ class BusEntryFragment : Fragment() {
         // TODO: Get actual data and replace placeholders
         // TODO: Re-implement confirmation message for bus being added to database
         // TODO: Get the user selected station and store in the hashmap as initial bus location under ArrivalTime
-        val placeholderStation = "Richmond"
+        val selectedStation = viewModel.userLocation.value  // Get the station that was selected by the user in the SetStationFragment through SharedViewModel
         val placeholderNextStop = "Hawthorn Station"
         val placeholderPreviousStop = ""
 
         // Create data class of initial bus data to store in busArchive
-        val bus = Bus(busId = busID, capacity = busCapacity, currentStop = "$placeholderStation Station", passengers = passengersOnboard, routeName = route)
+        val bus = Bus(busId = busID, capacity = busCapacity, currentStop = "$selectedStation", passengers = passengersOnboard, routeName = route)
 
         val busRoutes = hashMapOf(
             "Sandringham To CBD" to "sandringhamToCBD",
@@ -114,14 +119,14 @@ class BusEntryFragment : Fragment() {
 
         // Maps of data for the documents that have multiple fields. To be stored in appropriate documents
         val arrivalTimeMap = hashMapOf(
-            "stationName" to placeholderStation,
+            "stationName" to "$selectedStation",
             "stopNum" to 1,
             "arrivalTime" to Timestamp(Date())
         )
 
         val passengerCountMap = hashMapOf(
-            "stationID" to "$placeholderStation Station",
-            "stationName" to placeholderStation,
+            "stationID" to selectedStation,
+            "stationName" to selectedStation?.split(" ")?.get(0),
             "stopNum" to 1,
             "count" to passengersOnboard
         )
@@ -166,7 +171,7 @@ class BusEntryFragment : Fragment() {
                         println("DocumentSnapshot successfully written!")
                         // CREATE initial station arrival under station collection under ArrivalTime Document
                         projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
-                            .collection(busRoutes[route]!!).document("$placeholderStation Station")
+                            .collection(busRoutes[route]!!).document("$selectedStation")
                             .set(arrivalTimeMap)
                             .addOnSuccessListener {
                                 println("DocumentSnapshot successfully written!")
@@ -199,7 +204,7 @@ class BusEntryFragment : Fragment() {
                         println("DocumentSnapshot successfully written!")
                         // CREATE initial passenger count collection
                         projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
-                            .collection("PassengerCountAtStations").document("$placeholderStation Station")
+                            .collection("PassengerCountAtStations").document("$selectedStation ")
                             .set(passengerCountMap)
                             .addOnSuccessListener {
                                 println("DocumentSnapshot successfully written!")
@@ -255,13 +260,13 @@ class BusEntryFragment : Fragment() {
                 println("DocumentSnapshot successfully written!")
                 // CREATE station collection for the station under the date document and create busArchive document in the station collection
                 projectFirestore.collection("StationOperation").document(dateCollection)
-                    .collection("$placeholderStation Station").document("busArchive")
+                    .collection("$selectedStation").document("busArchive")
                     .set(HashMap<String, Any>())
                     .addOnSuccessListener {
                         println("DocumentSnapshot successfully written!")
                         // Store the bus data in the busArchive document
                         projectFirestore.collection("StationOperation").document(dateCollection)
-                            .collection("$placeholderStation Station").document("busArchive")
+                            .collection("$selectedStation").document("busArchive")
                             .collection("busesAtStop").document()
                             .set(bus)
                             .addOnSuccessListener {
