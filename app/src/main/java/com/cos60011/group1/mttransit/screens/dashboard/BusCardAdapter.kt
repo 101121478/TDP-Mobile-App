@@ -1,6 +1,7 @@
 package com.cos60011.group1.mttransit.screens.dashboard
 
 import android.content.Context
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,8 @@ import com.cos60011.group1.mttransit.R
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.card.MaterialCardView
+import java.text.SimpleDateFormat
+
 
 // Creates an adapter extending from FirestoreRecyclerAdapter
 class BusCardAdapter(
@@ -21,14 +24,17 @@ class BusCardAdapter(
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int, bus: Bus) {
             holder.btnView.setOnClickListener { view : View ->
+                //can add data to shared viewmodel here
                 view.findNavController().navigate(R.id.action_busBoardFragment_to_busStatusFragment)
             }
 
+            val readableArrivalTime = SimpleDateFormat("HH:mm").format(bus.arrivalTime.toDate())
+
             // Set item views based on your views and data model
-            //TODO: Update arrival string once data structure finalised
-            holder.busIdView.text = bus.name
-            holder.routeView.text = bus.route
-            holder.busArrivalView.text = context.resources.getString(R.string.arrival_time_text, bus.arrival)
+            holder.busIdView.text = bus.busId
+            holder.routeView.text = bus.routeName
+            holder.busArrivalView.text = context.resources.getString(R.string.arrival_time_text, readableArrivalTime)
+            holder.passengers.text = "${bus.passengers}/${bus.capacity}"
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,15 +47,13 @@ class BusCardAdapter(
             //return a new holder instance
             return ViewHolder(busView)
         }
-    // Provide a direct reference to each of the views within a data item
-    // Used to cache the views within the item layout for fast access
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // Your holder should contain and initialize a member variable
-        // for any view that will be set as you render a row
         val btnView: MaterialCardView = itemView.findViewById(R.id.bus_card)
         val busIdView: TextView = itemView.findViewById(R.id.bus_card_title)
         val routeView: TextView = itemView.findViewById(R.id.current_bus_route)
         val busArrivalView: TextView = itemView.findViewById(R.id.current_bus_arrival)
+        val passengers: TextView = itemView.findViewById((R.id.passenger_count))
     }
 
 }

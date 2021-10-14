@@ -8,6 +8,7 @@
     <string name="current_buses_header">Current Buses</string>
     <string name="incoming_buses_header">Incoming Buses</string>
     <string name="set_location_button_text">Set Location</string>
+    <string name="passenger_info_text">%1$s/%2$s</string>
 
     <!-- Location Fragment Test String -->
     <string name="current_user_location_header">Richmond Station</string>

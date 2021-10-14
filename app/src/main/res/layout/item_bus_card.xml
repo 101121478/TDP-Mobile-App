@@ -71,11 +71,12 @@
                     app:srcCompat="@drawable/ic_passengers" />
 
                 <TextView
+                    android:id="@+id/passenger_count"
                     style="@style/TextAppearance.MaterialComponents.Body2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
-                    android:text="32/70"
+                    android:text="@string/passenger_info_text"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/passenger_icon"
                     app:layout_constraintStart_toEndOf="@id/passenger_icon" />
