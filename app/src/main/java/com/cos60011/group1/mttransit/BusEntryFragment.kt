@@ -70,21 +70,8 @@ class BusEntryFragment : Fragment() {
 
                                 // TODO: Check TODOs in function
                                 // TODO: Create directories and store required data in StationOperation
-                                var busOperationSuccess = createBusOperationDirectoriesAndStoreBus(busID, busType, route, capacity, passengers, dateCollection)
-                                var stationOperationSuccess = createBusArchiveDirectoriesAndStoreBus(busID, route, capacity, passengers, dateCollection)
+                                storeBusData(busID, busType, route, capacity, passengers, dateCollection, view)
 
-
-                                // If both storage operations were successful then display a confirmation dialog and navigate to the dashboard
-                                if(busOperationSuccess && stationOperationSuccess){
-                                    val builder = AlertDialog.Builder(context)
-                                    builder.setTitle("Successfully added bus $busID")
-                                    builder.setPositiveButton("OK"){_,_ ->
-                                        if(this.isVisible) {
-                                            view.findNavController().navigate(R.id.action_busEntryFragment_to_busBoardFragment)
-                                        }
-                                    }
-                                    builder.show()
-                                }
                                 //storeBusData(busID, busType, route, capacity, passengers, view)
                             } else {
                                 passengersOnboardInput.error = "The number of passengers cannot exceed the bus capacity"
@@ -105,13 +92,18 @@ class BusEntryFragment : Fragment() {
         return binding.root
     }
 
-    private fun createBusOperationDirectoriesAndStoreBus(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String): Boolean {
-        // Boolean to determine if function was successful
-        var isSuccessful = true
+    private fun storeBusData(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String, view: View) {
+
         // TODO: Update stationID and stationName?
+        // TODO: Get actual data and replace placeholders
         // TODO: Re-implement confirmation message for bus being added to database
         // TODO: Get the user selected station and store in the hashmap as initial bus location under ArrivalTime
         val placeholderStation = "Richmond"
+        val placeholderNextStop = "Hawthorn Station"
+        val placeholderPreviousStop = ""
+
+        // Create data class of initial bus data to store in busArchive
+        val bus = Bus(busId = busID, capacity = busCapacity, currentStop = "$placeholderStation Station", passengers = passengersOnboard, routeName = route)
 
         val busRoutes = hashMapOf(
             "Sandringham To CBD" to "sandringhamToCBD",
@@ -134,7 +126,9 @@ class BusEntryFragment : Fragment() {
             "count" to passengersOnboard
         )
 
-
+        // Data Store Operation 1
+        // Store bus data in BusOperations collection
+        // Will also create the directory step by step if it or parts of it does not exist
         projectFirestore.collection("BusOperation").document(dateCollection)
             .set(HashMap<String, Any>())
             .addOnSuccessListener {
@@ -151,7 +145,6 @@ class BusEntryFragment : Fragment() {
                     }
                     .addOnFailureListener {
                             exception -> Log.w("Error writing document", exception)
-                            isSuccessful = false
                     }
                 // CREATE BusID DOCUMENT
                 projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusID")
@@ -165,7 +158,6 @@ class BusEntryFragment : Fragment() {
                     }
                     .addOnFailureListener {
                             exception -> Log.w("Error writing document", exception)
-                            isSuccessful = false
                     }
                 // CREATE ArrivalTime DOCUMENT
                 projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
@@ -183,7 +175,6 @@ class BusEntryFragment : Fragment() {
                             }
                             .addOnFailureListener {
                                     exception -> Log.w("Error writing document", exception)
-                                    isSuccessful = false
                             }
 
                     }
@@ -200,7 +191,6 @@ class BusEntryFragment : Fragment() {
                     }
                     .addOnFailureListener {
                             exception -> Log.w("Error writing document", exception)
-                            isSuccessful = false
                     }
                 // CREATE PassengerCount DOCUMENT
                 projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
@@ -218,7 +208,6 @@ class BusEntryFragment : Fragment() {
                             }
                             .addOnFailureListener {
                                     exception -> Log.w("Error writing document", exception)
-                                    isSuccessful = false
                             }
 
                     }
@@ -237,7 +226,6 @@ class BusEntryFragment : Fragment() {
                     }
                     .addOnFailureListener {
                             exception -> Log.w("Error writing document", exception)
-                            isSuccessful = false
                     }
                 // CREATE OperatedRoute DOCUMENT
                 projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("OperatedRoutes")
@@ -251,27 +239,15 @@ class BusEntryFragment : Fragment() {
                     }
                     .addOnFailureListener {
                             exception -> Log.w("Error writing document", exception)
-                            isSuccessful = false
                     }
             }
             .addOnFailureListener {
                     exception -> Log.w("Error writing document", exception)
-                    isSuccessful = false
             }
-        return isSuccessful
-    }
 
-    private fun createBusArchiveDirectoriesAndStoreBus(busID: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String): Boolean {
-        // Boolean to determine if function was successful
-        var isSuccessful = true
-        // TODO: Get actual data and replace placeholders
-        val placeholderStation = "Richmond"
-        val placeholderNextStop = "Hawthorn Station"
-        val placeholderPreviousStop = ""
-
-        // Create data class of initial bus data to store in busArchive
-        val bus = Bus(busId = busID, capacity = busCapacity, currentStop = "$placeholderStation Station", passengers = passengersOnboard, routeName = route)
-
+        // Data Store Operation 2
+        // Store bus data in busArchive document in StationOperation
+        // Will also create the directory step by step if it or parts of it does not exist
         // CREATE initial date document in StationOperation if not created
         projectFirestore.collection("StationOperation").document(dateCollection)
             .set(HashMap<String, Any>())
@@ -290,25 +266,26 @@ class BusEntryFragment : Fragment() {
                             .set(bus)
                             .addOnSuccessListener {
                                 println("DocumentSnapshot successfully written!")
-
-
-
+                                val builder = AlertDialog.Builder(context)
+                                builder.setTitle("Successfully added bus $busID")
+                                builder.setPositiveButton("OK"){_,_ ->
+                                    if(this.isVisible) {
+                                        view.findNavController().navigate(R.id.action_busEntryFragment_to_busBoardFragment)
+                                    }
+                                }
+                                builder.show()
                             }
                             .addOnFailureListener {
                                     exception -> Log.w("Error writing document", exception)
-                                    isSuccessful = false
                             }
                     }
                     .addOnFailureListener {
                             exception -> Log.w("Error writing document", exception)
-                            isSuccessful = false
                     }
             }
             .addOnFailureListener {
                     exception -> Log.w("Error writing document", exception)
-                    isSuccessful = false
             }
-        return isSuccessful
     }
 
     // Function to check if the device has an internet connection either over wifi or mobile data
@@ -326,109 +303,4 @@ class BusEntryFragment : Fragment() {
         }
         return false
     }
-
-    // Old Data Store Function
-    private fun storeBusData(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String, view: View) {
-
-        val initArrivalTime = Timestamp(Date())
-
-        val busRoutes = hashMapOf(
-            "Sandringham To CBD" to "sandringhamToCBD",
-            "Frankston From CBD" to "frankstonFromCBD",
-            "Frankston To CBD" to "frankstonToCBD",
-            "Sandringham From CBD" to "sandringhamFromCBD"
-        )
-
-        // TODO: Get the user selected station and store in the hashmap as initial bus location under ArrivalTime
-        val placeholderStation = "Malvern"
-
-        // TODO: Update hashMap to new data structure
-        //Firestore Data
-        // Hashmap of bus info that will be stored in Firestore
-        val bus = hashMapOf(
-            "ArrivalTime" to hashMapOf(
-                "ArrivalTimeAtStations" to hashMapOf(
-                    "ArrivalTimeAt$placeholderStation" to hashMapOf(
-                        "arrivalTime" to initArrivalTime,
-                        "stationID" to placeholderStation.lowercase(),
-                        "stationName" to "$placeholderStation Station",
-                        "stopNum" to 1
-                    ),
-                ),
-            ),
-            "BusID" to hashMapOf(
-                "Bus ID" to busID
-            ),
-            "BusType" to hashMapOf(
-                "Bus Type" to busType.lowercase()
-            ),
-            "Capacity" to hashMapOf(
-                "capacity" to busCapacity
-            ),
-            "DepartureTime" to hashMapOf(
-                "DepartureTimeAtStations" to emptyMap<String, String>()
-            ),
-            "OperatedRoute" to hashMapOf(
-                "routeID" to busRoutes[route]
-            ),
-            "PassengerCount" to hashMapOf(
-                "PassengerCountAtStations" to hashMapOf(
-                    "PassengerCountAt$placeholderStation" to passengersOnboard
-                )
-            ),
-        )
-
-
-        // Check if device has internet connection. If not then display alert informing user
-        if(!checkInternetConnection()){
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle("No Internet Connection")
-            builder.setMessage("Data will be stored when connection is re-established. Do not close the app otherwise data will be lost.")
-            builder.setPositiveButton("OK"){_,_ ->
-                view.findNavController().navigate(R.id.action_busEntryFragment_to_busBoardFragment)
-            }
-            builder.show()
-        }
-
-        // Create the Date document first using today's date if it does not exist
-        projectFirestore.collection("BusOperation").document(dateCollection)
-            .set(HashMap<String, Any>())
-            .addOnSuccessListener {
-                println("DocumentSnapshot successfully written!")
-
-                //TODO: Check if bus already exists in Firestore
-                //TODO: Update code to set the correct data based on the new database structure in Firestore
-                //Store the new bus as a document in the BusOperation collection, under the document with the day's date
-                projectFirestore.collection("BusOperation").document(dateCollection).collection("buses").document(busID)
-                    .set(bus)
-                    .addOnSuccessListener {
-                        println("DocumentSnapshot successfully written!")
-                        val builder = AlertDialog.Builder(context)
-                        builder.setTitle("Successfully added bus $busID")
-                        builder.setPositiveButton("OK"){_,_ ->
-                            if(this.isVisible) {
-                                view.findNavController().navigate(R.id.action_busEntryFragment_to_busBoardFragment)
-                            }
-                        }
-                        builder.show()
-                    }
-                    .addOnFailureListener {
-                            exception -> Log.w("Error writing document", exception)
-                        val builder = AlertDialog.Builder(context)
-                        builder.setTitle("Could not add bus $busID")
-                        builder.setMessage("Error writing document $exception")
-                        builder.setPositiveButton("OK"){_,_ -> }
-                        builder.show()
-                    }
-            }
-            .addOnFailureListener {
-                    exception -> Log.w("Error writing document", exception)
-                val builder = AlertDialog.Builder(context)
-                builder.setTitle("Could not add bus $busID")
-                builder.setMessage("Error writing document $exception")
-                builder.setPositiveButton("OK"){_,_ -> }
-                builder.show()
-            }
-    }
-
 }
