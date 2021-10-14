@@ -46,7 +46,7 @@ class BusCardsFragment : Fragment() {
             .collection("$currentLocation")
             .document("busArchive")
             .collection("busesAtStop")
-            .whereEqualTo("isActive", true)
+            .whereEqualTo("active", true)
 
         val options =
             FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()
