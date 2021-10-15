@@ -41,12 +41,13 @@ class BusCardsFragment : Fragment() {
 
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val currentLocation = viewModel.userLocation.value //add observer here?
+        // TODO CHange the today parameter back to
         val query = db.collection("StationOperation")
-            .document("$today")
+            .document("2021-10-14")
             .collection("$currentLocation")
             .document("busArchive")
             .collection("busesAtStop")
-            .whereEqualTo("isActive", true)
+            .whereEqualTo("active", true)
 
         val options =
             FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()

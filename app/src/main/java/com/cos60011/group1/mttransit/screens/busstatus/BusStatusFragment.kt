@@ -36,8 +36,8 @@ class BusStatusFragment : Fragment() {
         showProgressIndicator()
 
         // Initialize viewModel
-        // TODO GET bus document reference of selected bus from previous screen
-        viewModelFactory = BusStatusViewModelFactory("sample_bus")
+        // TODO GET route document reference and bus document reference of selected bus from previous screen
+        viewModelFactory = BusStatusViewModelFactory("frankstonToCBD","973")
         viewModel = ViewModelProvider(this, viewModelFactory).get(BusStatusViewModel::class.java)
 
         binding.busStatusViewModel = viewModel
@@ -45,8 +45,8 @@ class BusStatusFragment : Fragment() {
         binding.lifecycleOwner = this.viewLifecycleOwner
 
         // show UI after get data from server
-        viewModel.busID.observe(viewLifecycleOwner, { busID ->
-            if (busID != null) {
+        viewModel.busId.observe(viewLifecycleOwner, { busId ->
+            if (busId != null) {
                 hideProgressIndicator()
             }
         })
@@ -90,11 +90,11 @@ class BusStatusFragment : Fragment() {
             run {
                 if (isArrive) {
                     view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
-                    val message = "The Bus ${viewModel.busID.value} was marked as arrived."
+                    val message = "The Bus ${viewModel.busId.value} was marked as arrived."
                     Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
                 } else {
                     val title = "Error"
-                    val message = "Failure to mark bus ${viewModel.busID.value} as arrived,\n" +
+                    val message = "Failure to mark bus ${viewModel.busId.value} as arrived,\n" +
                             "please try again."
                     showDialog(title, message)
                 }
@@ -106,11 +106,11 @@ class BusStatusFragment : Fragment() {
             run {
                 if (isDeparture) {
                     view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
-                    val message = "The Bus ${viewModel.busID.value} was marked as departure."
+                    val message = "The Bus ${viewModel.busId.value} was marked as departure."
                     Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
                 } else {
                     val title = "Error"
-                    val message = "Failure to mark bus ${viewModel.busID.value} as departure,\n" +
+                    val message = "Failure to mark bus ${viewModel.busId.value} as departure,\n" +
                             "please try again."
                     showDialog(title, message)
                 }
