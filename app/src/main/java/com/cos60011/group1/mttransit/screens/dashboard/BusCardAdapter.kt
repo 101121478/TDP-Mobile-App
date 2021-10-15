@@ -19,12 +19,16 @@ import java.text.SimpleDateFormat
 // Creates an adapter extending from FirestoreRecyclerAdapter
 class BusCardAdapter(
     private val context: Context,
-    private val options: FirestoreRecyclerOptions<Bus>) :
+    private val options: FirestoreRecyclerOptions<Bus>,
+    private val fragment: BusCardsFragment) :
     FirestoreRecyclerAdapter<Bus, BusCardAdapter.ViewHolder>(options) {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int, bus: Bus) {
             holder.btnView.setOnClickListener { view : View ->
+
                 //can add data to shared viewmodel here
+                fragment.viewModel.setCurrentBus(holder.busIdView.text.toString())
+
                 view.findNavController().navigate(R.id.action_busBoardFragment_to_busStatusFragment)
             }
 

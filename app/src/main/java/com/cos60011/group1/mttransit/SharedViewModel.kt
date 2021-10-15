@@ -10,8 +10,13 @@ class SharedViewModel: ViewModel() {
     val userLocation: LiveData<String>
         get() = _userLocation
 
+    private var _currentBus = MutableLiveData<String>()
+    val currentBus: LiveData<String>
+        get() = _currentBus
+
     init {
         _userLocation.value = "Unknown"
+        _currentBus.value = "Testing adapter viewmodel access"
     }
 
 
@@ -19,6 +24,11 @@ class SharedViewModel: ViewModel() {
         _userLocation.value = newLocation
 
     }
+
+    fun setCurrentBus(currentBusId: String) {
+        _currentBus.value = currentBusId
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.i("SharedViewModel", "SharedViewModel destroyed")
