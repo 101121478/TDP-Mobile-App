@@ -23,7 +23,7 @@ import kotlin.collections.HashMap
 
 class BusEntryFragment : Fragment() {
 
-    private val projectFirestore = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
     private lateinit var viewModel: SharedViewModel
 
 
@@ -104,10 +104,9 @@ class BusEntryFragment : Fragment() {
 
         // TODO: Get actual data and replace placeholders on database structure is finished
         //val placeholderNextStop = "Hawthorn Station"
+        var nextStop = ""
         //val placeholderPreviousStop = ""
 
-        // Create data class of initial bus data to store in busArchive
-        val bus = Bus(busId = busID, capacity = busCapacity, currentStop = "$selectedStation", passengers = passengersOnboard, routeName = route)
 
         // TODO: Update routeID, stationID and stationName?
         // Hash map of bus routes to bus route IDs
@@ -117,6 +116,7 @@ class BusEntryFragment : Fragment() {
             "Frankston To CBD" to "frankstonToCBD",
             "Sandringham From CBD" to "sandringhamFromCBD"
         )
+        val routeId = busRoutes[route]  // Use the selected route to get the associated bus route ID from bus routes map
 
 
         // Maps of data for the documents that have multiple fields. To be stored in appropriate documents
@@ -136,12 +136,12 @@ class BusEntryFragment : Fragment() {
         // Data Store Operation 1
         // Store bus data in BusOperations collection
         // Will also create the directory step by step if it or parts of it does not exist
-        projectFirestore.collection("BusOperation").document(dateCollection)
+        db.collection("BusOperation").document(dateCollection)
             .set(HashMap<String, Any>())
             .addOnSuccessListener {
                 println("DocumentSnapshot successfully written!")
                 // CREATE BusType DOCUMENT
-                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusType")
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusType")
                     .set(hashMapOf(
                         "busType" to busType
                     ))
@@ -154,7 +154,7 @@ class BusEntryFragment : Fragment() {
                             exception -> Log.w("Error writing document", exception)
                     }
                 // CREATE BusID DOCUMENT
-                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusID")
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusID")
                     .set(hashMapOf(
                         "busID" to busID
                     ))
@@ -167,12 +167,12 @@ class BusEntryFragment : Fragment() {
                             exception -> Log.w("Error writing document", exception)
                     }
                 // CREATE ArrivalTime DOCUMENT
-                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
                     .set(arrivalTimeMap)
                     .addOnSuccessListener {
                         println("DocumentSnapshot successfully written!")
                         // CREATE initial station arrival under station collection under ArrivalTime Document
-                        projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
+                        db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
                             .collection(busRoutes[route]!!).document("$selectedStation")
                             .set(arrivalTimeMap)
                             .addOnSuccessListener {
@@ -189,7 +189,7 @@ class BusEntryFragment : Fragment() {
                             exception -> Log.w("Error writing document", exception)
                     }
                 // CREATE DepartureTime DOCUMENT
-                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("DepartureTime")
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("DepartureTime")
                     .set(HashMap<String, Any>())
                     .addOnSuccessListener {
                         println("DocumentSnapshot successfully written!")
@@ -200,12 +200,12 @@ class BusEntryFragment : Fragment() {
                             exception -> Log.w("Error writing document", exception)
                     }
                 // CREATE PassengerCount DOCUMENT
-                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
                     .set(passengerCountMap)
                     .addOnSuccessListener {
                         println("DocumentSnapshot successfully written!")
                         // CREATE initial passenger count collection
-                        projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
+                        db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
                             .collection("PassengerCountAtStations").document("$selectedStation ")
                             .set(passengerCountMap)
                             .addOnSuccessListener {
@@ -222,7 +222,7 @@ class BusEntryFragment : Fragment() {
                             exception -> Log.w("Error writing document", exception)
                     }
                 // CREATE Capacity DOCUMENT
-                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("Capacity")
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("Capacity")
                     .set(hashMapOf(
                         "capacity" to busCapacity
                     ))
@@ -235,7 +235,7 @@ class BusEntryFragment : Fragment() {
                             exception -> Log.w("Error writing document", exception)
                     }
                 // CREATE OperatedRoute DOCUMENT
-                projectFirestore.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("OperatedRoutes")
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("OperatedRoutes")
                     .set(hashMapOf(
                         "routeID" to busRoutes[route]
                     ))
@@ -256,34 +256,50 @@ class BusEntryFragment : Fragment() {
         // Store bus data in busArchive document in StationOperation
         // Will also create the directory step by step if it or parts of it does not exist
         // CREATE initial date document in StationOperation if not created
-        projectFirestore.collection("StationOperation").document(dateCollection)
+        db.collection("StationOperation").document(dateCollection)
             .set(HashMap<String, Any>())
             .addOnSuccessListener {
+
                 println("DocumentSnapshot successfully written!")
                 // CREATE station collection for the station under the date document and create busArchive document in the station collection
-                projectFirestore.collection("StationOperation").document(dateCollection)
+                db.collection("StationOperation").document(dateCollection)
                     .collection("$selectedStation").document("busArchive")
                     .set(HashMap<String, Any>())
                     .addOnSuccessListener {
                         println("DocumentSnapshot successfully written!")
-                        // Store the bus data in the busArchive document
-                        projectFirestore.collection("StationOperation").document(dateCollection)
-                            .collection("$selectedStation").document("busArchive")
-                            .collection("busesAtStop").document()
-                            .set(bus)
-                            .addOnSuccessListener {
-                                println("DocumentSnapshot successfully written!")
-                                val builder = AlertDialog.Builder(context)
-                                builder.setTitle("Successfully added bus $busID")
-                                builder.setPositiveButton("OK"){_,_ ->
-                                    if(this.isVisible) {
-                                        view.findNavController().navigate(R.id.action_busEntryFragment_to_busBoardFragment)
-                                    }
+
+                        // Peform a small get operation to get the name of the next station in the buses route
+                        db.collection("RouteOperation").document("$routeId")
+                            .collection("Stops").document("2")
+                            .get()
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val document = task.result
+                                    nextStop = document?.get("stationName").toString()
+
+                                    // Create data class of initial bus data to store in busArchive
+                                    val bus = Bus(busId = busID, capacity = busCapacity, currentStop = "$selectedStation", nextStop = nextStop, passengers = passengersOnboard,routeId = "$routeId", routeName = route)
+
+                                    // Store the bus data in the busArchive document
+                                    db.collection("StationOperation").document(dateCollection)
+                                        .collection("$selectedStation").document("busArchive")
+                                        .collection("busesAtStop").document()
+                                        .set(bus)
+                                        .addOnSuccessListener {
+                                            println("DocumentSnapshot successfully written!")
+                                            val builder = AlertDialog.Builder(context)
+                                            builder.setTitle("Successfully added bus $busID")
+                                            builder.setPositiveButton("OK"){_,_ ->
+                                                if(this.isVisible) {
+                                                    view.findNavController().navigate(R.id.action_busEntryFragment_to_busBoardFragment)
+                                                }
+                                            }
+                                            builder.show()
+                                        }
+                                        .addOnFailureListener {
+                                                exception -> Log.w("Error writing document", exception)
+                                        }
                                 }
-                                builder.show()
-                            }
-                            .addOnFailureListener {
-                                    exception -> Log.w("Error writing document", exception)
                             }
                     }
                     .addOnFailureListener {
