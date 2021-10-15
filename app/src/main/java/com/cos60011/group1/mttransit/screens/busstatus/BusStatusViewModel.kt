@@ -197,7 +197,7 @@ class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
 ////            .addOnFailureListener { _isArrive.value = false }
     }
 
-    fun markDeparture(onboard: String) {
+    fun markDeparture() {
         val departureTimeStamp = Timestamp.now()
         // TODO: Need change to correct variable: route collection ID and date path is for testing
         // path for writing data to BusOperation
@@ -245,6 +245,15 @@ class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
 
                 /**
                  * If busArchive Path is not exist
+                 * 1. update active to false
+                 * 2. add busArchive path
+                 * 3. create new bus status document
+                 * 4. add operationHistory path
+                 * 5. add document to operationHistory under current station
+                 * 6. add data to BusOperation
+                 */
+                /**
+                 * If busArchive Path is not exist
                  */
                 busArchiveRef.get().addOnSuccessListener { document ->
                     if (document.data == null) {
@@ -264,22 +273,22 @@ class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
 
                         db.runBatch { batch ->
                             // StationOperation
-                            // set bus active to false
+                            // 1. set bus active to false
                             batch.update(busRef, "active", false)
-                            // create next stop path if it is not exist
+                            // 2. create next stop path if it is not exist
                             batch.set(busArchiveRef, HashMap<String, Any>())
-                            // add new bus document
+                            // 3. add new bus document
                             batch.set(newBusRef, newBusData)
-                            // create operation history if it is not exist
+                            // 4. create operation history if it is not exist
                             batch.set(operationHistoryRef, HashMap<String, Any>())
-                            // add new departedBusDocument
+                            // 5. add new departedBusDocument
                             batch.set(departedBusRef, hashMapOf(
                                 "departureTime" to departureTimeStamp
                             ))
                             // BusOperation
-                            // add departure time document
+                            // 6. add departure time document
                             batch.set(departRef, departData)
-                            // add Passenger count document
+                            // 6. add Passenger count document
                             batch.set(passengerRef, passengersData)
 
                         }.addOnSuccessListener {
@@ -290,6 +299,10 @@ class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
                     } else {
                         /**
                          * If busArchive Path is exist, do not need to create busArchive Path and OperationHistory Path
+                         * 1. update active to false
+                         * 2. create new bus status document
+                         * 3. add document to operationHistory under current station
+                         * 4. add data to BusOperation
                          */
                         val busRef = db.document(busStatusPath)
                         val newBusRef = busArchiveRef.collection("busesAtStop").document()
@@ -303,17 +316,17 @@ class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
                         val passengersData = createPassengerCountData()
 
                         db.runBatch { batch ->
-                            // set bus active to false
+                            // 1. set bus active to false
                             batch.update(busRef, "active", false)
-                            // add new bus document
+                            // 2. add new bus document
                             batch.set(newBusRef, newBusData)
-                            // add new departedBusDocument
+                            // 3. add new departedBusDocument
                             batch.set(departedBusRef, hashMapOf(
                                 "departureTime" to departureTimeStamp
                             ))
-                            // add departure time document
+                            // 4. add departure time document
                             batch.set(departRef, departData)
-                            // add Passenger count document
+                            // 4. add Passenger count document
                             batch.set(passengerRef, passengersData)
 
                         }.addOnSuccessListener {
@@ -358,9 +371,7 @@ class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
                     Log.w("Fail to mark bus as departure", e)
                 }
             }
-
         }
-
     }
 
     private fun createNextStopBusData(timestamp: Timestamp): HashMap<String, Comparable<*>?> {
