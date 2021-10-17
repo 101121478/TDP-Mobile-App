@@ -271,6 +271,49 @@ class BusEntryFragment : Fragment() {
 
 
             }
+
+        // Perform small get operation to get the total passenger count
+        db.collection("DataVisualisation").document("TotalPassengers")
+            .get()
+            .addOnCompleteListener { task ->
+                val document = task.result
+                var count = document?.getLong("count")?.toInt()
+                println("COUNT: " + count)
+
+                if(count != null) {
+                    count += passengersOnboard
+
+                    // Add the initial passengers onboard count for the new bus to total passenger count, for data visualisation statistics
+                    db.collection("DataVisualisation").document("TotalPassengers")
+                        .set(hashMapOf(
+                            "count" to count
+                        ))
+                }
+
+
+            }
+
+
+        // Perform small get operation to get the total buses for today
+        db.collection("DataVisualisation").document("TotalRunningBusesForToday")
+            .get()
+            .addOnCompleteListener { task ->
+                val document = task.result
+                var count = document?.getLong("count")?.toInt()
+                println("COUNT: " + count)
+
+                if(count != null) {
+                    count += 1
+
+                    // Add plus 1 to the total buses count for today for the data visualisation statistics
+                    db.collection("DataVisualisation").document("TotalRunningBusesForToday")
+                        .set(hashMapOf(
+                            "count" to count
+                        ))
+                }
+
+
+            }
     }
 
     // Function to check if the device has an internet connection either over wifi or mobile data
