@@ -12,12 +12,9 @@ import com.cos60011.group1.mttransit.Bus
 import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentBusListBinding
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.time.LocalDate
-import java.time.ZoneId
 
 class BusListFragment : Fragment() {
     private var _binding: FragmentBusListBinding? = null
@@ -26,7 +23,7 @@ class BusListFragment : Fragment() {
 
     private lateinit var rvList: RecyclerView
     private lateinit var listAdapter: BusListAdapter
-    private lateinit var viewModel: SharedViewModel
+    lateinit var viewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,33 +39,24 @@ class BusListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO: Get location from LocationFragment
         var currentLocation = viewModel.userLocation.value //add observer here?
 
-        //Creates a Timestamp for midnight of today which will act as lower range of time query
-        var startOfToday =
-            LocalDate.now().atStartOfDay(ZoneId.of("Australia/Melbourne")).toOffsetDateTime()
-                .toEpochSecond()
-        val startTimestamp = Timestamp(startOfToday, 0)
 
-        //Creates a Timestamp for midnight of next day not-inclusive which will act as upper range of time query
-        val endOfToday = LocalDate.now().plusDays(1).atStartOfDay(ZoneId.of("Australia/Melbourne"))
-            .toOffsetDateTime().toEpochSecond()
-        val endTimestamp = Timestamp(endOfToday, 0)
 
-        //Query Firestore and get results
-        var query = db.collection("testBuses").whereEqualTo("location", currentLocation)
-            .whereGreaterThanOrEqualTo("lastUpdated", startTimestamp)
-            .whereLessThan("lastUpdated", endTimestamp)
-            .orderBy("lastUpdated", Query.Direction.DESCENDING)
+        // Get all the buses whose next stop is equal to the user's current location
+        var query = db.collectionGroup("busesAtStop")
+            .whereEqualTo("nextStop", "$currentLocation")
+            .whereEqualTo("active", true)
+            .orderBy("departureTime", Query.Direction.DESCENDING)
+
         val options =
             FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()
 
         //bind views you want to change here
         rvList = binding.busListRecycler
 
-        // Create adapter passing in the FirestoreyRecyclerOPtions object and attaching it to recyclerview
-        listAdapter = BusListAdapter(requireContext(), options)
+        // Create adapter passing in the FirestoreyRecyclerOptions object and attaching it to recyclerview
+        listAdapter = BusListAdapter(requireContext(), options, this)
         rvList.adapter = listAdapter
 
         // Set layout manager to position the items
