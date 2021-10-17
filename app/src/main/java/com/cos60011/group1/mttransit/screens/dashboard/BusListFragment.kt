@@ -61,6 +61,7 @@ class BusListFragment : Fragment() {
 
         // Set layout manager to position the items
         rvList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        rvList.itemAnimator = null
     }
 
     override fun onStart() {

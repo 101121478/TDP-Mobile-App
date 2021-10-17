@@ -62,6 +62,7 @@ class BusCardsFragment : Fragment() {
 
         // Set layout manager to position the items
         rvCards.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        rvCards.itemAnimator = null
     }
 
     override fun onStart() {
