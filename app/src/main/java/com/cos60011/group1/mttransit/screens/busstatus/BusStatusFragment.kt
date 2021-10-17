@@ -37,13 +37,10 @@ class BusStatusFragment : Fragment() {
         val busIdRef = sharedViewModel.currentBus.value
         val userLocation = sharedViewModel.userLocation.value
         val isCurrentBus = sharedViewModel.isCurrentBus.value
-        println(busIdRef)
-        println(userLocation)
-        println(isCurrentBus)
 
         // Initialize viewModel
         // TODO GET route document reference and bus document reference of selected bus from previous screen
-        viewModelFactory = BusStatusViewModelFactory("frankstonToCBD","973")
+        viewModelFactory = BusStatusViewModelFactory(userLocation.toString(), busIdRef.toString())
         viewModel = ViewModelProvider(this, viewModelFactory).get(BusStatusViewModel::class.java)
 
         binding.busStatusViewModel = viewModel

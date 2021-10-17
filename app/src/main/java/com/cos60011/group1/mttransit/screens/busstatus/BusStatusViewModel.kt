@@ -57,12 +57,12 @@ class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
 
     init {
         // TODO the date, stationId, targetBusId is hard code for testing purpose
-        val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        stationId = "Flinders Station"
-        targetBusId = "465"
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        stationId = stationRef
+        targetBusId = busRef
 
         //query to get bus status
-        busStatusQuery = db.collection("StationOperation").document("2021-10-14")
+        busStatusQuery = db.collection("StationOperation").document(today)
             .collection(stationId).document("busArchive")
             .collection("busesAtStop")
             .whereEqualTo("active", true)
