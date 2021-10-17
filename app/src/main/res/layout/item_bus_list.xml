@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:layout_margin="2dp">
 
-    <!-- Need to refactor ids to be format strings and update adapter -->
+    <!--
+   TODO: Finalise layout
+   -->
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bus_list_item"
@@ -29,14 +31,33 @@
             android:padding="16dp">
 
             <!-- Title, secondary and supporting text -->
-            <TextView
-                android:id="@+id/bus_list_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bus 923"
-                android:textSize="18sp"
-                style="@style/TextAppearance.MaterialComponents.Headline6" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/bus_list_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bus 923"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/bus_list_route"
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:text="Flinders to Belgrave "
+                    android:textSize="11sp"
+                    app:layout_constraintBottom_toBottomOf="@id/bus_list_title"
+                    app:layout_constraintStart_toEndOf="@id/bus_list_title"
+                    app:layout_constraintTop_toTopOf="@id/bus_list_title" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,35 +67,35 @@
 
                 <TextView
                     android:id="@+id/bus_list_info"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="Left Richmond Station at 10:32am"
-                    style="@style/TextAppearance.MaterialComponents.Body1"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/passenger_icon_list"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_gravity="start"
-                    app:srcCompat="@drawable/ic_passengers"
+                    android:layout_marginHorizontal="8dp"
                     app:layout_constraintEnd_toStartOf="@id/passenger_count"
                     app:layout_constraintTop_toTopOf="@id/bus_list_info"
-                    android:layout_marginHorizontal="8dp"/>
+                    app:srcCompat="@drawable/ic_passengers" />
 
                 <TextView
                     android:id="@+id/passenger_count"
+                    style="@style/TextAppearance.MaterialComponents.Body2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/passenger_info_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@id/passenger_icon_list"
                     android:layout_marginHorizontal="8dp"
+                    android:text="@string/passenger_info_text"
                     android:textSize="12sp"
-                    style="@style/TextAppearance.MaterialComponents.Body2"/>
+                    app:layout_constraintBottom_toBottomOf="@id/passenger_icon_list"
+                    app:layout_constraintEnd_toEndOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

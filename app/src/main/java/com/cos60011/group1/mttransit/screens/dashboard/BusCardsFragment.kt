@@ -12,6 +12,7 @@ import com.cos60011.group1.mttransit.Bus
 import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentBusCardsBinding
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
@@ -24,14 +25,13 @@ class BusCardsFragment : Fragment() {
 
     private lateinit var rvCards: RecyclerView
     private lateinit var cardAdapter: BusCardAdapter
-    private lateinit var viewModel: SharedViewModel
+    lateinit var viewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentBusCardsBinding.inflate(inflater, container, false)
-
         viewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         return binding.root
     }
@@ -41,13 +41,13 @@ class BusCardsFragment : Fragment() {
 
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val currentLocation = viewModel.userLocation.value //add observer here?
-        // TODO CHange the today parameter back to
         val query = db.collection("StationOperation")
             .document("2021-10-14")
             .collection("$currentLocation")
             .document("busArchive")
             .collection("busesAtStop")
             .whereEqualTo("active", true)
+            .orderBy("arrivalTime", Query.Direction.DESCENDING)
 
         val options =
             FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()
@@ -56,11 +56,12 @@ class BusCardsFragment : Fragment() {
         rvCards = binding.busRecycler
 
         // Create adapter passing in the FirestoreRecyclerOptions object and attach it to recyclerview
-        cardAdapter = BusCardAdapter(requireContext(), options)
+        cardAdapter = BusCardAdapter(requireContext(), options, this)
         rvCards.adapter = cardAdapter
 
         // Set layout manager to position the items
         rvCards.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        rvCards.itemAnimator = null
     }
 
     override fun onStart() {

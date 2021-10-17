@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
@@ -22,20 +23,21 @@ import kotlin.collections.HashMap
 
 class BusEntryFragment : Fragment() {
 
-    private val projectFirestore = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
+    private lateinit var viewModel: SharedViewModel
 
 
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?,
                                 savedInstanceState: Bundle?): View {
         val binding = FragmentBusEntryBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
+        println("USER LOCATION: " + viewModel.userLocation.value)
 
         binding.submitButton.setOnClickListener { view: View ->
-            // TODO: Data Validation
             val busIDInput = binding.busIdInput
             val busCapacityInput = binding.passengerCapacityInput
             val passengersOnboardInput = binding.passengersOnboardInput
-
-
 
             val busID = binding.busIdInput.text.toString()
             val busType = binding.busTypeSpinner.selectedItem.toString()
@@ -43,7 +45,11 @@ class BusEntryFragment : Fragment() {
             val busCapacity = binding.passengerCapacityInput.text.toString()
             val passengersOnboard = binding.passengersOnboardInput.text.toString()
 
+            //Get date as string in format yyyy-mm-dd for use in creating date document in BusOperation
+            val dateCollection = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
+
+            // TODO: More Data Validation?
             // Data Validation
             if(busID.isNotEmpty()){
                 if(busCapacity.isNotEmpty()){
@@ -53,7 +59,23 @@ class BusEntryFragment : Fragment() {
                             val passengers = Integer.parseInt(passengersOnboard)
                             if(passengers <= capacity){
                                 println("ALL INPUTS VALID")
-                                storeBusData(busID, busType, route, capacity, passengers, view)
+
+                                // Check if device has internet connection. If not then display alert informing user
+                                if(!checkInternetConnection()){
+                                    val builder = AlertDialog.Builder(context)
+                                    builder.setTitle("No Internet Connection")
+                                    builder.setMessage("Data will be stored when connection is re-established. Do not close the app otherwise data will be lost.")
+                                    builder.setPositiveButton("OK"){_,_ ->
+                                        view.findNavController().navigate(R.id.action_busEntryFragment_to_busBoardFragment)
+                                    }
+                                    builder.show()
+                                }
+
+                                // TODO: Check TODOs in function
+                                // TODO: Double check that all directories are made correctly and that data stored is also in correct structure
+                                storeBusData(busID, busType, route, capacity, passengers, dateCollection, view)
+
+                                //storeBusData(busID, busType, route, capacity, passengers, view)
                             } else {
                                 passengersOnboardInput.error = "The number of passengers cannot exceed the bus capacity"
                             }
@@ -73,107 +95,215 @@ class BusEntryFragment : Fragment() {
         return binding.root
     }
 
-    private fun storeBusData(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, view: View) {
+    private fun storeBusData(busID: String, busType: String, route: String, busCapacity: Int, passengersOnboard: Int, dateCollection: String, view: View) {
+        // TODO: Improve logic of confirmation message for bus being added to database
 
-        val initArrivalTime = Timestamp(Date())
-        val dateCollection = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val selectedStation = viewModel.userLocation.value  // Get the station that was selected by the user in the SetStationFragment through SharedViewModel
 
+        // TODO: Get actual data and replace placeholders on database structure is finished
+        var nextStop = ""
+        //val placeholderPreviousStop = ""
+
+        // TODO: Update routeID, stationID and stationName?
+        // Hash map of bus routes to bus route IDs
         val busRoutes = hashMapOf(
             "Sandringham To CBD" to "sandringhamToCBD",
             "Frankston From CBD" to "frankstonFromCBD",
             "Frankston To CBD" to "frankstonToCBD",
             "Sandringham From CBD" to "sandringhamFromCBD"
         )
+        val routeId = busRoutes[route]  // Use the selected route to get the associated bus route ID from bus routes map
 
-        // TODO: Get the user selected station and store in the hashmap as initial bus location under ArrivalTime
-        val placeholderStation = "Malvern"
 
-        // TODO: Update hashMap to new data structure
-        //Firestore Data
-        // Hashmap of bus info that will be stored in Firestore
-        val bus = hashMapOf(
-            "ArrivalTime" to hashMapOf(
-                "ArrivalTimeAtStations" to hashMapOf(
-                    "ArrivalTimeAt$placeholderStation" to hashMapOf(
-                        "arrivalTime" to initArrivalTime,
-                        "stationID" to placeholderStation.lowercase(),
-                        "stationName" to "$placeholderStation Station",
-                        "stopNum" to 1
-                    ),
-                ),
-            ),
-            "BusID" to hashMapOf(
-                "Bus ID" to busID
-            ),
-            "BusType" to hashMapOf(
-                "Bus Type" to busType.lowercase()
-            ),
-            "Capacity" to hashMapOf(
-                "capacity" to busCapacity
-            ),
-            "DepartureTime" to hashMapOf(
-                "DepartureTimeAtStations" to emptyMap<String, String>()
-            ),
-            "OperatedRoute" to hashMapOf(
-                "routeID" to busRoutes[route]
-            ),
-            "PassengerCount" to hashMapOf(
-                "PassengerCountAtStations" to hashMapOf(
-                    "PassengerCountAt$placeholderStation" to passengersOnboard
-                )
-            ),
+        // Maps of data for the documents that have multiple fields. To be stored in appropriate documents
+        val arrivalTimeMap = hashMapOf(
+            "stationName" to "$selectedStation",
+            "stopNum" to 1,
+            "arrivalTime" to Timestamp(Date())
         )
 
+        val passengerCountMap = hashMapOf(
+            "stationID" to selectedStation,
+            "stationName" to selectedStation?.split(" ")?.get(0),
+            "stopNum" to 1,
+            "count" to passengersOnboard
+        )
 
-        // Check if device has internet connection. If not then display alert informing user
-        if(!checkInternetConnection()){
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle("No Internet Connection")
-            builder.setMessage("Data will be stored when connection is re-established. Do not close the app otherwise data will be lost.")
-            builder.setPositiveButton("OK"){_,_ ->
-                view.findNavController().navigate(R.id.action_busEntryFragment_to_busBoardFragment)
-            }
-            builder.show()
-        }
-
-        // Create the Date document first using today's date if it does not exist
-        projectFirestore.collection("BusOperation").document(dateCollection)
+        // Data Store Operation 1
+        // Store bus data in BusOperations collection
+        // Will also create the directory step by step if it or parts of it does not exist
+        db.collection("BusOperation").document(dateCollection)
             .set(HashMap<String, Any>())
             .addOnSuccessListener {
-                println("DocumentSnapshot successfully written!")
+                println("BusOperation Date document successfully written!")
+                // CREATE BusType DOCUMENT
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusType")
+                    .set(hashMapOf(
+                        "busType" to busType
+                    ))
+                    .addOnSuccessListener {
+                        println("BusType document successfully written!")
 
-                //TODO: Check if bus already exists in Firestore
-                //TODO: Update code to set the correct data based on the new database structure in Firestore
-                //Store the new bus as a document in the BusOperation collection, under the document with the day's date
-                projectFirestore.collection("BusOperation").document(dateCollection).collection("buses").document(busID)
-                    .set(bus)
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing BusType document", exception)
+                    }
+                // CREATE BusID DOCUMENT
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusID")
+                    .set(hashMapOf(
+                        "busID" to busID
+                    ))
+                    .addOnSuccessListener {
+                        println("BusID document successfully written!")
+
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing BusID document", exception)
+                    }
+                // CREATE ArrivalTime DOCUMENT
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
+                    .set(arrivalTimeMap)
                     .addOnSuccessListener {
                         println("DocumentSnapshot successfully written!")
-                        val builder = AlertDialog.Builder(context)
-                        builder.setTitle("Successfully added bus $busID")
-                        builder.setPositiveButton("OK"){_,_ ->
-                            if(this.isVisible) {
-                                view.findNavController().navigate(R.id.action_busEntryFragment_to_busBoardFragment)
+                        // CREATE initial station arrival under station collection under ArrivalTime Document
+                        db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
+                            .collection(busRoutes[route]!!).document("$selectedStation")
+                            .set(arrivalTimeMap)
+                            .addOnSuccessListener {
+                                println("Initial arrival time data document successfully written!")
+
+
                             }
-                        }
-                        builder.show()
+                            .addOnFailureListener {
+                                    exception -> Log.w("Error writing Initial arrival time data document", exception)
+                            }
+
                     }
                     .addOnFailureListener {
                             exception -> Log.w("Error writing document", exception)
-                        val builder = AlertDialog.Builder(context)
-                        builder.setTitle("Could not add bus $busID")
-                        builder.setMessage("Error writing document $exception")
-                        builder.setPositiveButton("OK"){_,_ -> }
-                        builder.show()
+                    }
+                // CREATE DepartureTime DOCUMENT
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("DepartureTime")
+                    .set(HashMap<String, Any>())
+                    .addOnSuccessListener {
+                        println("DepartureTime document successfully written!")
+
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing DepartureTime document", exception)
+                    }
+                // CREATE PassengerCount DOCUMENT
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
+                    .set(passengerCountMap)
+                    .addOnSuccessListener {
+                        println("DocumentSnapshot successfully written!")
+                        // CREATE initial passenger count collection
+                        db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
+                            .collection("PassengerCountAtStations").document("$selectedStation ")
+                            .set(passengerCountMap)
+                            .addOnSuccessListener {
+                                println("PassengerCount document successfully written!")
+
+
+                            }
+                            .addOnFailureListener {
+                                    exception -> Log.w("Error writing PassengerCount document", exception)
+                            }
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing document", exception)
+                    }
+                // CREATE Capacity DOCUMENT
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("Capacity")
+                    .set(hashMapOf(
+                        "capacity" to busCapacity
+                    ))
+                    .addOnSuccessListener {
+                        println("Capacity document successfully written!")
+
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing Capacity document", exception)
+                    }
+                // CREATE OperatedRoute DOCUMENT
+                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("OperatedRoutes")
+                    .set(hashMapOf(
+                        "routeID" to busRoutes[route]
+                    ))
+                    .addOnSuccessListener {
+                        println("OperatedRoute document successfully written!")
+
+
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing OperatedRoute document", exception)
                     }
             }
             .addOnFailureListener {
-                    exception -> Log.w("Error writing document", exception)
-                val builder = AlertDialog.Builder(context)
-                builder.setTitle("Could not add bus $busID")
-                builder.setMessage("Error writing document $exception")
-                builder.setPositiveButton("OK"){_,_ -> }
-                builder.show()
+                    exception -> Log.w("Error writing BusOperation Date document", exception)
+            }
+
+        // Data Store Operation 2
+        // Store bus data in busArchive document in StationOperation
+        // Will also create the directory step by step if it or parts of it does not exist
+        // CREATE initial date document in StationOperation if not created
+        db.collection("StationOperation").document(dateCollection)
+            .set(HashMap<String, Any>())
+            .addOnSuccessListener {
+
+                println("StationOperation Date document successfully written!")
+                // CREATE station collection for the station under the date document and create busArchive document in the station collection
+                db.collection("StationOperation").document(dateCollection)
+                    .collection("$selectedStation").document("busArchive")
+                    .set(HashMap<String, Any>())
+                    .addOnSuccessListener {
+                        println("busArchive document successfully written!")
+
+                        // Peform a small get operation to get the name of the next station in the buses route
+                        db.collection("RouteOperation").document("$routeId")
+                            .collection("Stops").document("2")
+                            .get()
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val document = task.result
+                                    nextStop = document?.get("stationName").toString()
+
+                                    // Create data class of initial bus data to store in busArchive
+                                    val bus = Bus(busId = busID, capacity = busCapacity, currentStop = "$selectedStation", nextStop = nextStop, passengers = passengersOnboard,routeId = "$routeId", routeName = route)
+
+                                    // Store the bus data in the busArchive document
+                                    db.collection("StationOperation").document(dateCollection)
+                                        .collection("$selectedStation").document("busArchive")
+                                        .collection("busesAtStop").document()
+                                        .set(bus)
+                                        .addOnSuccessListener {
+                                            println("Bus data successfully written!")
+                                            val builder = AlertDialog.Builder(context)
+                                            builder.setTitle("Successfully added bus $busID")
+                                            builder.setPositiveButton("OK"){_,_ ->
+                                                if(this.isVisible) {
+                                                    view.findNavController().navigate(R.id.action_busEntryFragment_to_busBoardFragment)
+                                                }
+                                            }
+                                            builder.show()
+                                        }
+                                        .addOnFailureListener {
+                                                exception -> Log.w("Error writing Bus data", exception)
+                                        }
+                                }
+                            }
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing busArchive document", exception)
+                    }
+            }
+            .addOnFailureListener {
+                    exception -> Log.w("Error writing StationOperation Date document", exception)
             }
     }
 
@@ -192,5 +322,4 @@ class BusEntryFragment : Fragment() {
         }
         return false
     }
-
 }

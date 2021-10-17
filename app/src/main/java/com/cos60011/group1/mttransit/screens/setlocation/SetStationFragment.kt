@@ -49,7 +49,7 @@ class SetStationFragment : Fragment() {
             val selectedLocation = materialSpinner.text.toString()
 
             if (selectedLocation.isBlank()) {
-                //feedbackMessage.text = "Please select a station."
+                //feedbackMessage.text = viewModel.currentBus.value.toString()
                 Snackbar.make(requireView(), "Please select a station.", Snackbar.LENGTH_SHORT)
                     .show()
             } else {

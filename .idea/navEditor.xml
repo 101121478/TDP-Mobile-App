@@ -55,6 +55,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_busBoardFragment_to_setStationFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -69,6 +74,15 @@
                             <option name="y" value="-135" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_busEntryFragment_to_busBoardFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -81,17 +95,14 @@
                             <option name="y" value="209" />
                           </Point>
                         </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="chooseStationFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="455" />
-                            <option name="y" value="-474" />
-                          </Point>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_busStatusFragment_to_busBoardFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -108,6 +119,27 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_loginFragment_to_busBoardFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="setStationFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_setStationFragment_to_busBoardFragment">
                               <value>
                                 <LayoutPositions />
                               </value>
