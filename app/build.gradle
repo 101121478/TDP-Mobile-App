@@ -54,6 +54,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
+
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.23'
+
     // Fragment Navigation
     def nav_version = "2.3.5"
 
