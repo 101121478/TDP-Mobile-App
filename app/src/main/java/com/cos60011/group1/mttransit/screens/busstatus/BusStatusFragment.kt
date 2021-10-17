@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.cos60011.group1.mttransit.R
+import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentBusStatusBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -19,6 +20,7 @@ class BusStatusFragment : Fragment() {
     private lateinit var binding: FragmentBusStatusBinding
     private lateinit var viewModel: BusStatusViewModel
     private lateinit var viewModelFactory: BusStatusViewModelFactory
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +31,15 @@ class BusStatusFragment : Fragment() {
             R.layout.fragment_bus_status, container, false)
 
         showProgressIndicator()
+
+        // get routeID, busId and isCurrentBus
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        val busIdRef = sharedViewModel.currentBus.value
+        val userLocation = sharedViewModel.userLocation.value
+        val isCurrentBus = sharedViewModel.isCurrentBus.value
+        println(busIdRef)
+        println(userLocation)
+        println(isCurrentBus)
 
         // Initialize viewModel
         // TODO GET route document reference and bus document reference of selected bus from previous screen

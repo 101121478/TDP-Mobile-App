@@ -42,7 +42,7 @@ class BusCardsFragment : Fragment() {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val currentLocation = viewModel.userLocation.value //add observer here?
         val query = db.collection("StationOperation")
-            .document("2021-10-14")
+            .document("$today")
             .collection("$currentLocation")
             .document("busArchive")
             .collection("busesAtStop")
