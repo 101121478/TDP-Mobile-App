@@ -39,7 +39,6 @@ class BusStatusFragment : Fragment() {
         val isCurrentBus = sharedViewModel.isCurrentBus.value
 
         // Initialize viewModel
-        // TODO GET route document reference and bus document reference of selected bus from previous screen
         viewModelFactory = BusStatusViewModelFactory(userLocation.toString(), busIdRef.toString())
         viewModel = ViewModelProvider(this, viewModelFactory).get(BusStatusViewModel::class.java)
 
@@ -50,7 +49,7 @@ class BusStatusFragment : Fragment() {
         // show UI after get data from server
         viewModel.busId.observe(viewLifecycleOwner, { busId ->
             if (busId != null) {
-                hideProgressIndicator()
+                hideProgressIndicator(isCurrentBus!!)
             }
         })
 
@@ -146,7 +145,7 @@ class BusStatusFragment : Fragment() {
         binding.buttonBusStatusDepart.visibility = View.INVISIBLE
     }
 
-    private fun hideProgressIndicator() {
+    private fun hideProgressIndicator(isCurrentBus: Boolean) {
         binding.progressCircular.visibility = View.GONE
         binding.busStatusBusIdLabel.visibility = View.VISIBLE
         binding.busStatusBusIdText.visibility = View.VISIBLE
@@ -158,8 +157,11 @@ class BusStatusFragment : Fragment() {
         binding.busStatusPassengerCapacityText.visibility = View.VISIBLE
         binding.busStatusPassengerOnboardLabel.visibility = View.VISIBLE
         binding.textInputBusStatusPassengerOnboard.visibility = View.VISIBLE
-        binding.buttonBusStatusArrive.visibility = View.VISIBLE
-        binding.buttonBusStatusDepart.visibility = View.VISIBLE
+        if (isCurrentBus) {
+            binding.buttonBusStatusArrive.visibility = View.VISIBLE
+        } else {
+            binding.buttonBusStatusDepart.visibility = View.VISIBLE
+        }
     }
 
 }
