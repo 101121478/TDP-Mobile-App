@@ -190,7 +190,7 @@
                         android:inputType="number"
                         android:text="@{String.valueOf(busStatusViewModel.passengerDisembarking)}"
                         android:textColor="@color/black"
-                        android:imeOptions="actionDone"
+                        android:imeOptions="actionNext"
                         android:singleLine="true"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
