@@ -99,12 +99,8 @@ class BusEntryFragment : Fragment() {
         // TODO: Improve logic of confirmation message for bus being added to database
 
         val selectedStation = viewModel.userLocation.value  // Get the station that was selected by the user in the SetStationFragment through SharedViewModel
-
-        // TODO: Get actual data and replace placeholders on database structure is finished
         var nextStop = ""
-        //val placeholderPreviousStop = ""
-
-        // TODO: Update routeID, stationID and stationName?
+        
         // Hash map of bus routes to bus route IDs
         val busRoutes = hashMapOf(
             "Sandringham To CBD" to "sandringhamToCBD",
@@ -135,7 +131,7 @@ class BusEntryFragment : Fragment() {
             "Capacity" to busCapacity,
             "routeId" to "$routeId"
         )
-        
+
         // Data Store Operation 1
         // Store bus data in BusOperations collection
         // Will also create the directory step by step if it or parts of it does not exist
