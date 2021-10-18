@@ -20,15 +20,10 @@
 
     <!-- Bus Status Viewing Fragment Strings -->
     <string name="bus_status_bus_id_label">Bus ID</string>
-<!--    <string name="bus_status_bus_id_text">923</string>-->
     <string name="bus_status_bus_type_label">Bus type</string>
-<!--    <string name="bus_status_bus_type_text">Standard</string>-->
     <string name="bus_status_bus_route_label">Route</string>
-<!--    <string name="bus_status_bus_route_text">912 Glenferrie to Flinders (Stopping All Stations)</string>-->
     <string name="bus_status_passenger_capacity_label">Passenger capacity</string>
-<!--    <string name="bus_status_passenger_capacity_text">70</string>-->
     <string name="bus_status_passenger_onboard_label">Passenger onboard</string>
-<!--    <string name="bus_status_passenger_onboard_text">32</string>-->
     <string name="bus_status_passenger_offboard_label">Disembarking passengers</string>
     <string name="bus_status_passenger_boarding_label">Boarding passengers</string>
     <string name="bus_status_btn_mark_as_arrived">MARK AS ARRIVED</string>
