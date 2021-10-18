@@ -100,7 +100,7 @@ class BusEntryFragment : Fragment() {
 
         val selectedStation = viewModel.userLocation.value  // Get the station that was selected by the user in the SetStationFragment through SharedViewModel
         var nextStop = ""
-        
+
         // Hash map of bus routes to bus route IDs
         val busRoutes = hashMapOf(
             "Sandringham To CBD" to "sandringhamToCBD",
@@ -143,7 +143,7 @@ class BusEntryFragment : Fragment() {
                 // CREATE ArrivalTime COLLECTION
                 db.collection("BusOperation").document("dates")
                     .collection(dateCollection).document("${busRoutes[route]}_${busID}")
-                    .collection("ArrivalTime").document("$routeId")
+                    .collection("ArrivalTime").document("$selectedStation")
                     .set(arrivalTimeMap)
                     .addOnSuccessListener {
                         println("DocumentSnapshot successfully written!")
@@ -154,7 +154,7 @@ class BusEntryFragment : Fragment() {
                 // CREATE DepartureTime DOCUMENT
                 db.collection("BusOperation").document("dates")
                     .collection(dateCollection).document("${busRoutes[route]}_${busID}")
-                    .collection("DepartureTime").document("$routeId")
+                    .collection("DepartureTime").document("$selectedStation")
                     .set(HashMap<String, Any>())
                     .addOnSuccessListener {
                         println("DepartureTime document successfully written!")
