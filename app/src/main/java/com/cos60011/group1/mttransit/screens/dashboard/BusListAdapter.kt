@@ -30,6 +30,7 @@ class BusListAdapter(
             //can add data to shared viewmodel here
             fragment.viewModel.setCurrentBus(holder.busIdView.text.toString())
             fragment.viewModel.setIsCurrentBus(false)
+            fragment.viewModel.setRouteName(holder.busroute.text.toString())
 
             view.findNavController().navigate(R.id.action_busBoardFragment_to_busStatusFragment)
         }

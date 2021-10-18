@@ -11,12 +11,13 @@ import java.util.*
 import kotlin.collections.HashMap
 
 
-class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
+class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, isCurrentBus: Boolean) : ViewModel() {
     private val db = FirebaseFirestore.getInstance()
-    private val busStatusQuery: Query
+    private lateinit var busStatusQuery: Query
     private lateinit var busStatusPath: String
     private lateinit var stationId: String
     private lateinit var targetBusId: String
+    private lateinit var selectedRouteId: String
     private lateinit var today: String
     private lateinit var routeId: String
     private lateinit var curStopNo: String
@@ -66,21 +67,136 @@ class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
         get() = _isDeparture
 
     init {
-        // TODO the date, stationId, targetBusId is hard code for testing purpose
-        today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        stationId = stationRef
-        targetBusId = busRef
         _passengerDisembarking.value = ""
         _passengerBoarding.value =""
 
-        //query to get bus status
-        busStatusQuery = db.collection("StationOperation").document(today)
-            .collection(stationId).document("busArchive")
-            .collection("busesAtStop")
-            .whereEqualTo("active", true)
-            .whereEqualTo("busId", targetBusId)
+        today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        targetBusId = busRef
+        selectedRouteId = convertRouteNameToID(routeRef)
 
-        getBusDocument()
+//        if (isCurrentBus) {
+//            stationId = stationRef
+//        } else {
+//            stationId = getPrevBusStopName()
+//        }
+//
+//        //query to get bus status
+//        busStatusQuery = db.collection("StationOperation").document(today)
+//            .collection(stationId).document("busArchive")
+//            .collection("busesAtStop")
+//            .whereEqualTo("active", true)
+//            .whereEqualTo("busId", targetBusId)
+
+        getBusDocument(isCurrentBus, stationRef)
+    }
+
+    private fun convertRouteNameToID(routeName: String): String {
+        return routeName.filter { !it.isWhitespace() }.replaceFirstChar { it.lowercase() }
+    }
+
+//    private fun getPrevBusStopName(): String {
+//        val source = Source.SERVER
+//        val prevBusStopQuery = db.collection("RouteOperation")
+//            .document(selectedRouteId)
+//            .collection("Stops")
+//            .whereEqualTo("stationName", stationId)
+//        var prevBusStopName = ""
+//
+//        prevBusStopQuery.get(source).addOnSuccessListener { document ->
+//
+//            document.forEach { queryDocumentSnapshot ->
+//                if (queryDocumentSnapshot.data["stationName"]  == stationId) {
+//                    val documentID = queryDocumentSnapshot.data["stationNo"]
+//
+//                    db.document("RouteOperation/${selectedRouteId}/Stops/${documentID}")
+//                        .get(source)
+//                        .addOnSuccessListener { document ->
+//                            if (document.data != null) {
+//                                prevBusStopName = document.get("stationName").toString()
+//                            }
+//                        }.addOnFailureListener{
+//                            prevBusStopName  = ""
+//                        }
+//                }
+//            }
+//        }.addOnFailureListener{
+//            prevBusStopName  = ""
+//        }
+//        return prevBusStopName
+//    }
+
+    private fun getBusDocument(isCurrentBus: Boolean, currentStationRef: String) {
+        stationId = currentStationRef
+        println("RouteID: $selectedRouteId")
+        if (isCurrentBus) {
+            //query to get bus status
+            busStatusQuery = db.collection("StationOperation").document(today)
+                .collection(stationId).document("busArchive")
+                .collection("busesAtStop")
+                .whereEqualTo("active", true)
+                .whereEqualTo("busId", targetBusId)
+
+            getBusDocument()
+        } else {
+            val source = Source.SERVER
+            val prevBusStopQuery = db.collection("RouteOperation")
+                .document(selectedRouteId)
+                .collection("Stops")
+                .whereEqualTo("stationName", stationId)
+
+            prevBusStopQuery.get(source).addOnSuccessListener { document ->
+                document.forEach { queryDocumentSnapshot ->
+                    if (queryDocumentSnapshot.data["stationName"]  == stationId) {
+                        val documentID = queryDocumentSnapshot.data["stationNo"]
+                        println("Document ID $documentID")
+                        db.document("RouteOperation/${selectedRouteId}/Stops/${documentID.toString().toInt().minus(1)}")
+                            .get(source)
+                            .addOnSuccessListener { document ->
+                                if (document.data != null) {
+                                    val prevBusStopName = document.get("stationName").toString()
+                                    println("Previous bus stop name $prevBusStopName")
+                                    busStatusQuery = db.collection("StationOperation").document(today)
+                                        .collection(prevBusStopName).document("busArchive")
+                                        .collection("busesAtStop")
+                                        .whereEqualTo("active", true)
+                                        .whereEqualTo("busId", targetBusId)
+
+                                    getBusDocument()
+                                }
+                            }
+                            .addOnFailureListener{ e ->
+                                Log.w("Fail to get previous stop document", e)
+                            }
+                    }
+                }
+            }.addOnFailureListener{ e ->
+                Log.w("Fail to get previouse stop name ", e)
+            }
+        }
+
+
+
+//        val source = Source.SERVER
+//        busStatusQuery.get(source).addOnSuccessListener { document ->
+//            document.forEach { queryDocumentSnapshot ->
+//                run {
+//                    if (queryDocumentSnapshot.data["busId"].toString() == targetBusId) {
+//                        _busId.value = queryDocumentSnapshot.data["busId"].toString()
+//                        _busRoute.value = queryDocumentSnapshot.data["routeName"].toString()
+//                        _passengerCapacity.value = queryDocumentSnapshot.data["capacity"].toString()
+//                        _passengerOnBoard.value = queryDocumentSnapshot.data["passengers"].toString()
+//                        routeId = queryDocumentSnapshot.data["routeId"].toString()
+//                        curStopNo = queryDocumentSnapshot.data["currentStopNo"].toString()
+//                        prevStop = queryDocumentSnapshot.data["previousStop"].toString()
+//                        curStop = queryDocumentSnapshot.data["currentStop"].toString()
+//                        nextStop = queryDocumentSnapshot.data["nextStop"].toString()
+//                        busStatusPath = queryDocumentSnapshot.reference.path
+//                    }
+//                }
+//            }
+//        }.addOnFailureListener { e ->
+//            Log.w("Fail to get bus detail", e)
+//        }
     }
 
     fun getBusDocument() {
@@ -107,73 +223,118 @@ class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
         }
     }
 
+    /**
+     * 1. create new station collection with next stop name
+     * 2. create busArchive document -> busesAtStop collection -> new bus document copy
+     * 3. create a new bus document copy and update currentStop
+     * with next Stop, nextStop with none, stopNo += 1, arrivalTime, lastUpdatedTime
+     * 4. create OperationHistory document, create ArrivedBuses with busID document
+     * 5. create document under busOperation
+     * 6. set previous document to false
+     */
+
     fun markArrive() {
         val arrivalTimeStamp = Timestamp.now()
 
-        /**
-         * Mark as arrive
-         * 1. get busStop information
-         * 2. find current bus document -> update ArrivalTime, lastUpdated Time,
-         * previous stop, current stop, current stop number, next stop
-         * 3. If the arrival stop is final stop, update next stop to "LastStop"
-         * 4. update OperationHistory
-         * 5. update BusOperation collection
-         */
         val source = Source.SERVER
         val nextBusStopRef = db.document("RouteOperation/$routeId/Stops/${curStopNo.toInt() + 1}")
         nextBusStopRef.get(source).addOnSuccessListener { document ->
             if (document.data != null) {
-                // if it is not last stop
-                prevStop = curStop
-                curStop = nextStop
-                nextStop = document.get("stationName").toString()
-                curStopNo = "${curStopNo.toInt() + 1}"
-            } else {
-                // if it is last stop
-                prevStop = curStop
-                curStop = nextStop
-                nextStop = "LastStop"
-                curStopNo = "${curStopNo.toInt() + 1}"
-            }
+                val busRef = db.document(busStatusPath)
 
-            val busRef = db.document(busStatusPath)
+                val busArchiveRef = db.collection("StationOperation")
+                    .document(today)
+                    .collection(nextStop)
+                    .document("busArchive")
 
-            val arrivedBusHistoryRef = db.collection("StationOperation")
-                .document("2021-10-14")
-                .collection(curStop)
-                .document("operationHistory")
-                .collection("ArrivedBuses")
-                .document("${routeId}_${_busId.value}")
+                val operationHistoryRef = db.collection("StationOperation")
+                    .document(today)
+                    .collection(nextStop)
+                    .document("operationHistory")
 
-            val arrivalTimeBusOperationRef = db.collection("BusOperation")
-                .document("2021-10-14")
-                .collection("sandringhamToCBD_${_busId.value}")
-                .document("ArrivalTime")
-                .collection("ArrivalTimeAtStations")
-                .document(curStop)
+                val arrivalTimeBusOperationRef = db.collection("BusOperation")
+                    .document(today)
+                    .collection("${routeId}_${_busId.value}")
+                    .document("ArrivalTime")
+                    .collection("ArrivalTimeAtStations")
+                    .document(nextStop)
 
-            val arrivalTimeBusOperationData = createArrivalTimeData(arrivalTimeStamp)
-            db.runBatch { batch ->
-                // 2 & 3 update bus document
-                batch.update(busRef,"arrivalTime", arrivalTimeStamp,
-                    "previousStop", prevStop,
-                "currentStop", curStop,
-                "currentStopNo", curStopNo,
-                "nextStop", nextStop,
-                "lastUpdated", arrivalTimeStamp)
+                db.runBatch { batch ->
+                    // create new station archive
+                    batch.set(busArchiveRef, HashMap<String, Any>())
 
-                // 4 update OperationHistory
-                batch.set(arrivedBusHistoryRef, hashMapOf(
-                    "arrivalTime" to arrivalTimeStamp
-                ))
+                    // create new bus document
+                    batch.set(busArchiveRef.collection("busesAtStop").document(),
+                        createArrivingStopBusData(arrivalTimeStamp))
 
-                // 5 write data to BusOperation
-                batch.set(arrivalTimeBusOperationRef, arrivalTimeBusOperationData)
-            }.addOnSuccessListener {
+                    // create new station operationHistory
+                    batch.set(operationHistoryRef, HashMap<String, Any>())
+                    batch.set(operationHistoryRef.collection("ArrivedBuses")
+                        .document("${routeId}_${targetBusId}"),
+                        hashMapOf("arrivalTime" to arrivalTimeStamp))
+
+                    // update busOperation
+                    batch.set(arrivalTimeBusOperationRef, createArrivalTimeData(arrivalTimeStamp))
+
+                    // set to false
+                    batch.update(busRef, "active", false)
+                }.addOnSuccessListener {
 //                            _isArrive.value = true
-            }.addOnFailureListener { e ->
-                Log.w("Fail to mark bus as arrive", e)
+                }.addOnFailureListener { e ->
+                    Log.w("Fail to mark bus as arrive", e)
+                }
+
+//                // if it is not last stop
+//                prevStop = curStop
+//                curStop = nextStop
+//                nextStop = document.get("stationName").toString()
+//                curStopNo = "${curStopNo.toInt() + 1}"
+            } else {
+//                // if it is last stop
+//                prevStop = curStop
+//                curStop = nextStop
+//                nextStop = "LastStop"
+//                curStopNo = "${curStopNo.toInt() + 1}"
             }
+
+//            val busRef = db.document(busStatusPath)
+//
+//            val arrivedBusHistoryRef = db.collection("StationOperation")
+//                .document("2021-10-14")
+//                .collection(curStop)
+//                .document("operationHistory")
+//                .collection("ArrivedBuses")
+//                .document("${routeId}_${_busId.value}")
+//
+//            val arrivalTimeBusOperationRef = db.collection("BusOperation")
+//                .document("2021-10-14")
+//                .collection("sandringhamToCBD_${_busId.value}")
+//                .document("ArrivalTime")
+//                .collection("ArrivalTimeAtStations")
+//                .document(curStop)
+//
+//            val arrivalTimeBusOperationData = createArrivalTimeData(arrivalTimeStamp)
+//            db.runBatch { batch ->
+//                // 2 & 3 update bus document
+//                batch.update(busRef,"arrivalTime", arrivalTimeStamp,
+//                    "previousStop", prevStop,
+//                "currentStop", curStop,
+//                "currentStopNo", curStopNo,
+//                "nextStop", nextStop,
+//                "lastUpdated", arrivalTimeStamp)
+//
+//                // 4 update OperationHistory
+//                batch.set(arrivedBusHistoryRef, hashMapOf(
+//                    "arrivalTime" to arrivalTimeStamp
+//                ))
+//
+//                // 5 write data to BusOperation
+//                batch.set(arrivalTimeBusOperationRef, arrivalTimeBusOperationData)
+//            }.addOnSuccessListener {
+////                            _isArrive.value = true
+//            }.addOnFailureListener { e ->
+//                Log.w("Fail to mark bus as arrive", e)
+//            }
 
         }.addOnFailureListener { e ->
             Log.w("Fail to get last stop information when mark bus as arrive", e)
@@ -509,24 +670,24 @@ class BusStatusViewModel(stationRef: String, busRef: String) : ViewModel() {
 
     private fun createArrivalTimeData(timestamp: Timestamp): HashMap<String, Comparable<*>?> {
         return hashMapOf(
-            "stationName" to curStop,
-            "stopNum" to curStopNo.toInt(),
+            "stationName" to nextStop,
+            "stopNum" to curStopNo.toInt().plus(1),
             "departureTime" to timestamp,
         )
     }
 
-    private fun createNextStopBusData(timestamp: Timestamp): HashMap<String, Comparable<*>?> {
+    private fun createArrivingStopBusData(timestamp: Timestamp): HashMap<String, Comparable<*>?> {
         // TODO arrivalTime null issue when marked bus as departure
         return hashMapOf(
             "active" to true,
             "arrivalTime" to timestamp,
             "busId" to _busId.value,
             "capacity" to _passengerCapacity.value!!.toInt(),
-            "currentStop" to curStop,
-            "currentStopNo" to curStopNo.toInt(),
-            "departureTime" to timestamp,
+            "currentStop" to nextStop,
+            "currentStopNo" to curStopNo.toInt().plus(1),
+            "departureTime" to null,
             "lastUpdated" to timestamp,
-            "nextStop" to nextStop,
+            "nextStop" to "none",
             "passengers" to _passengerOnBoard.value!!.toInt(),
             "previousStop" to prevStop,
             "routeId" to routeId,
