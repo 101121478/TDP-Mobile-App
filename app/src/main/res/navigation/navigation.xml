@@ -34,7 +34,9 @@
         tools:layout="@layout/fragment_bus_entry" >
         <action
             android:id="@+id/action_busEntryFragment_to_busBoardFragment"
-            app:destination="@id/busBoardFragment" />
+            app:destination="@id/busBoardFragment"
+            app:popUpTo="@id/busBoardFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/busBoardFragment"
@@ -72,7 +74,9 @@
         tools:layout="@layout/fragment_set_station">
         <action
             android:id="@+id/action_setStationFragment_to_busBoardFragment"
-            app:destination="@id/busBoardFragment" />
+            app:destination="@id/busBoardFragment"
+            app:popUpTo="@id/busBoardFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
 
