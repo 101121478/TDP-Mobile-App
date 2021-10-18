@@ -16,6 +16,8 @@ import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentSetStationBinding
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class SetStationFragment : Fragment() {
     private var _binding: FragmentSetStationBinding? = null
@@ -57,9 +59,12 @@ class SetStationFragment : Fragment() {
                 viewModel.setLocation(selectedLocation)
 
                 // store userLocation to disk
-                val sharedPref = requireActivity().getSharedPreferences("com.cos60011.group1.mttransit.settings", Context.MODE_PRIVATE)
+                val sharedPref = requireActivity()
+                    .getSharedPreferences("com.cos60011.group1.mttransit.settings.${Firebase.auth.currentUser?.email.toString()}", Context.MODE_PRIVATE)
                 with (sharedPref.edit()) {
                     putString("userLocation", selectedLocation)
+                    // TODO test Unknown flow
+//                    putString("userLocation", "Unknown")
                     apply()
                 }
 

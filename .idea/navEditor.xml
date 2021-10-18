@@ -123,6 +123,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_loginFragment_to_setStationFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -133,8 +138,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="331" />
-                            <option name="y" value="-322" />
+                            <option name="x" value="353" />
+                            <option name="y" value="-378" />
                           </Point>
                         </option>
                         <option name="myPositions">

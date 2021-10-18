@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentLocationBinding
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -50,7 +51,7 @@ class LocationFragment : Fragment() {
         }
 
         // read userLocation from disk and set it to location
-        val sharedPref = requireActivity().getSharedPreferences("com.cos60011.group1.mttransit.settings", Context.MODE_PRIVATE)
+        val sharedPref = requireActivity().getSharedPreferences("com.cos60011.group1.mttransit.settings.${Firebase.auth.currentUser?.email.toString()}", Context.MODE_PRIVATE)
         val userLocation = sharedPref.getString("userLocation", "Unknown")
         viewModel.setLocation(userLocation.toString())
 

@@ -15,6 +15,11 @@
             app:destination="@id/busBoardFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_setStationFragment"
+            app:destination="@id/setStationFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/busStatusFragment"
@@ -75,7 +80,7 @@
         <action
             android:id="@+id/action_setStationFragment_to_busBoardFragment"
             app:destination="@id/busBoardFragment"
-            app:popUpTo="@id/busBoardFragment"
+            app:popUpTo="@id/setStationFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
