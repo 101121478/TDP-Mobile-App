@@ -122,7 +122,7 @@ class BusEntryFragment : Fragment() {
             "stationID" to selectedStation,
             "stationName" to selectedStation?.split(" ")?.get(0),
             "stopNum" to 1,
-            "count" to passengersOnboard
+            "passengerCount" to passengersOnboard
         )
 
         val busOperationDataFields = hashMapOf(
