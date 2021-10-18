@@ -304,7 +304,7 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
 
             val passengerCountRef = busRoutesBusIDRef
                 .collection("PassengerCount")
-                .document(routeId)
+                .document(stationId)
 
             // path to update DataVisualisation
             val totalPassengersRef = db.collection("DataVisualisation")
