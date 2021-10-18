@@ -63,7 +63,7 @@ class SetStationFragment : Fragment() {
                     .getSharedPreferences("com.cos60011.group1.mttransit.settings.${Firebase.auth.currentUser?.email.toString()}", Context.MODE_PRIVATE)
                 with (sharedPref.edit()) {
                     putString("userLocation", selectedLocation)
-                    // TODO test Unknown flow
+                    // TODO uncomment to test Unknown flow
 //                    putString("userLocation", "Unknown")
                     apply()
                 }
