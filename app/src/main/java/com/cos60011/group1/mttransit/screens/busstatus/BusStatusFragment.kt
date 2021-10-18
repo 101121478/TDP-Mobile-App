@@ -83,14 +83,21 @@ class BusStatusFragment : Fragment() {
 
             val offBoard = passengerOffBoarding.editText?.text!!.trim()
             val boarding = passengerOnBoarding.editText?.text!!.trim()
+            val capacity = viewModel.passengerCapacity.value.toString().toInt()
+            val currentTotalPassengers = viewModel.passengerOnBoard.value.toString().toInt()
+            val newTotalPassengers = currentTotalPassengers - offBoard.toString().toInt() + boarding.toString().toInt()
 
             if (offBoard.isEmpty()) {
                 passengerOffBoarding.error = "The disembarking passenger field is required."
             } else if (boarding.isEmpty()) {
                 passengerOnBoarding.error = "The boarding passengers field is required."
+            } else if (offBoard.toString().toInt() > currentTotalPassengers) {
+                passengerOffBoarding.error = "The disembarking passengers $offBoard exceeds the number of passengers onboard $currentTotalPassengers."
+            } else if (newTotalPassengers > capacity) {
+                passengerOnBoarding.error = "The number of passengers $newTotalPassengers exceeds the bus capacity $capacity."
             } else {
-                    imm.hideSoftInputFromWindow(requireView().windowToken, 0)
-                    viewModel.markDeparture(offBoard.toString(), boarding.toString())
+                imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+                viewModel.markDeparture(offBoard.toString(), boarding.toString())
             }
         }
 
