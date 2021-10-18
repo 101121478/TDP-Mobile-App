@@ -188,7 +188,7 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
 
                 val arrivalTimeBusOperationRef = busRoutesBusIDRef
                     .collection("ArrivalTime")
-                    .document(routeId)
+                    .document(stationId)
 
                 db.runBatch { batch ->
                     // create new station archive
@@ -300,7 +300,7 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
 
             val departureTimeRef = busRoutesBusIDRef
                 .collection("DepartureTime")
-                .document(routeId)
+                .document(stationId)
 
             val passengerCountRef = busRoutesBusIDRef
                 .collection("PassengerCount")
