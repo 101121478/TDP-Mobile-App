@@ -1,5 +1,6 @@
 package com.cos60011.group1.mttransit.screens.dashboard
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.navigation.findNavController
 import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentLocationBinding
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -48,7 +50,11 @@ class LocationFragment : Fragment() {
             view.findNavController().navigate(R.id.action_busBoardFragment_to_setStationFragment)
         }
 
-        //sets user location
+        // read userLocation from disk and set it to location
+        val sharedPref = requireActivity().getSharedPreferences("com.cos60011.group1.mttransit.settings.${Firebase.auth.currentUser?.email.toString()}", Context.MODE_PRIVATE)
+        val userLocation = sharedPref.getString("userLocation", "Unknown")
+        viewModel.setLocation(userLocation.toString())
+
         currentStation.text = viewModel.userLocation.value
         //TODO: Override default location with user selection. Figure out how to persist it throughout navigation since we do not have a User collection.
 

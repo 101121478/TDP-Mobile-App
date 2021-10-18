@@ -1,6 +1,7 @@
 package com.cos60011.group1.mttransit.screens.login
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.google.firebase.ktx.Firebase
 
 class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,7 +65,17 @@ class LoginFragment : Fragment() {
         // [START sign_in_with_email]
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity()) { task ->
             if (task.isSuccessful) {
-                Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_busBoardFragment)
+                // Initialize sharedPref
+                sharedPreferences = requireActivity()
+                    .getSharedPreferences("com.cos60011.group1.mttransit.settings.${Firebase.auth.currentUser?.email.toString()}", Context.MODE_PRIVATE)
+
+                val userLocation = sharedPreferences.getString("userLocation", "Unknown")
+                if (userLocation.toString() == "Unknown") {
+                    Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_setStationFragment)
+                } else {
+                    Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_busBoardFragment)
+                }
+
                 Snackbar.make(requireView(), "Welcome to MT system", Snackbar.LENGTH_LONG).show()
             } else {
                 // If sign in fails, display a message to the user.

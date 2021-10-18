@@ -1,5 +1,6 @@
 package com.cos60011.group1.mttransit.screens.setlocation
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,6 +16,8 @@ import com.cos60011.group1.mttransit.R
 import com.cos60011.group1.mttransit.SharedViewModel
 import com.cos60011.group1.mttransit.databinding.FragmentSetStationBinding
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class SetStationFragment : Fragment() {
     private var _binding: FragmentSetStationBinding? = null
@@ -54,6 +57,17 @@ class SetStationFragment : Fragment() {
                     .show()
             } else {
                 viewModel.setLocation(selectedLocation)
+
+                // store userLocation to disk
+                val sharedPref = requireActivity()
+                    .getSharedPreferences("com.cos60011.group1.mttransit.settings.${Firebase.auth.currentUser?.email.toString()}", Context.MODE_PRIVATE)
+                with (sharedPref.edit()) {
+                    putString("userLocation", selectedLocation)
+                    // TODO uncomment to test Unknown flow
+//                    putString("userLocation", "Unknown")
+                    apply()
+                }
+
                 view.findNavController()
                     .navigate(R.id.action_setStationFragment_to_busBoardFragment)
             }
