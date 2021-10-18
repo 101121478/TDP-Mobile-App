@@ -135,7 +135,7 @@ class BusEntryFragment : Fragment() {
             "Capacity" to busCapacity,
             "routeId" to "$routeId"
         )
-
+        
         // Data Store Operation 1
         // Store bus data in BusOperations collection
         // Will also create the directory step by step if it or parts of it does not exist
@@ -246,6 +246,21 @@ class BusEntryFragment : Fragment() {
                     .addOnFailureListener {
                             exception -> Log.w("Error writing busArchive document", exception)
                     }
+                db.collection("StationOperation").document(dateCollection)
+                    .collection("$selectedStation").document("operationHistory")
+                    .set(HashMap<String, Any>())
+                    .addOnSuccessListener {
+                        println("busArchive document successfully written!")
+                        db.collection("StationOperation").document(dateCollection)
+                            .collection("$selectedStation").document("operationHistory")
+                            .collection("ArrivedBuses").document("${busRoutes[route]}_${busID}")
+                            .set(hashMapOf(
+                                "arrivalTime" to Timestamp.now()
+                            ))
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing busArchive document", exception)
+                    }
             }
             .addOnFailureListener {
                     exception -> Log.w("Error writing StationOperation Date document", exception)
@@ -308,7 +323,8 @@ class BusEntryFragment : Fragment() {
                     // Add plus 1 to the total buses count for today for the data visualisation statistics
                     db.collection("DataVisualisation").document("TotalRunningBusesForToday")
                         .set(hashMapOf(
-                            "count" to count
+                            "count" to count,
+                            "lastUpdated" to Timestamp.now()
                         ))
                 }
 
