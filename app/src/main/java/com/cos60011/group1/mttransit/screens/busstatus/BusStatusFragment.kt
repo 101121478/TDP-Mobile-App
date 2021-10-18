@@ -80,16 +80,16 @@ class BusStatusFragment : Fragment() {
             passengerOffBoarding.error = ""
             passengerOnBoarding.error = ""
 
-            val offBoardNum = passengerOffBoarding.editText?.text!!.trim()
-            val onBoardNum = passengerOnBoarding.editText?.text!!.trim()
+            val offBoard = passengerOffBoarding.editText?.text!!.trim()
+            val boarding = passengerOnBoarding.editText?.text!!.trim()
 
-            if (offBoardNum.isEmpty()) {
+            if (offBoard.isEmpty()) {
                 passengerOffBoarding.error = "The disembarking passenger field is required."
-            } else if (onBoardNum.isEmpty()) {
+            } else if (boarding.isEmpty()) {
                 passengerOnBoarding.error = "The boarding passengers field is required."
             } else {
                     imm.hideSoftInputFromWindow(requireView().windowToken, 0)
-                    viewModel.markDeparture()
+                    viewModel.markDeparture(offBoard.toString(), boarding.toString())
             }
         }
 

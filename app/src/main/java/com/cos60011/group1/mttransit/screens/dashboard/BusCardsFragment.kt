@@ -47,6 +47,7 @@ class BusCardsFragment : Fragment() {
             .document("busArchive")
             .collection("busesAtStop")
             .whereEqualTo("active", true)
+            .whereEqualTo("currentStop", "$currentLocation")
             .orderBy("arrivalTime", Query.Direction.DESCENDING)
 
         val options =
