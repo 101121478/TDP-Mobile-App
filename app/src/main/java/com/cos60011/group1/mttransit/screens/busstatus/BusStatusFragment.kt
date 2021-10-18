@@ -71,22 +71,22 @@ class BusStatusFragment : Fragment() {
             viewModel.markArrive()
         }
 
-        val passengerOffBoard = binding.textInputBusStatusPassengerOffboard
-        val passengerOnBoard = binding.textInputBusStatusPassengerBoarding
+        val passengerOffBoarding = binding.textInputBusStatusPassengerOffboard
+        val passengerOnBoarding = binding.textInputBusStatusPassengerBoarding
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         // handle mark as departure button
         binding.buttonBusStatusDepart.setOnClickListener {
-            passengerOffBoard.error = ""
-            passengerOnBoard.error = ""
+            passengerOffBoarding.error = ""
+            passengerOnBoarding.error = ""
 
-            val offBoardNum = passengerOffBoard.editText?.text
-            val onBoardNum = passengerOnBoard.editText?.text
+            val offBoardNum = passengerOffBoarding.editText?.text!!.trim()
+            val onBoardNum = passengerOnBoarding.editText?.text!!.trim()
 
-            if (offBoardNum.isNullOrEmpty()) {
-                passengerOffBoard.error = "The disembarking passenger field is required."
-            } else if (onBoardNum.isNullOrEmpty()) {
-                passengerOnBoard.error = "The boarding passengers field is required."
+            if (offBoardNum.isEmpty()) {
+                passengerOffBoarding.error = "The disembarking passenger field is required."
+            } else if (onBoardNum.isEmpty()) {
+                passengerOnBoarding.error = "The boarding passengers field is required."
             } else {
                     imm.hideSoftInputFromWindow(requireView().windowToken, 0)
                     viewModel.markDeparture()

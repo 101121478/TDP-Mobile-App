@@ -188,7 +188,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:text="@{String.valueOf(busStatusViewModel.passengerOnBoard)}"
+                        android:text="@{String.valueOf(busStatusViewModel.passengerDisembarking)}"
                         android:textColor="@color/black"
                         android:imeOptions="actionDone"
                         android:singleLine="true"/>
@@ -228,7 +228,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:text="@{String.valueOf(busStatusViewModel.passengerOnBoard)}"
+                        android:text="@{String.valueOf(busStatusViewModel.passengerBoarding)}"
                         android:textColor="@color/black"
                         android:imeOptions="actionDone"
                         android:singleLine="true"/>
