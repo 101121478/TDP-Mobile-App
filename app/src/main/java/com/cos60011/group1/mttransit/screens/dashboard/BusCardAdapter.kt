@@ -28,6 +28,7 @@ class BusCardAdapter(
 
                 //can add data to shared viewmodel here
                 fragment.viewModel.setCurrentBus(holder.busIdView.text.toString())
+                fragment.viewModel.setIsCurrentBus(true)
 
                 view.findNavController().navigate(R.id.action_busBoardFragment_to_busStatusFragment)
             }
