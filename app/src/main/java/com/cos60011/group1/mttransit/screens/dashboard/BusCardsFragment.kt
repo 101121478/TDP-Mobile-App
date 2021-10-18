@@ -41,13 +41,13 @@ class BusCardsFragment : Fragment() {
 
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val currentLocation = viewModel.userLocation.value //add observer here?
-
         val query = db.collection("StationOperation")
             .document("$today")
             .collection("$currentLocation")
             .document("busArchive")
             .collection("busesAtStop")
             .whereEqualTo("active", true)
+            .whereEqualTo("currentStop", "$currentLocation")
             .orderBy("arrivalTime", Query.Direction.DESCENDING)
 
         val options =

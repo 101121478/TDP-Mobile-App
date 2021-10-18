@@ -14,11 +14,18 @@ class SharedViewModel: ViewModel() {
     val currentBus: LiveData<String>
         get() = _currentBus
 
+    private var _isCurrentBus = MutableLiveData<Boolean>()
+    val isCurrentBus: LiveData<Boolean>
+        get() = _isCurrentBus
+
     init {
         _userLocation.value = "Unknown"
         _currentBus.value = "Testing adapter viewmodel access"
     }
 
+    fun setIsCurrentBus(isCurrentBus: Boolean) {
+        _isCurrentBus.value = isCurrentBus
+    }
 
     fun setLocation(newLocation: String) {
         _userLocation.value = newLocation

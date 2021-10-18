@@ -99,12 +99,8 @@ class BusEntryFragment : Fragment() {
         // TODO: Improve logic of confirmation message for bus being added to database
 
         val selectedStation = viewModel.userLocation.value  // Get the station that was selected by the user in the SetStationFragment through SharedViewModel
-
-        // TODO: Get actual data and replace placeholders on database structure is finished
         var nextStop = ""
-        //val placeholderPreviousStop = ""
-
-        // TODO: Update routeID, stationID and stationName?
+        
         // Hash map of bus routes to bus route IDs
         val busRoutes = hashMapOf(
             "Sandringham To CBD" to "sandringhamToCBD",
@@ -129,63 +125,36 @@ class BusEntryFragment : Fragment() {
             "count" to passengersOnboard
         )
 
+        val busOperationDataFields = hashMapOf(
+            "BusID" to busID,
+            "BusType" to busType,
+            "Capacity" to busCapacity,
+            "routeId" to "$routeId"
+        )
+
         // Data Store Operation 1
         // Store bus data in BusOperations collection
         // Will also create the directory step by step if it or parts of it does not exist
-        db.collection("BusOperation").document(dateCollection)
+        db.collection("BusOperation").document("dates")
+            .collection(dateCollection).document("${busRoutes[route]}_${busID}")
             .set(HashMap<String, Any>())
             .addOnSuccessListener {
                 println("BusOperation Date document successfully written!")
-                // CREATE BusType DOCUMENT
-                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusType")
-                    .set(hashMapOf(
-                        "busType" to busType
-                    ))
-                    .addOnSuccessListener {
-                        println("BusType document successfully written!")
-
-
-                    }
-                    .addOnFailureListener {
-                            exception -> Log.w("Error writing BusType document", exception)
-                    }
-                // CREATE BusID DOCUMENT
-                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("BusID")
-                    .set(hashMapOf(
-                        "busID" to busID
-                    ))
-                    .addOnSuccessListener {
-                        println("BusID document successfully written!")
-
-
-                    }
-                    .addOnFailureListener {
-                            exception -> Log.w("Error writing BusID document", exception)
-                    }
-                // CREATE ArrivalTime DOCUMENT
-                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
+                // CREATE ArrivalTime COLLECTION
+                db.collection("BusOperation").document("dates")
+                    .collection(dateCollection).document("${busRoutes[route]}_${busID}")
+                    .collection("ArrivalTime").document("$routeId")
                     .set(arrivalTimeMap)
                     .addOnSuccessListener {
                         println("DocumentSnapshot successfully written!")
-                        // CREATE initial station arrival under station collection under ArrivalTime Document
-                        db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("ArrivalTime")
-                            .collection(busRoutes[route]!!).document("$selectedStation")
-                            .set(arrivalTimeMap)
-                            .addOnSuccessListener {
-                                println("Initial arrival time data document successfully written!")
-
-
-                            }
-                            .addOnFailureListener {
-                                    exception -> Log.w("Error writing Initial arrival time data document", exception)
-                            }
-
                     }
                     .addOnFailureListener {
                             exception -> Log.w("Error writing document", exception)
                     }
                 // CREATE DepartureTime DOCUMENT
-                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("DepartureTime")
+                db.collection("BusOperation").document("dates")
+                    .collection(dateCollection).document("${busRoutes[route]}_${busID}")
+                    .collection("DepartureTime").document("$routeId")
                     .set(HashMap<String, Any>())
                     .addOnSuccessListener {
                         println("DepartureTime document successfully written!")
@@ -196,52 +165,24 @@ class BusEntryFragment : Fragment() {
                             exception -> Log.w("Error writing DepartureTime document", exception)
                     }
                 // CREATE PassengerCount DOCUMENT
-                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
+                db.collection("BusOperation").document("dates")
+                    .collection(dateCollection).document("${busRoutes[route]}_${busID}")
+                    .collection("PassengerCount").document("$selectedStation")
                     .set(passengerCountMap)
                     .addOnSuccessListener {
-                        println("DocumentSnapshot successfully written!")
-                        // CREATE initial passenger count collection
-                        db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("PassengerCount")
-                            .collection("PassengerCountAtStations").document("$selectedStation ")
-                            .set(passengerCountMap)
-                            .addOnSuccessListener {
-                                println("PassengerCount document successfully written!")
-
-
-                            }
-                            .addOnFailureListener {
-                                    exception -> Log.w("Error writing PassengerCount document", exception)
-                            }
-
                     }
                     .addOnFailureListener {
                             exception -> Log.w("Error writing document", exception)
                     }
-                // CREATE Capacity DOCUMENT
-                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("Capacity")
-                    .set(hashMapOf(
-                        "capacity" to busCapacity
-                    ))
+                // Add remaining bus data fields
+                db.collection("BusOperation").document("dates")
+                    .collection(dateCollection).document("${busRoutes[route]}_${busID}")
+                    .set(busOperationDataFields)
                     .addOnSuccessListener {
                         println("Capacity document successfully written!")
-
-
                     }
                     .addOnFailureListener {
                             exception -> Log.w("Error writing Capacity document", exception)
-                    }
-                // CREATE OperatedRoute DOCUMENT
-                db.collection("BusOperation").document(dateCollection).collection("${busRoutes[route]}_${busID}").document("OperatedRoutes")
-                    .set(hashMapOf(
-                        "routeID" to busRoutes[route]
-                    ))
-                    .addOnSuccessListener {
-                        println("OperatedRoute document successfully written!")
-
-
-                    }
-                    .addOnFailureListener {
-                            exception -> Log.w("Error writing OperatedRoute document", exception)
                     }
             }
             .addOnFailureListener {
@@ -301,9 +242,89 @@ class BusEntryFragment : Fragment() {
                     .addOnFailureListener {
                             exception -> Log.w("Error writing busArchive document", exception)
                     }
+                db.collection("StationOperation").document(dateCollection)
+                    .collection("$selectedStation").document("operationHistory")
+                    .set(HashMap<String, Any>())
+                    .addOnSuccessListener {
+                        println("busArchive document successfully written!")
+                        db.collection("StationOperation").document(dateCollection)
+                            .collection("$selectedStation").document("operationHistory")
+                            .collection("ArrivedBuses").document("${busRoutes[route]}_${busID}")
+                            .set(hashMapOf(
+                                "arrivalTime" to Timestamp.now()
+                            ))
+                    }
+                    .addOnFailureListener {
+                            exception -> Log.w("Error writing busArchive document", exception)
+                    }
             }
             .addOnFailureListener {
                     exception -> Log.w("Error writing StationOperation Date document", exception)
+            }
+
+        // Perform small get operation to get the total buses
+        db.collection("DataVisualisation").document("TotalBusesCount")
+            .get()
+            .addOnCompleteListener { task ->
+                val document = task.result
+                var count = document?.getLong("count")?.toInt()
+                println("COUNT: " + count)
+
+                if(count != null) {
+                    count += 1
+
+                    // Add plus 1 to the total buses count for the data visualisation statistics
+                    db.collection("DataVisualisation").document("TotalBusesCount")
+                        .set(hashMapOf(
+                            "count" to count
+                        ))
+                }
+
+
+            }
+
+        // Perform small get operation to get the total passenger count
+        db.collection("DataVisualisation").document("TotalPassengers")
+            .get()
+            .addOnCompleteListener { task ->
+                val document = task.result
+                var count = document?.getLong("count")?.toInt()
+                println("COUNT: " + count)
+
+                if(count != null) {
+                    count += passengersOnboard
+
+                    // Add the initial passengers onboard count for the new bus to total passenger count, for data visualisation statistics
+                    db.collection("DataVisualisation").document("TotalPassengers")
+                        .set(hashMapOf(
+                            "count" to count
+                        ))
+                }
+
+
+            }
+
+
+        // Perform small get operation to get the total buses for today
+        db.collection("DataVisualisation").document("TotalRunningBusesForToday")
+            .get()
+            .addOnCompleteListener { task ->
+                val document = task.result
+                var count = document?.getLong("count")?.toInt()
+                println("COUNT: " + count)
+
+                if(count != null) {
+                    count += 1
+
+                    // Add plus 1 to the total buses count for today for the data visualisation statistics
+                    db.collection("DataVisualisation").document("TotalRunningBusesForToday")
+                        .set(hashMapOf(
+                            "count" to count,
+                            "lastUpdated" to Timestamp.now()
+                        ))
+                }
+
+
             }
     }
 
