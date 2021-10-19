@@ -67,14 +67,14 @@
 
     <!-- Spinner Fragment Test String Array -->
     <string-array name="test_stations_array">
-        <item>Flinders Station</item>
-        <item>Toorak Station</item>
-        <item>Malvern Station</item>
         <item>Caulfield Station</item>
+        <item>Flinders Station</item>
         <item>Frankston Station</item>
-        <item>Prahran Station</item>
-        <item>Windsor Station</item>
         <item>Hampton Station</item>
+        <item>Malvern Station</item>
+        <item>Prahran Station</item>
         <item>Sandringham Station</item>
+        <item>Toorak Station</item>
+        <item>Windsor Station</item>
     </string-array>
 </resources>
