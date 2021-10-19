@@ -146,6 +146,16 @@ class BusStatusFragment : Fragment() {
             }
         })
 
+        // handle db error
+        viewModel.isMarked.observe(viewLifecycleOwner, { isMarked ->
+            if (isMarked) {
+                view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
+                val title = "Error"
+                val message = "Something went wrong, please try again."
+                showDialog(title, message)
+            }
+        })
+
         return binding.root
     }
 
