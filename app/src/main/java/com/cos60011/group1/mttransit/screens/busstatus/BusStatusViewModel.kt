@@ -62,6 +62,10 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
     val isDeparture: LiveData<Boolean>
         get() = _isDeparture
 
+    private val _isMarked = MutableLiveData<Boolean>()
+    val isMarked: LiveData<Boolean>
+        get() = _isMarked
+
     init {
         _passengerDisembarking.value = ""
         _passengerBoarding.value =""
@@ -122,7 +126,7 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
                     }
                 }
             }.addOnFailureListener{ e ->
-                Log.w("Fail to get previouse stop name ", e)
+                Log.w("Fail to get previous stop name ", e)
             }
         }
     }
@@ -251,108 +255,121 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
      * 6. create departure document and passenger document in BusOperation
      */
     fun markDeparture(offBoard: String, boarding: String) {
-        var isLastStop = false
-        val departureTimeStamp = Timestamp.now()
-
-        _passengerDisembarking.value = offBoard
-        _passengerBoarding.value = boarding
-        val newPassengerOnBoard =  _passengerOnBoard.value!!.toInt() - _passengerDisembarking.value!!.toInt() + _passengerBoarding.value!!.toInt()
-
         val source = Source.SERVER
-        val nextBusStopRef = db.document("RouteOperation/$routeId/Stops/${curStopNo.toInt() + 1}")
-
-        nextBusStopRef.get(source).addOnSuccessListener { document ->
+        // check if whether the bus has been marked by other staff
+        db.document(busStatusPath).get(source).addOnSuccessListener { document ->
             if (document.data != null) {
-                // if it is not last stop
-                prevStop = curStop
-                curStop = "none"
-                nextStop = document.get("stationName").toString()
-            } else {
-                // if it is last stop
-                isLastStop = true
-                prevStop = curStop
-                curStop = "none"
-                nextStop = "none"
-            }
+                val currentStop = document.get("currentStop").toString()
 
-            // path to update StationOperation
-            val busRef = db.document(busStatusPath)
-
-            val operationHistoryRef = db.collection("StationOperation")
-                .document(today)
-                .collection(prevStop)
-                .document("operationHistory")
-
-            val departureHistoryRef = db.collection("StationOperation")
-                .document(today)
-                .collection(prevStop)
-                .document("operationHistory")
-                .collection("DepartedBuses")
-                .document("${routeId}_${selectedBusId}")
-
-            // path to update BusOperation collection
-
-            val busRoutesBusIDRef = db.collection("BusOperation")
-                .document("dates")
-                .collection(today)
-                .document("${routeId}_${_busId.value}")
-
-
-            val departureTimeRef = busRoutesBusIDRef
-                .collection("DepartureTime")
-                .document(stationId)
-
-            val passengerCountRef = busRoutesBusIDRef
-                .collection("PassengerCount")
-                .document(stationId)
-
-            // path to update DataVisualisation
-            val totalPassengersRef = db.collection("DataVisualisation")
-                .document("TotalPassengers")
-
-            val totalRunningBusesForToday = db.collection("DataVisualisation")
-                .document("TotalRunningBusesForToday")
-
-
-            db.runBatch { batch ->
-                // update busArchive
-                if (isLastStop) {
-                    batch.update(busRef, "active", false,
-                        "previousStop", prevStop,
-                        "currentStop", curStop,
-                        "nextStop", nextStop,
-                        "departureTime", departureTimeStamp,
-                        "lastUpdated", departureTimeStamp,
-                        "passengers", newPassengerOnBoard)
-
-                    batch.update(totalRunningBusesForToday, "lastUpdated", departureTimeStamp,
-                        "count", FieldValue.increment(-1))
+                if (currentStop == "none") {
+                    _isMarked.value = true
                 } else {
-                    batch.update(busRef, "previousStop", prevStop,
-                        "currentStop", curStop,
-                        "nextStop", nextStop,
-                        "departureTime", departureTimeStamp,
-                        "lastUpdated", departureTimeStamp,
-                        "passengers", newPassengerOnBoard)
+                    var isLastStop = false
+                    val departureTimeStamp = Timestamp.now()
+
+                    _passengerDisembarking.value = offBoard
+                    _passengerBoarding.value = boarding
+                    val newPassengerOnBoard =  _passengerOnBoard.value!!.toInt() - _passengerDisembarking.value!!.toInt() + _passengerBoarding.value!!.toInt()
+
+                    val nextBusStopRef = db.document("RouteOperation/$routeId/Stops/${curStopNo.toInt() + 1}")
+
+                    nextBusStopRef.get(source).addOnSuccessListener { document ->
+                        if (document.data != null) {
+                            // if it is not last stop
+                            prevStop = curStop
+                            curStop = "none"
+                            nextStop = document.get("stationName").toString()
+                        } else {
+                            // if it is last stop
+                            isLastStop = true
+                            prevStop = curStop
+                            curStop = "none"
+                            nextStop = "none"
+                        }
+
+                        // path to update StationOperation
+                        val busRef = db.document(busStatusPath)
+
+                        val operationHistoryRef = db.collection("StationOperation")
+                            .document(today)
+                            .collection(prevStop)
+                            .document("operationHistory")
+
+                        val departureHistoryRef = db.collection("StationOperation")
+                            .document(today)
+                            .collection(prevStop)
+                            .document("operationHistory")
+                            .collection("DepartedBuses")
+                            .document("${routeId}_${selectedBusId}")
+
+                        // path to update BusOperation collection
+
+                        val busRoutesBusIDRef = db.collection("BusOperation")
+                            .document("dates")
+                            .collection(today)
+                            .document("${routeId}_${_busId.value}")
+
+
+                        val departureTimeRef = busRoutesBusIDRef
+                            .collection("DepartureTime")
+                            .document(stationId)
+
+                        val passengerCountRef = busRoutesBusIDRef
+                            .collection("PassengerCount")
+                            .document(stationId)
+
+                        // path to update DataVisualisation
+                        val totalPassengersRef = db.collection("DataVisualisation")
+                            .document("TotalPassengers")
+
+                        val totalRunningBusesForToday = db.collection("DataVisualisation")
+                            .document("TotalRunningBusesForToday")
+
+
+                        db.runBatch { batch ->
+                            // update busArchive
+                            if (isLastStop) {
+                                batch.update(busRef, "active", false,
+                                    "previousStop", prevStop,
+                                    "currentStop", curStop,
+                                    "nextStop", nextStop,
+                                    "departureTime", departureTimeStamp,
+                                    "lastUpdated", departureTimeStamp,
+                                    "passengers", newPassengerOnBoard)
+
+                                batch.update(totalRunningBusesForToday, "lastUpdated", departureTimeStamp,
+                                    "count", FieldValue.increment(-1))
+                            } else {
+                                batch.update(busRef, "previousStop", prevStop,
+                                    "currentStop", curStop,
+                                    "nextStop", nextStop,
+                                    "departureTime", departureTimeStamp,
+                                    "lastUpdated", departureTimeStamp,
+                                    "passengers", newPassengerOnBoard)
+                            }
+
+                            // update OperationHistory
+                            batch.set(operationHistoryRef, HashMap<String, Any>())
+                            batch.set(departureHistoryRef, hashMapOf("departureTime" to departureTimeStamp))
+
+                            // update BusOperation
+                            batch.set(busRoutesBusIDRef, HashMap<String, Any>())
+                            batch.set(departureTimeRef, createDepartureTimeData(departureTimeStamp))
+                            batch.set(passengerCountRef, createPassengerCountData(newPassengerOnBoard))
+
+                            // update DataVisualisation
+                            batch.update(totalPassengersRef, "count", FieldValue.increment(_passengerBoarding.value!!.toLong()))
+
+                        }
+                    }.addOnSuccessListener {
+                        _isDeparture.value = true
+                    }.addOnFailureListener { e ->
+                        Log.w("Fail to mark bus as departure", e)
+                    }
                 }
-
-                // update OperationHistory
-                batch.set(operationHistoryRef, HashMap<String, Any>())
-                batch.set(departureHistoryRef, hashMapOf("departureTime" to departureTimeStamp))
-
-                // update BusOperation
-                batch.set(busRoutesBusIDRef, HashMap<String, Any>())
-                batch.set(departureTimeRef, createDepartureTimeData(departureTimeStamp))
-                batch.set(passengerCountRef, createPassengerCountData(newPassengerOnBoard))
-
-                // update DataVisualisation
-                batch.update(totalPassengersRef, "count", FieldValue.increment(_passengerBoarding.value!!.toLong()))
-
             }
-        }.addOnSuccessListener {
-                            _isDeparture.value = true
         }.addOnFailureListener { e ->
-            Log.w("Fail to mark bus as departure", e)
+            Log.w("Fail to get selected bus document", e)
         }
     }
 

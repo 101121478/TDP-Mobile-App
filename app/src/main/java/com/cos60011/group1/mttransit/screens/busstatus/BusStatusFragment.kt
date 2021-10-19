@@ -48,9 +48,9 @@ class BusStatusFragment : Fragment() {
         binding.lifecycleOwner = this.viewLifecycleOwner
 
         // show UI after get data from server
-        viewModel.busId.observe(viewLifecycleOwner, { busId ->
-            if (busId != null) {
-                hideProgressIndicator(isCurrentBus!!)
+        viewModel.passengerOnBoard.observe(viewLifecycleOwner, { passengerOnBoard ->
+            if (passengerOnBoard != null) {
+                hideProgressIndicator(isCurrentBus)
             }
         })
 
@@ -83,21 +83,24 @@ class BusStatusFragment : Fragment() {
 
             val offBoard = passengerOffBoarding.editText?.text!!.trim()
             val boarding = passengerOnBoarding.editText?.text!!.trim()
-            val capacity = viewModel.passengerCapacity.value.toString().toInt()
-            val currentTotalPassengers = viewModel.passengerOnBoard.value.toString().toInt()
-            val newTotalPassengers = currentTotalPassengers - offBoard.toString().toInt() + boarding.toString().toInt()
 
             if (offBoard.isEmpty()) {
                 passengerOffBoarding.error = "The disembarking passenger field is required."
             } else if (boarding.isEmpty()) {
                 passengerOnBoarding.error = "The boarding passengers field is required."
-            } else if (offBoard.toString().toInt() > currentTotalPassengers) {
-                passengerOffBoarding.error = "The disembarking passengers $offBoard exceeds the number of passengers onboard $currentTotalPassengers."
-            } else if (newTotalPassengers > capacity) {
-                passengerOnBoarding.error = "The number of passengers $newTotalPassengers exceeds the bus capacity $capacity."
             } else {
-                imm.hideSoftInputFromWindow(requireView().windowToken, 0)
-                viewModel.markDeparture(offBoard.toString(), boarding.toString())
+                val capacity = viewModel.passengerCapacity.value.toString().toInt()
+                val currentTotalPassengers = viewModel.passengerOnBoard.value.toString().toInt()
+                val newTotalPassengers = currentTotalPassengers - offBoard.toString().toInt() + boarding.toString().toInt()
+
+                if (offBoard.toString().toInt() > currentTotalPassengers) {
+                    passengerOffBoarding.error = "The disembarking passengers $offBoard exceeds the number of passengers onboard $currentTotalPassengers."
+                } else if (newTotalPassengers > capacity) {
+                    passengerOnBoarding.error = "The number of passengers $newTotalPassengers exceeds the bus capacity $capacity."
+                } else {
+                    imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+                    viewModel.markDeparture(offBoard.toString(), boarding.toString())
+                }
             }
         }
 
@@ -130,6 +133,16 @@ class BusStatusFragment : Fragment() {
                             "please try again."
                     showDialog(title, message)
                 }
+            }
+        })
+
+        // handle marking conflict by multiple users
+        viewModel.isMarked.observe(viewLifecycleOwner, { isMarked ->
+            if (isMarked) {
+                view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
+                val title = "Error"
+                val message = "The Bus ${viewModel.busId.value} was marked by other staffs already."
+                showDialog(title, message)
             }
         })
 
