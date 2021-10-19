@@ -1,4 +1,4 @@
-package com.cos60011.group1.mttransit.screens.dashboard
+package com.cos60011.group1.mttransit
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,13 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.cos60011.group1.mttransit.Bus
-import com.cos60011.group1.mttransit.R
-import com.cos60011.group1.mttransit.SharedViewModel
-import com.cos60011.group1.mttransit.databinding.FragmentBusCardsBinding
+import com.cos60011.group1.mttransit.databinding.FragmentRecentBusesBinding
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
@@ -20,68 +16,70 @@ import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 
-class BusCardsFragment : Fragment() {
-    private var _binding: FragmentBusCardsBinding? = null
+// TODO: Add recent bus to navigation
+// TODO: Create index for query
+
+class RecentBusesFragment : Fragment() {
+    private var _binding: FragmentRecentBusesBinding? = null
     private val binding get() = _binding!!
     private val db = Firebase.firestore
 
-    private lateinit var rvCards: RecyclerView
-    private lateinit var cardAdapter: BusCardAdapter
+    private lateinit var rvList: RecyclerView
+    private lateinit var recentBusesAdapter: RecentBusesAdapter
     lateinit var viewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentBusCardsBinding.inflate(inflater, container, false)
+
+        _binding = FragmentRecentBusesBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.recentBusesButton.setOnClickListener { view: View ->
-            view.findNavController().navigate(R.id.action_busBoardFragment_to_recentBusesFragment)
-
-        }
-
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        val currentLocation = viewModel.userLocation.value //add observer here?
+        var currentLocation = viewModel.userLocation.value //add observer here?
+
+        // Get all the buses whose next stop is equal to the user's current location
         val query = db.collection("StationOperation")
             .document("$today")
             .collection("$currentLocation")
             .document("busArchive")
             .collection("busesAtStop")
             .whereEqualTo("active", true)
-            .whereEqualTo("currentStop", "$currentLocation")
-            .orderBy("arrivalTime", Query.Direction.DESCENDING)
+            .whereEqualTo("previousStop", "$currentLocation")
+            .orderBy("departureTime", Query.Direction.DESCENDING)
 
         val options =
             FirestoreRecyclerOptions.Builder<Bus>().setQuery(query, Bus::class.java).build()
 
         //bind views you want to change here
-        rvCards = binding.busRecycler
+        rvList = binding.recentBusesRecycler
 
-        // Create adapter passing in the FirestoreRecyclerOptions object and attach it to recyclerview
-        cardAdapter = BusCardAdapter(requireContext(), options, this)
-        rvCards.adapter = cardAdapter
+        // Create adapter passing in the FirestoreRecyclerOptions object and attaching it to recyclerview
+        recentBusesAdapter = RecentBusesAdapter(requireContext(), options, this)
+        rvList.adapter = recentBusesAdapter
 
         // Set layout manager to position the items
-        rvCards.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        rvCards.itemAnimator = null
+        rvList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        rvList.itemAnimator = null
     }
 
     override fun onStart() {
         super.onStart()
-        cardAdapter.startListening()
+        recentBusesAdapter.startListening()
     }
 
     override fun onStop() {
         super.onStop()
 
-        if (cardAdapter != null) {
-            cardAdapter.stopListening()
+        if (recentBusesAdapter != null) {
+            recentBusesAdapter.stopListening()
         }
     }
 
@@ -89,4 +87,6 @@ class BusCardsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }
