@@ -76,7 +76,7 @@ class BusStatusFragment : Fragment() {
         val passengerOnBoarding = binding.textInputBusStatusPassengerBoarding
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-        // handle mark as departure button
+        // handle mark as departed button
         binding.buttonBusStatusDepart.setOnClickListener {
             passengerOffBoarding.error = ""
             passengerOnBoarding.error = ""
@@ -120,16 +120,16 @@ class BusStatusFragment : Fragment() {
             }
         })
 
-        // handle mark as departure success and failure
+        // handle mark as departed success and failure
         viewModel.isDeparture.observe(viewLifecycleOwner, { isDeparture ->
             run {
                 if (isDeparture) {
                     view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
-                    val message = "The Bus ${viewModel.busId.value} was marked as departure."
+                    val message = "The Bus ${viewModel.busId.value} was marked as departed."
                     Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
                 } else {
                     val title = "Error"
-                    val message = "Failure to mark bus ${viewModel.busId.value} as departure,\n" +
+                    val message = "Failure to mark bus ${viewModel.busId.value} as departed,\n" +
                             "please try again."
                     showDialog(title, message)
                 }

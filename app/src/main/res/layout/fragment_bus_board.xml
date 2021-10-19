@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.cos60011.group1.mttransit.screens.dashboard.BusBoardFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:id="@+id/bus_Constraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -12,56 +12,50 @@
         <fragment
             android:id="@+id/locationFragment2"
             android:name="com.cos60011.group1.mttransit.screens.dashboard.LocationFragment"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:label="fragment_location"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout="@layout/fragment_location" />
+            tools:layout="@layout/fragment_location"
+            android:layout_alignParentTop="true"/>
 
         <fragment
             android:id="@+id/busCardsFragment2"
             android:name="com.cos60011.group1.mttransit.screens.dashboard.BusCardsFragment"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:label="fragment_bus_cards"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/locationFragment2"
-            tools:layout="@layout/fragment_bus_cards" />
+            tools:layout="@layout/fragment_bus_cards"
+            android:layout_below="@id/locationFragment2"/>
 
         <fragment
             android:id="@+id/busListFragment2"
             android:name="com.cos60011.group1.mttransit.screens.dashboard.BusListFragment"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:label="fragment_bus_list"
-            app:layout_constraintBottom_toTopOf="@+id/add_bus_btn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/busCardsFragment2"
-            tools:layout="@layout/fragment_bus_list" />
+            tools:layout="@layout/fragment_bus_list"
+            android:layout_below="@id/busCardsFragment2"
+            android:layout_above="@id/add_bus_btn"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/add_bus_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/add_bus_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
 </layout>

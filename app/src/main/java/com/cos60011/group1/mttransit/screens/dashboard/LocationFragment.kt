@@ -19,15 +19,8 @@ import com.google.firebase.ktx.Firebase
 class LocationFragment : Fragment() {
     private var _binding: FragmentLocationBinding? = null
     private val binding get() = _binding!!
-
-    private val db = Firebase.firestore
     private lateinit var viewModel: SharedViewModel
-
     private lateinit var currentStation: TextView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,24 +44,14 @@ class LocationFragment : Fragment() {
         }
 
         // read userLocation from disk and set it to location
-        val sharedPref = requireActivity().getSharedPreferences("com.cos60011.group1.mttransit.settings.${Firebase.auth.currentUser?.email.toString()}", Context.MODE_PRIVATE)
+        val sharedPref = requireActivity().getSharedPreferences(
+            "com.cos60011.group1.mttransit.settings.${Firebase.auth.currentUser?.email.toString()}",
+            Context.MODE_PRIVATE
+        )
         val userLocation = sharedPref.getString("userLocation", "Unknown")
         viewModel.setLocation(userLocation.toString())
 
         currentStation.text = viewModel.userLocation.value
-        //TODO: Override default location with user selection. Figure out how to persist it throughout navigation since we do not have a User collection.
-
-        /*
-        Testing retrieval of data from Firestore with addOnSuccessListener.
-        Doesn't need to be addSnapshotListener because we don't really need to get the location in real-time as it is set by the user
-
-        db.collection("railwayStations").document("armadale").get().addOnSuccessListener {
-                document ->
-            if (document != null){
-                currentStation.text = document.getString("name")
-            }
-        }
-         */
     }
 
 
