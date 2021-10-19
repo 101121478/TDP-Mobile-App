@@ -25,6 +25,7 @@
         android:layout_height="350dp"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/incoming_buses_title" />
+        app:layout_constraintTop_toBottomOf="@id/incoming_buses_title"
+        android:paddingBottom="20dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
