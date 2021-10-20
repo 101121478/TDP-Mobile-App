@@ -165,6 +165,62 @@ class BusStatusFragment : Fragment() {
             }
         })
 
+        // handle update passengers button
+        binding.buttonBusStatusUpdatePassengersCount.setOnClickListener {
+
+            passengerOffBoarding.error = ""
+            passengerOnBoarding.error = ""
+
+            val offBoard = passengerOffBoarding.editText?.text!!.trim()
+            val boarding = passengerOnBoarding.editText?.text!!.trim()
+
+            if (offBoard.isEmpty()) {
+                passengerOffBoarding.error = "The disembarking passenger field is required."
+            } else if (boarding.isEmpty()) {
+                passengerOnBoarding.error = "The boarding passengers field is required."
+            } else {
+                val capacity = viewModel.passengerCapacity.value.toString().toInt()
+                val currentTotalPassengers = viewModel.passengerOnBoard.value.toString().toInt()
+                val newTotalPassengers = currentTotalPassengers - offBoard.toString().toInt() + boarding.toString().toInt()
+
+                if (offBoard.toString().toInt() > currentTotalPassengers) {
+                    passengerOffBoarding.error = "The disembarking passengers $offBoard exceeds the number of passengers onboard $currentTotalPassengers."
+                } else if (newTotalPassengers > capacity) {
+                    passengerOnBoarding.error = "The number of passengers $newTotalPassengers exceeds the bus capacity $capacity."
+                } else {
+                    imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setMessage("Do you want to update passengers count on bus ${viewModel.busId.value}?")
+                        .setNegativeButton("CANCEL") { dialog, which ->
+                            dialog.cancel()
+                        }
+                        .setPositiveButton("UPDATE") { dialog, which ->
+                            // TODO call unmark function
+                            viewModel.updatePassengerCount(offBoard.toString(), boarding.toString())
+                        }
+                        .show()
+                }
+            }
+
+        }
+
+        // handle update passenger success and failure
+        viewModel.isPassengerCountUpdated.observe(viewLifecycleOwner, { isPassengerCountUpdated ->
+            run {
+                if (isPassengerCountUpdated) {
+                    view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_recentBusesFragment)
+                    val message = "The Bus ${viewModel.busId.value} passengers was updated."
+                    Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
+                } else {
+                    val title = "Error"
+                    val message = "Failure to update bus ${viewModel.busId.value} passengers,\n" +
+                            "please try again."
+                    showDialog(title, message)
+                }
+            }
+        })
+
         // handle marking conflict by multiple users
         viewModel.isMarked.observe(viewLifecycleOwner, { isMarked ->
             if (isMarked) {

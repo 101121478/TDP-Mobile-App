@@ -66,6 +66,10 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
     val isUnmarkDeparted: LiveData<Boolean>
         get() = _isUnmarkDeparted
 
+    private val _isPassengerCountUpdated = MutableLiveData<Boolean>()
+    val isPassengerCountUpdated: LiveData<Boolean>
+        get() = _isPassengerCountUpdated
+
     private val _isMarked = MutableLiveData<Boolean>()
     val isMarked: LiveData<Boolean>
         get() = _isMarked
@@ -423,9 +427,10 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
      * 1. currentStop = previousStop
      * 2. previousStop = currentUserLocation
      * 3. nextStop = none
+     *
+     * update DataVisualisation
      */
-
-    // TODO passenger update on busDocument and Data collection
+    // TODO update passenger count at busOperation
     fun unmarkFromDeparted() {
         val source = Source.SERVER
         // check if whether the bus has been marked by other staff
@@ -490,6 +495,48 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
         }
     }
 
+    /**
+     * Update document passenger total and history
+     * Update DataVis
+     */
+    // TODO update passenger count at busOperation
+    fun updatePassengerCount(offBoard: String, boarding: String) {
+        val source = Source.SERVER
+        // check if whether the bus has been marked by other staff
+        db.document(busStatusPath).get(source).addOnSuccessListener { document ->
+            if (document.data != null) {
+
+                val busRef = db.document(busStatusPath)
+
+                val totalPassengersRef = db.collection("DataVisualisation")
+                    .document("TotalPassengers")
+
+                val newTotalPassenger = _passengerOnBoard.value?.toInt()?.minus(offBoard.toInt())?.plus(boarding.toInt())
+
+                db.runBatch { batch ->
+                    batch.update(busRef, "lastUpdated", Timestamp.now(),
+                        "passengers", newTotalPassenger,
+                        "passengersHistory", hashMapOf("onboard" to _passengerOnBoard.value?.toInt(),
+                            "off" to offBoard.toInt(),
+                            "on" to boarding.toInt()))
+
+                    // update DataVisualisation
+                    batch.update(totalPassengersRef, "count",
+                        FieldValue.increment(boarding.toLong()))
+
+                }.addOnSuccessListener {
+                    _isPassengerCountUpdated.value = true
+                }.addOnFailureListener { e ->
+                    _isPassengerCountUpdated.value = false
+                    Log.w("Fail to update passengers number", e)
+                }
+            }
+        }.addOnFailureListener{ e ->
+            _isDbError.value = true
+            Log.w("Fail to get selected bus document", e)
+        }
+    }
+
     private fun createArrivalTimeData(timestamp: Timestamp): HashMap<String, Comparable<*>?> {
         return hashMapOf(
             "stationName" to nextStop,
@@ -499,7 +546,6 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
     }
 
     private fun createArrivingStopBusData(timestamp: Timestamp): HashMap<String, Comparable<*>?> {
-        // TODO arrivalTime null issue when marked bus as departure
         return hashMapOf(
             "active" to true,
             "arrivalTime" to timestamp,

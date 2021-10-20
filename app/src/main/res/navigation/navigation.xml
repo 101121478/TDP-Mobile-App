@@ -31,6 +31,11 @@
             app:destination="@id/busBoardFragment"
             app:popUpTo="@id/busBoardFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_busStatusFragment_to_recentBusesFragment"
+            app:destination="@id/recentBusesFragment"
+            app:popUpTo="@id/busBoardFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/busEntryFragment"
