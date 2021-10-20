@@ -57,7 +57,7 @@ class BusStatusFragment : Fragment() {
 
         // handle swipe refresh
         binding.busStatusSwipeRefresh.setOnRefreshListener {
-            viewModel.getBusDocument()
+            viewModel.refreshData()
             viewModel.isUpdate.observe(viewLifecycleOwner, {isUpdate ->
                 if (isUpdate) {
                     binding.busStatusSwipeRefresh.isRefreshing = false
@@ -108,17 +108,30 @@ class BusStatusFragment : Fragment() {
         // handle unmark from departed button
         binding.buttonBusStatusUnmarkFromDeparted.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Unmark confirmation")
                 .setMessage("Do you want to unmark bus ${viewModel.busId.value} from departed?")
-                .setNegativeButton("Cancel") { dialog, which ->
+                .setNegativeButton("CANCEL") { dialog, which ->
                     dialog.cancel()
                 }
-                .setPositiveButton("Ok") { dialog, which ->
+                .setPositiveButton("UNMARK") { dialog, which ->
                     // TODO call unmark function
                     viewModel.unmarkFromDeparted()
                 }
                 .show()
         }
+
+        // handle unmark from departed success and failure
+        viewModel.isUnmarkDeparted.observe(viewLifecycleOwner, { isUnmarkDeparted ->
+            if (isUnmarkDeparted) {
+                view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
+                val message = "The Bus ${viewModel.busId.value} was unmarked from departed."
+                Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
+            } else {
+                val title = "Error"
+                val message = "Failure to unmark bus ${viewModel.busId.value} from departed,\n" +
+                        "please try again."
+                showDialog(title, message)
+            }
+        })
 
         // handle mark as arrive success and failure
         viewModel.isArrive.observe(viewLifecycleOwner, { isArrive ->
