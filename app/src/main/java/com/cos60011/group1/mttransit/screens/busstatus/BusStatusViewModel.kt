@@ -151,13 +151,15 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
                         _busRoute.value = queryDocumentSnapshot.data["routeName"].toString()
                         _passengerCapacity.value = queryDocumentSnapshot.data["capacity"].toString()
                         _passengerOnBoard.value = queryDocumentSnapshot.data["passengers"].toString()
+                        passengersHistory = queryDocumentSnapshot.data["passengersHistory"] as Map<String, Objects>
+                        _passengerDisembarking.value = passengersHistory["off"].toString()
+                        _passengerBoarding.value = passengersHistory["on"].toString()
                         routeId = queryDocumentSnapshot.data["routeId"].toString()
                         curStopNo = queryDocumentSnapshot.data["currentStopNo"].toString()
                         prevStop = queryDocumentSnapshot.data["previousStop"].toString()
                         curStop = queryDocumentSnapshot.data["currentStop"].toString()
                         nextStop = queryDocumentSnapshot.data["nextStop"].toString()
                         busStatusPath = queryDocumentSnapshot.reference.path
-                        passengersHistory = queryDocumentSnapshot.data["passengersHistory"] as Map<String, Objects>
                         _isUpdate.value = true
                     }
                 }
