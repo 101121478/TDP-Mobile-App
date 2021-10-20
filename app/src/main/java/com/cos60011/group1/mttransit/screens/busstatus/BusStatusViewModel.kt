@@ -543,7 +543,7 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
         )
     }
 
-    private fun createArrivingStopBusData(timestamp: Timestamp): HashMap<String, Comparable<*>?> {
+    private fun createArrivingStopBusData(timestamp: Timestamp): HashMap<String, Any?> {
         return hashMapOf(
             "active" to true,
             "arrivalTime" to timestamp,
@@ -558,6 +558,9 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
             "previousStop" to prevStop,
             "routeId" to routeId,
             "routeName" to _busRoute.value,
+            "passengersHistory" to hashMapOf("onboard" to 0,
+                "off" to 0,
+                "on" to 0)
         )
     }
 
