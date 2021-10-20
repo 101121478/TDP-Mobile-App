@@ -37,10 +37,11 @@ class BusStatusFragment : Fragment() {
         val busIdRef = sharedViewModel.currentBus.value
         val userLocation = sharedViewModel.userLocation.value
         val isCurrentBus = sharedViewModel.isCurrentBus.value
+        val isRecentBus = sharedViewModel.isRecentBus.value
         val routeName = sharedViewModel.routeName.value
 
         // Initialize viewModel
-        viewModelFactory = BusStatusViewModelFactory(userLocation.toString(), busIdRef.toString(), routeName.toString(), isCurrentBus!!)
+        viewModelFactory = BusStatusViewModelFactory(userLocation.toString(), busIdRef.toString(), routeName.toString(), isCurrentBus!!, isRecentBus!!)
         viewModel = ViewModelProvider(this, viewModelFactory).get(BusStatusViewModel::class.java)
 
         binding.busStatusViewModel = viewModel
@@ -50,7 +51,7 @@ class BusStatusFragment : Fragment() {
         // show UI after get data from server
         viewModel.passengerOnBoard.observe(viewLifecycleOwner, { passengerOnBoard ->
             if (passengerOnBoard != null) {
-                hideProgressIndicator(isCurrentBus)
+                hideProgressIndicator(isCurrentBus, isRecentBus)
             }
         })
 
@@ -182,9 +183,10 @@ class BusStatusFragment : Fragment() {
         binding.textInputBusStatusPassengerBoarding.visibility = View.INVISIBLE
         binding.buttonBusStatusArrive.visibility = View.INVISIBLE
         binding.buttonBusStatusDepart.visibility = View.INVISIBLE
+        binding.buttonBusStatusUnmarkFromDeparted.visibility = View.INVISIBLE
     }
 
-    private fun hideProgressIndicator(isCurrentBus: Boolean) {
+    private fun hideProgressIndicator(isCurrentBus: Boolean, isRecentBus: Boolean) {
         binding.progressCircular.visibility = View.GONE
         binding.busStatusBusIdLabel.visibility = View.VISIBLE
         binding.busStatusBusIdText.visibility = View.VISIBLE
@@ -194,20 +196,32 @@ class BusStatusFragment : Fragment() {
         binding.busStatusPassengerCapacityText.visibility = View.VISIBLE
         binding.busStatusPassengerOnboardLabel.visibility = View.VISIBLE
         binding.busStatusPassengerOnboardText.visibility = View.VISIBLE
+
         if (isCurrentBus) {
             binding.buttonBusStatusArrive.visibility = View.GONE
+            binding.buttonBusStatusUnmarkFromDeparted.visibility = View.GONE
+            binding.buttonBusStatusDepart.visibility = View.VISIBLE
             binding.busStatusPassengerOffboardLabel.visibility = View.VISIBLE
             binding.textInputBusStatusPassengerOffboard.visibility = View.VISIBLE
             binding.busStatusPassengerBoardingLabel.visibility = View.VISIBLE
             binding.textInputBusStatusPassengerBoarding.visibility = View.VISIBLE
-            binding.buttonBusStatusDepart.visibility = View.VISIBLE
-        } else {
-            binding.buttonBusStatusArrive.visibility = View.VISIBLE
+        } else if (isRecentBus) {
+            binding.buttonBusStatusArrive.visibility = View.GONE
+            binding.buttonBusStatusDepart.visibility = View.GONE
+            binding.buttonBusStatusUnmarkFromDeparted.visibility = View.VISIBLE
             binding.busStatusPassengerOffboardLabel.visibility = View.GONE
             binding.textInputBusStatusPassengerOffboard.visibility = View.GONE
             binding.busStatusPassengerBoardingLabel.visibility = View.GONE
             binding.textInputBusStatusPassengerBoarding.visibility = View.GONE
+        } else {
+            binding.buttonBusStatusArrive.visibility = View.VISIBLE
             binding.buttonBusStatusDepart.visibility = View.GONE
+            binding.buttonBusStatusUnmarkFromDeparted.visibility = View.GONE
+            binding.busStatusPassengerOffboardLabel.visibility = View.GONE
+            binding.textInputBusStatusPassengerOffboard.visibility = View.GONE
+            binding.busStatusPassengerBoardingLabel.visibility = View.GONE
+            binding.textInputBusStatusPassengerBoarding.visibility = View.GONE
+
         }
     }
 

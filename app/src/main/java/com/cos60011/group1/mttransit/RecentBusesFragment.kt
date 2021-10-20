@@ -53,6 +53,7 @@ class RecentBusesFragment : Fragment() {
             .collection("busesAtStop")
             .whereEqualTo("active", true)
             .whereEqualTo("previousStop", "$currentLocation")
+            .whereNotEqualTo("departureTime", null)
             .orderBy("departureTime", Query.Direction.DESCENDING)
 
         val options =

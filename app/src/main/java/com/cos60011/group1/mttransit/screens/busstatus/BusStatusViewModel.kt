@@ -11,7 +11,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 
-class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, isCurrentBus: Boolean) : ViewModel() {
+class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, isCurrentBus: Boolean, isRecentBus: Boolean) : ViewModel() {
     private val db = FirebaseFirestore.getInstance()
     private lateinit var busStatusQuery: Query
     private lateinit var busStatusPath: String
@@ -77,17 +77,17 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
         selectedBusId = busRef
         selectedRouteId = convertRouteNameToID(routeRef)
 
-        getBusDocument(isCurrentBus, stationRef)
+        getBusDocument(isCurrentBus, isRecentBus, stationRef)
     }
 
     private fun convertRouteNameToID(routeName: String): String {
         return routeName.filter { !it.isWhitespace() }.replaceFirstChar { it.lowercase() }
     }
 
-    private fun getBusDocument(isCurrentBus: Boolean, currentStationRef: String) {
+    private fun getBusDocument(isCurrentBus: Boolean, isRecentBus: Boolean, currentStationRef: String) {
         stationId = currentStationRef
         println("RouteID: $selectedRouteId")
-        if (isCurrentBus) {
+        if (isCurrentBus || isRecentBus) {
             //query to get bus status
             busStatusQuery = db.collection("StationOperation").document(today)
                 .collection(stationId).document("busArchive")
