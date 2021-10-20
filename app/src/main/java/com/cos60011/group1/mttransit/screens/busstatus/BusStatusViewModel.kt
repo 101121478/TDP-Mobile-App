@@ -430,7 +430,6 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
      *
      * update DataVisualisation
      */
-    // TODO update passenger count at busOperation
     fun unmarkFromDeparted() {
         val source = Source.SERVER
         // check if whether the bus has been marked by other staff
@@ -497,9 +496,8 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
 
     /**
      * Update document passenger total and history
-     * Update DataVis
+     * Update DataVisualisation
      */
-    // TODO update passenger count at busOperation
     fun updatePassengerCount(offBoard: String, boarding: String) {
         val source = Source.SERVER
         // check if whether the bus has been marked by other staff
@@ -516,7 +514,7 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
                 db.runBatch { batch ->
                     batch.update(busRef, "lastUpdated", Timestamp.now(),
                         "passengers", newTotalPassenger,
-                        "passengersHistory", hashMapOf("onboard" to _passengerOnBoard.value?.toInt(),
+                        "passengersHistory", hashMapOf("onboard" to newTotalPassenger,
                             "off" to offBoard.toInt(),
                             "on" to boarding.toInt()))
 

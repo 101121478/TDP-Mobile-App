@@ -113,7 +113,6 @@ class BusStatusFragment : Fragment() {
                     dialog.cancel()
                 }
                 .setPositiveButton("UNMARK") { dialog, which ->
-                    // TODO call unmark function
                     viewModel.unmarkFromDeparted()
                 }
                 .show()
@@ -226,7 +225,7 @@ class BusStatusFragment : Fragment() {
             if (isMarked) {
                 view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
                 val title = "Error"
-                val message = "The Bus ${viewModel.busId.value} was marked by other staffs already."
+                val message = "The bus ${viewModel.busId.value} was marked by other staffs already."
                 showDialog(title, message)
             }
         })
