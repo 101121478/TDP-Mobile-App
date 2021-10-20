@@ -37,10 +37,11 @@ class BusStatusFragment : Fragment() {
         val busIdRef = sharedViewModel.currentBus.value
         val userLocation = sharedViewModel.userLocation.value
         val isCurrentBus = sharedViewModel.isCurrentBus.value
+        val isRecentBus = sharedViewModel.isRecentBus.value
         val routeName = sharedViewModel.routeName.value
 
         // Initialize viewModel
-        viewModelFactory = BusStatusViewModelFactory(userLocation.toString(), busIdRef.toString(), routeName.toString(), isCurrentBus!!)
+        viewModelFactory = BusStatusViewModelFactory(userLocation.toString(), busIdRef.toString(), routeName.toString(), isCurrentBus!!, isRecentBus!!)
         viewModel = ViewModelProvider(this, viewModelFactory).get(BusStatusViewModel::class.java)
 
         binding.busStatusViewModel = viewModel
@@ -50,13 +51,13 @@ class BusStatusFragment : Fragment() {
         // show UI after get data from server
         viewModel.passengerOnBoard.observe(viewLifecycleOwner, { passengerOnBoard ->
             if (passengerOnBoard != null) {
-                hideProgressIndicator(isCurrentBus)
+                hideProgressIndicator(isCurrentBus, isRecentBus)
             }
         })
 
         // handle swipe refresh
         binding.busStatusSwipeRefresh.setOnRefreshListener {
-            viewModel.getBusDocument()
+            viewModel.refreshData()
             viewModel.isUpdate.observe(viewLifecycleOwner, {isUpdate ->
                 if (isUpdate) {
                     binding.busStatusSwipeRefresh.isRefreshing = false
@@ -104,6 +105,33 @@ class BusStatusFragment : Fragment() {
             }
         }
 
+        // handle unmark from departed button
+        binding.buttonBusStatusUnmarkFromDeparted.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setMessage("Do you want to unmark bus ${viewModel.busId.value} from departed?")
+                .setNegativeButton("CANCEL") { dialog, which ->
+                    dialog.cancel()
+                }
+                .setPositiveButton("UNMARK") { dialog, which ->
+                    viewModel.unmarkFromDeparted()
+                }
+                .show()
+        }
+
+        // handle unmark from departed success and failure
+        viewModel.isUnmarkDeparted.observe(viewLifecycleOwner, { isUnmarkDeparted ->
+            if (isUnmarkDeparted) {
+                view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
+                val message = "The Bus ${viewModel.busId.value} was unmarked from departed."
+                Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
+            } else {
+                val title = "Error"
+                val message = "Failure to unmark bus ${viewModel.busId.value} from departed,\n" +
+                        "please try again."
+                showDialog(title, message)
+            }
+        })
+
         // handle mark as arrive success and failure
         viewModel.isArrive.observe(viewLifecycleOwner, { isArrive ->
             run {
@@ -136,12 +164,68 @@ class BusStatusFragment : Fragment() {
             }
         })
 
+        // handle update passengers button
+        binding.buttonBusStatusUpdatePassengersCount.setOnClickListener {
+
+            passengerOffBoarding.error = ""
+            passengerOnBoarding.error = ""
+
+            val offBoard = passengerOffBoarding.editText?.text!!.trim()
+            val boarding = passengerOnBoarding.editText?.text!!.trim()
+
+            if (offBoard.isEmpty()) {
+                passengerOffBoarding.error = "The disembarking passenger field is required."
+            } else if (boarding.isEmpty()) {
+                passengerOnBoarding.error = "The boarding passengers field is required."
+            } else {
+                val capacity = viewModel.passengerCapacity.value.toString().toInt()
+                val currentTotalPassengers = viewModel.passengerOnBoard.value.toString().toInt()
+                val newTotalPassengers = currentTotalPassengers - offBoard.toString().toInt() + boarding.toString().toInt()
+
+                if (offBoard.toString().toInt() > currentTotalPassengers) {
+                    passengerOffBoarding.error = "The disembarking passengers $offBoard exceeds the number of passengers onboard $currentTotalPassengers."
+                } else if (newTotalPassengers > capacity) {
+                    passengerOnBoarding.error = "The number of passengers $newTotalPassengers exceeds the bus capacity $capacity."
+                } else {
+                    imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setMessage("Do you want to update passengers count on bus ${viewModel.busId.value}?")
+                        .setNegativeButton("CANCEL") { dialog, which ->
+                            dialog.cancel()
+                        }
+                        .setPositiveButton("UPDATE") { dialog, which ->
+                            // TODO call unmark function
+                            viewModel.updatePassengerCount(offBoard.toString(), boarding.toString())
+                        }
+                        .show()
+                }
+            }
+
+        }
+
+        // handle update passenger success and failure
+        viewModel.isPassengerCountUpdated.observe(viewLifecycleOwner, { isPassengerCountUpdated ->
+            run {
+                if (isPassengerCountUpdated) {
+                    view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_recentBusesFragment)
+                    val message = "The Bus ${viewModel.busId.value} passengers was updated."
+                    Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
+                } else {
+                    val title = "Error"
+                    val message = "Failure to update bus ${viewModel.busId.value} passengers,\n" +
+                            "please try again."
+                    showDialog(title, message)
+                }
+            }
+        })
+
         // handle marking conflict by multiple users
         viewModel.isMarked.observe(viewLifecycleOwner, { isMarked ->
             if (isMarked) {
                 view?.findNavController()?.navigate(R.id.action_busStatusFragment_to_busBoardFragment)
                 val title = "Error"
-                val message = "The Bus ${viewModel.busId.value} was marked by other staffs already."
+                val message = "The bus ${viewModel.busId.value} was marked by other staffs already."
                 showDialog(title, message)
             }
         })
@@ -182,9 +266,11 @@ class BusStatusFragment : Fragment() {
         binding.textInputBusStatusPassengerBoarding.visibility = View.INVISIBLE
         binding.buttonBusStatusArrive.visibility = View.INVISIBLE
         binding.buttonBusStatusDepart.visibility = View.INVISIBLE
+        binding.buttonBusStatusUnmarkFromDeparted.visibility = View.INVISIBLE
+        binding.buttonBusStatusUpdatePassengersCount.visibility = View.INVISIBLE
     }
 
-    private fun hideProgressIndicator(isCurrentBus: Boolean) {
+    private fun hideProgressIndicator(isCurrentBus: Boolean, isRecentBus: Boolean) {
         binding.progressCircular.visibility = View.GONE
         binding.busStatusBusIdLabel.visibility = View.VISIBLE
         binding.busStatusBusIdText.visibility = View.VISIBLE
@@ -194,20 +280,37 @@ class BusStatusFragment : Fragment() {
         binding.busStatusPassengerCapacityText.visibility = View.VISIBLE
         binding.busStatusPassengerOnboardLabel.visibility = View.VISIBLE
         binding.busStatusPassengerOnboardText.visibility = View.VISIBLE
+
         if (isCurrentBus) {
             binding.buttonBusStatusArrive.visibility = View.GONE
+            binding.buttonBusStatusUnmarkFromDeparted.visibility = View.GONE
+            binding.buttonBusStatusUpdatePassengersCount.visibility = View.GONE
+            binding.buttonBusStatusDepart.visibility = View.VISIBLE
             binding.busStatusPassengerOffboardLabel.visibility = View.VISIBLE
             binding.textInputBusStatusPassengerOffboard.visibility = View.VISIBLE
             binding.busStatusPassengerBoardingLabel.visibility = View.VISIBLE
             binding.textInputBusStatusPassengerBoarding.visibility = View.VISIBLE
-            binding.buttonBusStatusDepart.visibility = View.VISIBLE
+
+        } else if (isRecentBus) {
+            binding.buttonBusStatusArrive.visibility = View.GONE
+            binding.buttonBusStatusDepart.visibility = View.GONE
+            binding.buttonBusStatusUpdatePassengersCount.visibility = View.VISIBLE
+            binding.buttonBusStatusUnmarkFromDeparted.visibility = View.VISIBLE
+            binding.busStatusPassengerOffboardLabel.visibility = View.VISIBLE
+            binding.textInputBusStatusPassengerOffboard.visibility = View.VISIBLE
+            binding.busStatusPassengerBoardingLabel.visibility = View.VISIBLE
+            binding.textInputBusStatusPassengerBoarding.visibility = View.VISIBLE
+
         } else {
             binding.buttonBusStatusArrive.visibility = View.VISIBLE
+            binding.buttonBusStatusDepart.visibility = View.GONE
+            binding.buttonBusStatusUnmarkFromDeparted.visibility = View.GONE
+            binding.buttonBusStatusUpdatePassengersCount.visibility = View.GONE
             binding.busStatusPassengerOffboardLabel.visibility = View.GONE
             binding.textInputBusStatusPassengerOffboard.visibility = View.GONE
             binding.busStatusPassengerBoardingLabel.visibility = View.GONE
             binding.textInputBusStatusPassengerBoarding.visibility = View.GONE
-            binding.buttonBusStatusDepart.visibility = View.GONE
+
         }
     }
 

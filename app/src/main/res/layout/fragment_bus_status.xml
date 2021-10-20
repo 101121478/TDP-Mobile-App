@@ -70,7 +70,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/bus_status_bus_route_label"
@@ -100,7 +100,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/bus_status_passenger_capacity_label"
@@ -130,7 +130,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/bus_status_passenger_onboard_label"
@@ -160,7 +160,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/bus_status_passenger_offboard_label"
@@ -200,7 +200,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
                     android:fontFamily="@font/roboto"
                     android:text="@string/bus_status_passenger_boarding_label"
@@ -257,6 +257,28 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_input_bus_status_passenger_boarding" />
+
+                <Button
+                    android:id="@+id/button_bus_status_update_passengers_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@android:color/holo_green_dark"
+                    android:text="@string/bus_status_btn_update_passengers_count"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_input_bus_status_passenger_boarding" />
+
+                <Button
+                    android:id="@+id/button_bus_status_unmark_from_departed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@android:color/holo_red_dark"
+                    android:text="@string/bus_status_btn_unmark_from_departed"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/button_bus_status_update_passengers_count" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

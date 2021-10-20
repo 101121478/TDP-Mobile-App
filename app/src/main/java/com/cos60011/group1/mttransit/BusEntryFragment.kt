@@ -215,7 +215,8 @@ class BusEntryFragment : Fragment() {
                                     nextStop = document?.get("stationName").toString()
 
                                     // Create data class of initial bus data to store in busArchive
-                                    val bus = Bus(busId = busID, capacity = busCapacity, currentStop = "$selectedStation", nextStop = nextStop, passengers = passengersOnboard,routeId = "$routeId", routeName = route)
+                                    val bus = Bus(busId = busID, capacity = busCapacity, currentStop = "$selectedStation",
+                                        nextStop = "none", passengers = passengersOnboard,routeId = "$routeId", routeName = route, passengersHistory = hashMapOf("onboard" to 0,"off" to 0,"on" to 0))
 
                                     // Store the bus data in the busArchive document
                                     db.collection("StationOperation").document(dateCollection)

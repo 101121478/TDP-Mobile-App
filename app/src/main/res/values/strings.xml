@@ -28,6 +28,8 @@
     <string name="bus_status_passenger_boarding_label">Boarding passengers</string>
     <string name="bus_status_btn_mark_as_arrived">MARK AS ARRIVED</string>
     <string name="bus_status_btn_mark_as_departed">MARK AS DEPARTED</string>
+    <string name="bus_status_btn_unmark_from_departed">UNMARK FROM DEPARTED</string>
+    <string name="bus_status_btn_update_passengers_count">UPDATE PASSENGERS COUNT</string>
 
     <!-- Bus Data Entry Fragment Strings -->
     <string name="bus_id_input_placeholder">Bus ID</string>
@@ -67,14 +69,14 @@
 
     <!-- Spinner Fragment Test String Array -->
     <string-array name="test_stations_array">
-        <item>Caulfield Station</item>
         <item>Flinders Station</item>
-        <item>Frankston Station</item>
-        <item>Hampton Station</item>
-        <item>Malvern Station</item>
-        <item>Prahran Station</item>
-        <item>Sandringham Station</item>
         <item>Toorak Station</item>
+        <item>Malvern Station</item>
+        <item>Caulfield Station</item>
+        <item>Frankston Station</item>
+        <item>Prahran Station</item>
         <item>Windsor Station</item>
+        <item>Hampton Station</item>
+        <item>Sandringham Station</item>
     </string-array>
 </resources>

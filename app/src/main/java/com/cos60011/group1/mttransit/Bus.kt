@@ -16,5 +16,6 @@ data class Bus(
     val passengers: Int = 1,
     val previousStop: String = "STOP_UNKNOWN_PS", // Need this for eventual 'recently edited buses' query
     val routeId: String = "ID_UNKNOWN",
-    val routeName: String = "ROUTE_UNKNOWN"
+    val routeName: String = "ROUTE_UNKNOWN",
+    val passengersHistory: HashMap<String, Int> = HashMap()
 )

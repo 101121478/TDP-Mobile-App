@@ -1,27 +1,23 @@
-package com.cos60011.group1.mttransit.screens.dashboard
+package com.cos60011.group1.mttransit
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.cos60011.group1.mttransit.Bus
-import com.cos60011.group1.mttransit.R
-import com.cos60011.group1.mttransit.SharedViewModel
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.card.MaterialCardView
 import java.text.SimpleDateFormat
 
-// Creates an adapter extending from FirestoreRecyclerAdapter
-class BusListAdapter(
+class RecentBusesAdapter (
     private val context: Context,
     private val options: FirestoreRecyclerOptions<Bus>,
-    private val fragment: BusListFragment) :
-    FirestoreRecyclerAdapter<Bus, BusListAdapter.ViewHolder>(options) {
+    private val fragment: RecentBusesFragment
+) :
+    FirestoreRecyclerAdapter<Bus, RecentBusesAdapter.ViewHolder>(options) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, bus: Bus) {
 
@@ -30,10 +26,10 @@ class BusListAdapter(
             //can add data to shared viewmodel here
             fragment.viewModel.setCurrentBus(holder.busIdView.text.toString())
             fragment.viewModel.setIsCurrentBus(false)
-            fragment.viewModel.setIsRecentBus(false)
+            fragment.viewModel.setIsRecentBus(true)
             fragment.viewModel.setRouteName(holder.busroute.text.toString())
 
-            view.findNavController().navigate(R.id.action_busBoardFragment_to_busStatusFragment)
+            view.findNavController().navigate(R.id.action_recentBusesFragment_to_busStatusFragment)
         }
 
         val readableDepartureTime = SimpleDateFormat("HH:mm").format(bus.departureTime.toDate())
@@ -50,18 +46,18 @@ class BusListAdapter(
         val inflater = LayoutInflater.from(context)
 
         //inflate the custom layout
-        val busView = inflater.inflate(R.layout.item_bus_list, parent, false)
+        val busView = inflater.inflate(R.layout.item_recent_bus, parent, false)
 
         //return a new holder instance
         return ViewHolder(busView)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val busIdView: TextView = itemView.findViewById(R.id.bus_list_title)
-        val busInfoView: TextView = itemView.findViewById(R.id.bus_list_info)
-        val busListView: MaterialCardView = itemView.findViewById(R.id.bus_list_item)
+        val busIdView: TextView = itemView.findViewById(R.id.recent_bus_id)
+        val busInfoView: TextView = itemView.findViewById(R.id.recent_bus_info)
+        val busListView: MaterialCardView = itemView.findViewById(R.id.recent_bus_card)
         val passengers: TextView = itemView.findViewById((R.id.passenger_count))
-        val busroute: TextView = itemView.findViewById(R.id.bus_list_route)
+        val busroute: TextView = itemView.findViewById(R.id.recent_bus_route)
     }
 
 }

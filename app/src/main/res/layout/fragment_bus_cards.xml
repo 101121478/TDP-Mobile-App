@@ -19,6 +19,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/recent_buses_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="Recent Buses"
+        app:layout_constraintBottom_toBottomOf="@id/current_buses_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/current_buses_title" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bus_recycler"
         android:layout_width="wrap_content"
