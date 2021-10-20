@@ -61,6 +61,10 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
     val isDeparture: LiveData<Boolean>
         get() = _isDeparture
 
+    private val _isUnmarkDeparted = MutableLiveData<Boolean>()
+    val isUnmarkDeparted: LiveData<Boolean>
+        get() = _isUnmarkDeparted
+
     private val _isMarked = MutableLiveData<Boolean>()
     val isMarked: LiveData<Boolean>
         get() = _isMarked
@@ -392,6 +396,56 @@ class BusStatusViewModel(stationRef: String, busRef: String, routeRef: String, i
         }.addOnFailureListener { e ->
             _isDbError.value = true
             Log.w("Fail to get selected bus document", e)
+        }
+    }
+
+    /**
+     * 1. update departureTime back to null
+     * 2. update lastUpdated
+     * if the currentStopNo is 1
+     * 1. currentStop = previousStop
+     * 2. previousStop = none
+     * 3. nextStop = none
+     * if it is not
+     * 1. currentStop = previousStop
+     * 2. previousStop = currentUserLocation
+     * 3. nextStop = none
+     */
+
+    // TODO passenger update on busDocument and Data collection
+    fun unmarkFromDeparted() {
+        val source = Source.SERVER
+        // check if whether the bus has been marked by other staff
+        if (curStopNo == "1") {
+            db.document(busStatusPath)
+                .update("currentStop", prevStop,
+                "previousStop", "none",
+                "nextStop", "none",
+                "departureTime", null,
+                "lastUpdated", Timestamp.now())
+                .addOnSuccessListener {
+                    _isUnmarkDeparted.value = true
+                }
+                .addOnFailureListener{ e ->
+                    _isDbError.value = true
+                    Log.w("Fail to get selected bus document", e)
+                }
+        } else {
+            db.document(busStatusPath)
+                .update(
+                    "currentStop", prevStop,
+                    "previousStop", stationId,
+                    "nextStop", "none",
+                    "departureTime", null,
+                    "lastUpdated", Timestamp.now()
+                )
+                .addOnSuccessListener {
+                    _isUnmarkDeparted.value = true
+                }
+                .addOnFailureListener { e ->
+                    _isDbError.value = true
+                    Log.w("Fail to get selected bus document", e)
+                }
         }
     }
 

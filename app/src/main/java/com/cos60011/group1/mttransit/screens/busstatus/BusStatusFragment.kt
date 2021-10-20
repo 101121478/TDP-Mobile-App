@@ -105,6 +105,21 @@ class BusStatusFragment : Fragment() {
             }
         }
 
+        // handle unmark from departed button
+        binding.buttonBusStatusUnmarkFromDeparted.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Unmark confirmation")
+                .setMessage("Do you want to unmark bus ${viewModel.busId.value} from departed?")
+                .setNegativeButton("Cancel") { dialog, which ->
+                    dialog.cancel()
+                }
+                .setPositiveButton("Ok") { dialog, which ->
+                    // TODO call unmark function
+                    viewModel.unmarkFromDeparted()
+                }
+                .show()
+        }
+
         // handle mark as arrive success and failure
         viewModel.isArrive.observe(viewLifecycleOwner, { isArrive ->
             run {
