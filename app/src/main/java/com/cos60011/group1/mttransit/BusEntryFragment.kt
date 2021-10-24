@@ -100,6 +100,8 @@ class BusEntryFragment : Fragment() {
 
         val selectedStation = viewModel.userLocation.value  // Get the station that was selected by the user in the SetStationFragment through SharedViewModel
         var nextStop = ""
+        val builder = AlertDialog.Builder(this.context)     // build alertDialog for no internet here to retain context
+
 
         // Hash map of bus routes to bus route IDs
         val busRoutes = hashMapOf(
@@ -225,7 +227,6 @@ class BusEntryFragment : Fragment() {
                                         .set(bus)
                                         .addOnSuccessListener {
                                             println("Bus data successfully written!")
-                                            val builder = AlertDialog.Builder(context)
                                             builder.setTitle("Successfully added bus $busID")
                                             builder.setPositiveButton("OK"){_,_ ->
                                                 if(this.isVisible) {
